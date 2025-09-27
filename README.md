@@ -34,6 +34,8 @@ equipo de desarrollo para su análisis e implementación.
 
 
 ## Estructura de Carpetas
+
+```bash
 📂 Proyecto/
 ├── 📂 adr/
 │   └── ADR-000-monolito-node-postgres.md
@@ -59,3 +61,4 @@ equipo de desarrollo para su análisis e implementación.
 │       └── index.html
 │
 └── README.md
+

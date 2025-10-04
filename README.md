@@ -60,5 +60,20 @@ equipo de desarrollo para su análisis e implementación.
 │   └── 📂 public/
 │       └── index.html
 │
+├── 📂 node_modules/ #Creación de la carpeta por la instalación de la liberia npm install mysql                                                                                             
+│   ├── bignumber.js
+│   ├── core-util-is
+│   ├── inherits
+│   ├── isarray
+│   ├── mysql
+│   ├── process-nextick-args
+│   ├── readable-stream
+│   ├── safe-buffer
+│   ├── sqlstring
+│   ├── string_decoder
+│   ├── util-deprecate
+│   └── .package-lock.json 
+├── package-lock.json 
+├── package.json 
 └── README.md
 

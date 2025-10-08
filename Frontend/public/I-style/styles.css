@@ -1,0 +1,143 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+header{
+    background: #333;
+    color: #fff;
+    text-align: center;
+}
+
+.head-logo-cont{
+    display: flex;
+    text-transform: uppercase;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+    background: #1B1B1B;
+}
+
+.head-logo-cont h1{
+    font-weight: 550;
+    font-size: 1.3rem;
+}
+
+.head-lkn-cont{
+    padding: 15px 0;
+    display: flex;
+    justify-content: center;
+    background: #fff;
+    display: flex;
+    gap: 40px;
+}
+
+.head-lkn-cont a{
+    text-decoration: none;
+    color: #000;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.main-prin-cont{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    background: #1B1B1B;
+    gap: 10px;
+    padding: 10px;
+}
+
+.main-cut-imgs{
+    width: 50%;
+    height: 100%;
+    background: #f94e4e;
+}
+
+.sub-main-cont{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+.sub-main-cont-cut{
+    display: flex;
+    height: 50%;
+    flex-flow: row;
+    background: #333;
+}
+
+.sub-main-cont-inf{
+    padding: 50px;    
+    width: 50%;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+}
+
+.sub-main-cont-img{
+    width: 50%;
+    height: 100%;
+    background: #000;
+}
+
+.sub-main-shop{
+    width: 100%;
+    height: 50%;
+    display: flex;
+    flex-flow: row;
+    background: #f94e4e;
+}
+
+.sub-main-shop-img{
+    width: 50%;
+    height: 100%;
+    background: #000;
+}
+
+.sub-main-shop-inf{
+    padding: 50px;
+    width: 50%;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+}
+
+.sub-main-cont-inf h2, .sub-main-shop-inf h2{
+    text-transform: uppercase;
+    background: #1B1B1B;
+    color: #fff;
+    width: fit-content;
+    padding: 5px;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.sub-main-cont-inf p, .sub-main-shop-inf p{
+    font-size: 1.4rem;
+    color: #1B1B1B;
+    line-height: 2rem;
+    font-weight: 700;
+    text-align: left;
+}
+
+.sub-main-cont-inf a, .sub-main-shop-inf a{
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #1B1B1B;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: solid underline;
+}

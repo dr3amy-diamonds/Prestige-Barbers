@@ -57,6 +57,8 @@ header{
     width: 50%;
     height: 100%;
     background: #f94e4e;
+    display: flex;
+    flex-flow: column;
 }
 
 .sub-main-cont{
@@ -87,7 +89,15 @@ header{
 .sub-main-cont-img{
     width: 50%;
     height: 100%;
-    background: #000;
+    position: relative;
+    overflow: hidden; 
+}
+
+.sub-main-cont-img img{ 
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    display: block;
 }
 
 .sub-main-shop{
@@ -101,7 +111,15 @@ header{
 .sub-main-shop-img{
     width: 50%;
     height: 100%;
-    background: #000;
+    position: relative;
+    overflow: hidden; 
+}
+
+.sub-main-shop-img img{ 
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    display: block;
 }
 
 .sub-main-shop-inf{

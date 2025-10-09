@@ -56,9 +56,68 @@ header{
 .main-cut-imgs{
     width: 50%;
     height: 100%;
-    background: #f94e4e;
+    position: relative;
+    overflow: hidden;
+}
+
+.main-cut-imgs img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.main-cut-imgs-text {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
     display: flex;
-    flex-flow: column;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+    text-align: right;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent 100%);
+}
+
+.main-cut-imgs h2{
+    text-transform: uppercase;
+    background: #fff;
+    color: #1B1B1B;
+    width: fit-content;
+    padding: 3px 10px;
+    margin: 0;
+    font-size: 1rem;
+}   
+
+.main-cut-imgs h3{
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 3rem;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.main-cut-imgs p{
+    font-size: 0.9rem;
+    color: #fff;
+    line-height: 2.5rem;
+    margin: 0;
+    font-weight: 300;
+    text-align: right;
+}
+
+.main-cut-imgs a{
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: solid underline;
 }
 
 .sub-main-cont{
@@ -158,4 +217,35 @@ header{
     font-size: 0.8rem;
     font-weight: 700;
     text-decoration: solid underline;
+}
+
+.sub-main-cont-inf a, .sub-main-shop-inf a{
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #1B1B1B;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: solid underline;
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.dot.active {
+    background: white;
 }

@@ -29,11 +29,8 @@
     <main>
 
         <div class="main-prin-cont">
-            <div class="main-cut-imgs">
-                <h2>Destacados de la semana</h2>
-                <h3>Low Taper Fade</h3>
-                <p>Sorprendente, Iconico e Original.</p>
-                <a href="">Reserva Ahora</a>
+            <div class="main-cut-imgs" id="carousel-container">
+                <!-- Carousel content will be injected here -->
             </div>
 
             <div class="sub-main-cont">
@@ -63,4 +60,77 @@
             </div>
         </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const carouselContainer = document.getElementById('carousel-container');
+            let cuts = [];
+            let currentIndex = 0;
+            let intervalId = null;
+
+            function renderSlide() {
+                if (cuts.length === 0) return;
+                const cut = cuts[currentIndex];
+                carouselContainer.innerHTML = `
+                    <img src="${cut.image_url}" alt="${cut.name}">
+                    <div class="main-cut-imgs-text">
+                        <h2>Destacados de la semana</h2>
+                        <h3>${cut.name}</h3>
+                        <p>${cut.description}</p>
+                        <a href="">Reserva Ahora</a>
+                    </div>
+                    <div class="carousel-dots"></div>
+                `;
+                createDots(); 
+                updateDots();
+                resetInterval();
+            }
+
+            function createDots() {
+                const dotsContainer = carouselContainer.querySelector('.carousel-dots');
+                if (!dotsContainer) return;
+                dotsContainer.innerHTML = '';
+                cuts.forEach((_, index) => {
+                    const dot = document.createElement('span');
+                    dot.classList.add('dot');
+                    dot.addEventListener('click', () => {
+                        currentIndex = index;
+                        renderSlide();
+                    });
+                    dotsContainer.appendChild(dot);
+                });
+            }
+
+            function updateDots() {
+                const dotsContainer = carouselContainer.querySelector('.carousel-dots');
+                if (!dotsContainer) return;
+                const dots = dotsContainer.querySelectorAll('.dot');
+                dots.forEach((dot, index) => {
+                    if (index === currentIndex) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % cuts.length;
+                renderSlide();
+            }
+
+            function resetInterval() {
+                clearInterval(intervalId);
+                intervalId = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+            }
+
+            fetch('/api/cortes')
+                .then(response => response.json())
+                .then(data => {
+                    cuts = data;
+                    renderSlide();
+                })
+                .catch(error => console.error('Error fetching cuts:', error));
+        });
+    </script>
 </body>

@@ -39,6 +39,12 @@ header{
     background: #fff;
     display: flex;
     gap: 40px;
+    border-bottom: 10px solid #1B1B1B;
+    transition: border-color 0.3s ease-in-out;
+}
+
+header:stuck .head-lkn-cont {
+    border-color: #1B1B1B;
 }
 
 .head-lkn-cont a{
@@ -54,7 +60,7 @@ header{
     display: flex;
     background: #1B1B1B;
     gap: 10px;
-    padding: 10px;
+    padding: 0 10px 10px;
 }
 
 .main-cut-imgs{
@@ -87,6 +93,7 @@ header{
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
 .slide .main-cut-imgs-text {
@@ -112,7 +119,8 @@ header{
     background: #fff;
     color: #1B1B1B;
     width: fit-content;
-    padding: 3px 10px;
+    font-weight: 700;
+    padding: 5px 10px;
     margin: 0;
     font-size: 1rem;
 }   
@@ -365,6 +373,7 @@ header{
     align-self: flex-start;
     font-size: 1rem;
     padding: 5px 10px;
+    font-weight: 5500;
     margin-left: 2.5%; 
     text-transform: uppercase;
 }
@@ -376,4 +385,221 @@ header{
     font-weight: 500;
     padding: 20px 40px;
     border: #1B1B1B solid 2px;
+}
+
+.barb-cont{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    background: #1B1B1B;
+    gap: 10px;
+    padding: 10px;
+}
+
+.barb-cont-img-inf{
+    background: linear-gradient(to right, #1b1b1b96, transparent 100%), url('../I-img/Barbero.jpeg');
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 50px;
+    background-size: cover;
+    background-position: center;
+}
+
+
+.barb-cont-img-inf h2{
+    font-size: 1rem;
+    background: #fff;
+    padding: 5px 10px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.barb-cont-img-inf label{
+    color: #fff;
+    font-weight: 600;
+    margin-top: 10px;
+    font-size: 2.5em;
+    text-transform: uppercase;
+    width: 40%;
+
+}
+
+.barb-cont-lkns{
+    display: flex;
+    gap: 30px;
+}
+
+.barb-cont-lkns a{
+    margin-top: 10px;
+    text-decoration: none;
+    background: #fff;
+    padding: 20px 25px;
+    font-weight: 500;
+}
+
+.barb-cont-lkns a:nth-child(2){
+    color: #fff;
+    background: none;
+    text-decoration: solid underline 1px;
+}
+
+/* --- Shop Section --- */
+.shop-cont {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+    background: #ffffff;
+}
+
+.shop-cont label:first-child {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.shop-cont-btn {
+    height: 50%;
+    width: 95%;
+    display: flex;
+    gap: 20px;
+    margin-bottom: 50px;
+    justify-content: center;
+}
+
+.shop-btn-item {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.shop-cont-btn button {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    font-size: 1rem;
+    border: none;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+#btn-crema-skala {
+    background-image: url('../I-img/Skala.png');
+}
+
+#btn-serum-natura {
+    background-image: url('../I-img/Serum\ natura.webp');
+}
+
+#btn-shampoo-milagros {
+    background-image: url('../I-img/Shampoo\ milagros.webp');
+}
+
+#btn-tratamiento-caba {
+    background-image: url('../I-img/Kaba.webp');
+}
+
+.shop-btn-item label:first-of-type {
+    margin-top: 20px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.shop-btn-item label:last-of-type {
+    margin-top: 3px;
+    font-weight: 400;
+    text-align: left;
+}
+
+.shop-cont h2 {
+    width: fit-content;
+    text-align: left;
+    color: #fff;
+    background: #1B1B1B;
+    align-self: flex-start;
+    font-size: 1rem;
+    padding: 5px 10px;
+    font-weight: 5500;
+    margin-left: 2.5%;
+    text-transform: uppercase;
+}
+
+.shop-cont a {
+    text-decoration: none;
+    color: #1B1B1B;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 20px 40px;
+    border: #1B1B1B solid 2px;
+}
+
+/* --- Ubicacion Section --- */
+.Ubic-cont {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    background: #1B1B1B;
+    gap: 10px;
+    padding: 10px;
+}
+
+.Ubic-cont-inf {
+    background: url('../I-img/Google\ Maps.png');
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 50px;
+    background-size: cover;
+    background-position: center;
+}
+
+.Ubic-cont-inf h2 {
+    font-size: 1rem;
+    color: #fff;
+    background: #1B1B1B;
+    padding: 5px 10px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.Ubic-cont-inf > label {
+    color: #1B1B1B;
+    font-weight: 600;
+    margin-top: 10px;
+    font-size: 2.5em;
+    text-transform: uppercase;
+    width: 40%;
+}
+
+.Ubic-cont-address {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.Ubic-cont-address label {
+    color: #1B1B1B;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: none;
+    padding: 0;
+    text-decoration: none;
 }

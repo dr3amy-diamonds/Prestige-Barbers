@@ -87,192 +87,118 @@
             </div>
             <a href="">Descubrir Más</a>
         </div>
+>        
+
+        <div class="barb-cont">
+            <div class="barb-cont-img-inf">
+                <h2>Barberos</h2>
+                <label for="">Conoce a tu nuevo barbero favorito.</label>
+                <div class="barb-cont-lkns">
+                    <a href="">Conoce los barberos</a>
+                    <a href="">Explorar Los Cortes</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="shop-cont">
+            <label for="">De la barbería a tu rutina, el cuidado que mereces.</label>
+            <h2>Shop</h2>
+            <div class="shop-cont-btn">
+                <div class="shop-btn-item">
+                    <button id="btn-crema-skala"></button>
+                    <label>crema skala</label>
+                    <label>Desde 38.800$</label>
+                </div>
+                <div class="shop-btn-item">
+                    <button id="btn-serum-natura"></button>
+                    <label>serum Natura</label>
+                    <label>Desde 38.800$</label>
+                </div>
+                <div class="shop-btn-item">
+                    <button id="btn-shampoo-milagros"></button>
+                    <label>Shampoo Milagros</label>
+                    <label>Desde 38.800$</label>
+                </div>
+                <div class="shop-btn-item">
+                    <button id="btn-tratamiento-caba"></button>
+                    <label>Tratamiento capilar caba</label>
+                    <label>Desde 38.800$</label>
+                </div>
+            </div>
+            <a href="">Explorar tienda</a>
+        </div>
+
+        <div class="Ubic-cont">
+            <div class="Ubic-cont-inf">
+                <h2>Ubicacion</h2>
+                <label>Puedes encontrarnos aqui</label>
+                <div class="Ubic-cont-address">
+                    <label>barrio falso</label>
+                    <label>calle falsa #123</label>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const carouselContainer = document.getElementById('carousel-container');
-            const carouselTrack = document.createElement('div');
-            carouselTrack.className = 'carousel-track';
-            carouselContainer.appendChild(carouselTrack);
-
-            let cuts = [];
-            let slideCount = 0;
-            let currentIndex = 1; // Start at 1, the first "real" slide
-            let intervalId = null;
-            let isDragging = false;
-            let startX = 0;
-            let currentTranslate = 0;
-            let prevTranslate = 0;
-            let animationID = 0;
-            let isInitialLoad = true;
-            let containerWidth = carouselContainer.offsetWidth;
-            let isTransitioning = false;
-
-            function setPositionByIndex() {
-                currentTranslate = currentIndex * -containerWidth;
-                prevTranslate = currentTranslate;
-                carouselTrack.style.transform = `translateX(${currentTranslate}px)`;
-            }
-
-            // The transitionend event can be unreliable. A timeout matching the CSS transition is more robust.
-            // The handleTransitionEnd function and its listener are removed and replaced by this new goToSlide logic.
-            function goToSlide(index) {
-                if (isTransitioning) return;
-
-                // This handles the snap-back case in dragEnd where the drag distance is not enough to change slide.
-                if (!isDragging && index === currentIndex) {
-                    carouselTrack.style.transition = 'transform 0.5s ease-out';
-                    setPositionByIndex();
-                    return;
-                }
-
-                isTransitioning = true;
-                const slides = carouselTrack.querySelectorAll('.slide');
-                const currentText = slides[currentIndex]?.querySelector('.main-cut-imgs-text');
-                if (currentText) currentText.style.opacity = 0;
-
-                carouselTrack.style.transition = 'transform 0.5s ease-out';
-                currentIndex = index;
-                setPositionByIndex();
-                updateDots();
-                resetInterval();
-
-                setTimeout(() => {
-                    const atLastClone = currentIndex === slideCount + 1;
-                    const atFirstClone = currentIndex === 0;
-
-                    if (atLastClone || atFirstClone) {
-                        // We've finished sliding to a clone. Now, perform an instant "jump"
-                        // to the corresponding real slide by disabling the transition.
-                        carouselTrack.style.transition = 'none';
-                        currentIndex = atLastClone ? 1 : slideCount;
-                        setPositionByIndex();
+            class Carousel {
+                constructor(containerId) {
+                    this.carouselContainer = document.getElementById(containerId);
+                    if (!this.carouselContainer) {
+                        console.error(`Carousel container with id ${containerId} not found.`);
+                        return;
                     }
-                    
-                    // Fade in the text of the new current slide (works for both regular slides and after a jump).
-                    const newSlides = carouselTrack.querySelectorAll('.slide');
-                    const newText = newSlides[currentIndex]?.querySelector('.main-cut-imgs-text');
-                    if (newText) newText.style.opacity = 1;
 
-                    // The entire transition/jump sequence is complete, so we can allow the next one.
-                    isTransitioning = false;
-                }, 500); // IMPORTANT: This duration must match the 'transform' transition duration in milliseconds.
-            }
+                    this.carouselTrack = document.createElement('div');
+                    this.carouselTrack.className = 'carousel-track';
+                    this.carouselContainer.appendChild(this.carouselTrack);
 
-            function createDots() {
-                const dotsContainer = document.createElement('div');
-                dotsContainer.className = 'carousel-dots';
-                carouselContainer.appendChild(dotsContainer);
+                    this.cuts = [];
+                    this.slideCount = 0;
+                    this.currentIndex = 1;
+                    this.intervalId = null;
+                    this.isDragging = false;
+                    this.startX = 0;
+                    this.currentTranslate = 0;
+                    this.prevTranslate = 0;
+                    this.animationID = 0;
+                    this.isInitialLoad = true;
+                    this.containerWidth = this.carouselContainer.getBoundingClientRect().width;
+                    this.isTransitioning = false;
 
-                cuts.forEach((_, index) => {
-                    const dot = document.createElement('span');
-                    dot.classList.add('dot');
-                    dot.addEventListener('click', () => {
-                        goToSlide(index + 1);
-                    });
-                    dotsContainer.appendChild(dot);
-                });
-            }
-
-            function updateDots() {
-                const dots = carouselContainer.querySelectorAll('.dot');
-                let logicalIndex = currentIndex - 1;
-                if (currentIndex === 0) {
-                    logicalIndex = slideCount - 1;
-                } else if (currentIndex === slideCount + 1) {
-                    logicalIndex = 0;
+                    this.fetchCuts();
+                    this.setupEventListeners();
                 }
-                dots.forEach((dot, index) => {
-                    dot.classList.toggle('active', index === logicalIndex);
-                });
-            }
 
-            function nextSlide() {
-                goToSlide(currentIndex + 1);
-            }
+                fetchCuts() {
+                    fetch('/api/cortes')
+                        .then(response => response.json())
+                        .then(data => {
+                            this.cuts = data;
+                            this.slideCount = this.cuts.length;
+                            if (this.slideCount === 0) return;
 
-            function resetInterval() {
-                clearInterval(intervalId);
-                intervalId = setInterval(nextSlide, 5000);
-            }
+                            this.createSlides();
+                            this.createDots();
+                            this.resizeCarousel();
+                            this.updateDots();
+                            this.resetInterval();
 
-            function resizeCarousel() {
-                containerWidth = carouselContainer.offsetWidth;
-                carouselTrack.style.transition = 'none';
-                const allSlides = carouselTrack.querySelectorAll('.slide');
-                carouselTrack.style.width = `${allSlides.length * containerWidth}px`;
-                allSlides.forEach(slide => {
-                    slide.style.width = `${containerWidth}px`;
-                });
-                setPositionByIndex();
-            }
-
-            window.addEventListener('resize', resizeCarousel);
-
-            carouselContainer.addEventListener('mousedown', dragStart);
-            carouselContainer.addEventListener('touchstart', dragStart);
-            carouselContainer.addEventListener('mousemove', dragMove);
-            carouselContainer.addEventListener('touchmove', dragMove);
-            carouselContainer.addEventListener('mouseup', dragEnd);
-            carouselContainer.addEventListener('mouseleave', dragEnd);
-            carouselContainer.addEventListener('touchend', dragEnd);
-
-            function dragStart(event) {
-                if (isTransitioning) return;
-                isDragging = true;
-                startX = getPositionX(event);
-                animationID = requestAnimationFrame(animation);
-                carouselTrack.style.transition = 'none';
-                carouselContainer.classList.add('grabbing');
-            }
-
-            function dragMove(event) {
-                if (isDragging) {
-                    const currentPosition = getPositionX(event);
-                    currentTranslate = prevTranslate + currentPosition - startX;
+                            if (this.isInitialLoad) {
+                                this.carouselContainer.style.opacity = 0;
+                                setTimeout(() => {
+                                    this.carouselContainer.style.opacity = 1;
+                                }, 100);
+                                this.isInitialLoad = false;
+                            }
+                        })
+                        .catch(error => console.error('Error fetching cuts:', error));
                 }
-            }
 
-            function dragEnd(event) {
-                if (!isDragging) return;
-                isDragging = false;
-                cancelAnimationFrame(animationID);
-                carouselContainer.classList.remove('grabbing');
-
-                const movedBy = currentTranslate - prevTranslate;
-                if (movedBy < -50) {
-                    goToSlide(currentIndex + 1);
-                } else if (movedBy > 50) {
-                    goToSlide(currentIndex - 1);
-                } else {
-                    goToSlide(currentIndex); // Snap back
-                }
-            }
-
-            function getPositionX(event) {
-                return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
-            }
-
-            function animation() {
-                if (isDragging) {
-                    setSliderPosition();
-                    requestAnimationFrame(animation);
-                }
-            }
-
-            function setSliderPosition() {
-                carouselTrack.style.transform = `translateX(${currentTranslate}px)`;
-            }
-
-            fetch('/api/cortes')
-                .then(response => response.json())
-                .then(data => {
-                    cuts = data;
-                    slideCount = cuts.length;
-                    if (slideCount === 0) return;
-
-                    const slideElements = cuts.map((cut, index) => {
+                createSlides() {
+                    const slideElements = this.cuts.map((cut, index) => {
                         const slide = document.createElement('div');
                         slide.className = 'slide';
                         slide.innerHTML = `
@@ -294,37 +220,193 @@
                     });
 
                     const firstClone = slideElements[0].cloneNode(true);
-                    const lastClone = slideElements[slideCount - 1].cloneNode(true);
+                    const lastClone = slideElements[this.slideCount - 1].cloneNode(true);
 
-                    // Ensure text on clones is not visible to prevent flickering during loop
                     firstClone.querySelector('.main-cut-imgs-text').style.opacity = 0;
                     lastClone.querySelector('.main-cut-imgs-text').style.opacity = 0;
 
-                    carouselTrack.appendChild(lastClone);
-                    slideElements.forEach(slide => carouselTrack.appendChild(slide));
-                    carouselTrack.appendChild(firstClone);
+                    this.carouselTrack.appendChild(lastClone);
+                    slideElements.forEach(slide => this.carouselTrack.appendChild(slide));
+                    this.carouselTrack.appendChild(firstClone);
 
-                    // Must update slides to include clones for text fading
-                    const allSlides = Array.from(carouselTrack.children);
+                    const allSlides = Array.from(this.carouselTrack.children);
                     const firstRealSlideText = allSlides[1]?.querySelector('.main-cut-imgs-text');
                     if (firstRealSlideText) firstRealSlideText.style.opacity = 1;
+                }
 
+                createDots() {
+                    const dotsContainer = document.createElement('div');
+                    dotsContainer.className = 'carousel-dots';
+                    this.carouselContainer.appendChild(dotsContainer);
 
-                    createDots();
-                    resizeCarousel();
-                    updateDots();
-                    resetInterval();
+                    this.cuts.forEach((_, index) => {
+                        const dot = document.createElement('span');
+                        dot.classList.add('dot');
+                        dot.addEventListener('click', () => {
+                            this.goToSlide(index + 1);
+                        });
+                        dotsContainer.appendChild(dot);
+                    });
+                }
 
-                    if (isInitialLoad) {
-                        carouselContainer.style.opacity = 0;
-                        setTimeout(() => {
-                            carouselContainer.style.opacity = 1;
-                        }, 100);
-                        isInitialLoad = false;
+                updateDots() {
+                    const dots = this.carouselContainer.querySelectorAll('.dot');
+                    let logicalIndex = this.currentIndex - 1;
+                    if (this.currentIndex === 0) {
+                        logicalIndex = this.slideCount - 1;
+                    } else if (this.currentIndex === this.slideCount + 1) {
+                        logicalIndex = 0;
                     }
-                })
-                .catch(error => console.error('Error fetching cuts:', error));
+                    dots.forEach((dot, index) => {
+                        dot.classList.toggle('active', index === logicalIndex);
+                    });
+                }
+
+                goToSlide(index) {
+                    if (this.isTransitioning) return;
+
+                    if (!this.isDragging && index === this.currentIndex) {
+                        this.carouselTrack.style.transition = 'transform 0.5s ease-out';
+                        this.setPositionByIndex();
+                        return;
+                    }
+
+                    this.isTransitioning = true;
+                    const slides = this.carouselTrack.querySelectorAll('.slide');
+                    const currentText = slides[this.currentIndex]?.querySelector('.main-cut-imgs-text');
+                    if (currentText) currentText.style.opacity = 0;
+
+                    this.carouselTrack.style.transition = 'transform 0.5s ease-out';
+                    this.currentIndex = index;
+                    this.setPositionByIndex();
+                    this.updateDots();
+                    this.resetInterval();
+
+                    setTimeout(() => {
+                        const atLastClone = this.currentIndex === this.slideCount + 1;
+                        const atFirstClone = this.currentIndex === 0;
+
+                        if (atLastClone || atFirstClone) {
+                            this.carouselTrack.style.transition = 'none';
+                            this.currentIndex = atLastClone ? 1 : this.slideCount;
+                            this.setPositionByIndex();
+                        }
+
+                        const newSlides = this.carouselTrack.querySelectorAll('.slide');
+                        const newText = newSlides[this.currentIndex]?.querySelector('.main-cut-imgs-text');
+                        if (newText) newText.style.opacity = 1;
+
+                        this.isTransitioning = false;
+                    }, 500);
+                }
+
+                nextSlide() {
+                    this.goToSlide(this.currentIndex + 1);
+                }
+
+                resetInterval() {
+                    clearInterval(this.intervalId);
+                    this.intervalId = setInterval(() => this.nextSlide(), 5000);
+                }
+
+                resizeCarousel() {
+                    this.containerWidth = this.carouselContainer.getBoundingClientRect().width;
+                    this.carouselTrack.style.transition = 'none';
+                    const allSlides = this.carouselTrack.querySelectorAll('.slide');
+                    this.carouselTrack.style.width = `${allSlides.length * this.containerWidth}px`;
+                    allSlides.forEach(slide => {
+                        slide.style.width = `${this.containerWidth}px`;
+                    });
+                    this.setPositionByIndex();
+                }
+
+                setupEventListeners() {
+                    window.addEventListener('resize', () => this.resizeCarousel());
+
+                    this.carouselContainer.addEventListener('mousedown', (e) => this.dragStart(e));
+                    this.carouselContainer.addEventListener('touchstart', (e) => this.dragStart(e));
+                    this.carouselContainer.addEventListener('mousemove', (e) => this.dragMove(e));
+                    this.carouselContainer.addEventListener('touchmove', (e) => this.dragMove(e));
+                    this.carouselContainer.addEventListener('mouseup', () => this.dragEnd());
+                    this.carouselContainer.addEventListener('mouseleave', () => this.dragEnd());
+                    this.carouselContainer.addEventListener('touchend', () => this.dragEnd());
+                }
+
+                dragStart(event) {
+                    if (this.isTransitioning) return;
+                    this.isDragging = true;
+                    this.startX = this.getPositionX(event);
+                    this.animationID = requestAnimationFrame(() => this.animation());
+                    this.carouselTrack.style.transition = 'none';
+                    this.carouselContainer.classList.add('grabbing');
+                }
+
+                dragMove(event) {
+                    if (this.isDragging) {
+                        const currentPosition = this.getPositionX(event);
+                        this.currentTranslate = this.prevTranslate + currentPosition - this.startX;
+                    }
+                }
+
+                dragEnd() {
+                    if (!this.isDragging) return;
+                    this.isDragging = false;
+                    cancelAnimationFrame(this.animationID);
+                    this.carouselContainer.classList.remove('grabbing');
+
+                    const movedBy = this.currentTranslate - this.prevTranslate;
+                    if (movedBy < -50) {
+                        this.goToSlide(this.currentIndex + 1);
+                    } else if (movedBy > 50) {
+                        this.goToSlide(this.currentIndex - 1);
+                    } else {
+                        this.goToSlide(this.currentIndex);
+                    }
+                }
+
+                getPositionX(event) {
+                    return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+                }
+
+                animation() {
+                    if (this.isDragging) {
+                        this.setSliderPosition();
+                        requestAnimationFrame(() => this.animation());
+                    }
+                }
+
+                setSliderPosition() {
+                    this.carouselTrack.style.transform = `translateX(${this.currentTranslate}px)`;
+                }
+
+                setPositionByIndex() {
+                    this.currentTranslate = this.currentIndex * -this.containerWidth;
+                    this.prevTranslate = this.currentTranslate;
+                    this.carouselTrack.style.transform = `translateX(${this.currentTranslate}px)`;
+                }
+            }
+
+            new Carousel('carousel-container');
+
+            const header = document.querySelector('header');
+            const sentinel = document.createElement('div');
+            sentinel.style.position = 'absolute';
+            sentinel.style.top = '0';
+            sentinel.style.height = '1px';
+            sentinel.style.width = '1px';
+            document.body.prepend(sentinel);
+
+            const observer = new IntersectionObserver(
+                ([entry]) => {
+                    header.classList.toggle('is-sticky', !entry.isIntersecting);
+                },
+                {
+                    rootMargin: '-1px 0px 0px 0px',
+                    threshold: 0
+                }
+            );
+
+            observer.observe(sentinel);
         });
     </script>
-
 </body>

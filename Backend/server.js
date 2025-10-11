@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', 'Frontend', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const storage = multer.diskStorage({
@@ -20,7 +20,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Database connection
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -38,7 +37,7 @@ db.connect(err => {
 
 
 app.get('/api/cortes', (req, res) => {
-    db.query('SELECT * FROM cortes_destacados ORDER BY id DESC LIMIT 7', (err, results) => {
+    db.query('SELECT * FROM cortes_destacados ORDER BY id ASC LIMIT 7', (err, results) => {
         if (err) {
             res.status(500).send('Error fetching featured cuts');
             return;
@@ -47,7 +46,6 @@ app.get('/api/cortes', (req, res) => {
     });
 });
 
-// Add a new featured cut
 app.post('/api/cortes', upload.single('image'), (req, res) => {
     const { name, description } = req.body;
     const image_url = req.file ? `/uploads/${req.file.filename}` : null;
@@ -65,17 +63,14 @@ app.post('/api/cortes', upload.single('image'), (req, res) => {
     });
 });
 
-// Update a featured cut
 app.put('/api/cortes/:id', upload.single('image'), (req, res) => {
     const { id } = req.params;
     const { name, description } = req.body;
     let imageUrl;
 
-    // Check if a new image is uploaded
     if (req.file) {
         imageUrl = `/uploads/${req.file.filename}`;
     } else {
-        // Keep the existing image if no new one is uploaded
         imageUrl = req.body.image_url;
     }
 
@@ -93,7 +88,6 @@ app.put('/api/cortes/:id', upload.single('image'), (req, res) => {
     });
 });
 
-// Delete a featured cut
 app.delete('/api/cortes/:id', (req, res) => {
     const { id } = req.params;
     const query = 'DELETE FROM cortes_destacados WHERE id = ?';

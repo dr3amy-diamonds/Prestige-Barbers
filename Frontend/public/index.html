@@ -48,7 +48,7 @@
 
                 <div class="sub-main-shop">
                     <div class="sub-main-shop-img">
-                        <img src="I-img/Prospectors pomade.webp" alt="Barber shop products">
+                        <img src="I-img/Prospectors pomade.png" alt="Barber shop products">
                     </div>
                     <div class="sub-main-shop-inf">
                         <h2>Shop</h2>
@@ -59,78 +59,289 @@
 
             </div>
         </div>
+
+        <div class="Svc-cont">
+            <label for="">Explore Los Diversos Servicios Que Ofrecemos</label>
+            <h2>Servicios</h2>
+            <div class="Svc-cont-btn">
+                <div class="Svc-btn-item">
+                    <button id="btn-cabello"></button>
+                    <label>Cabello</label>
+                    <label>Desde 18.000$</label>
+                </div>
+                <div class="Svc-btn-item">
+                    <button id="btn-barba"></button>
+                    <label>Barba</label>
+                    <label>Desde 18.000$</label>
+                </div>
+                <div class="Svc-btn-item">
+                    <button id="btn-rostro"></button>
+                    <label>Rostro</label>
+                    <label>Incluido con el corte</label>
+                </div>
+                <div class="Svc-btn-item">
+                    <button id="btn-tienda"></button>
+                    <label>Cuidado personal</label>
+                    <label>Explora la tienda.</label>
+                </div>
+            </div>
+            <a href="">Descubrir Más</a>
+        </div>
     </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const carouselContainer = document.getElementById('carousel-container');
-            let cuts = [];
-            let currentIndex = 0;
-            let intervalId = null;
+            const carouselTrack = document.createElement('div');
+            carouselTrack.className = 'carousel-track';
+            carouselContainer.appendChild(carouselTrack);
 
-            function renderSlide() {
-                if (cuts.length === 0) return;
-                const cut = cuts[currentIndex];
-                carouselContainer.innerHTML = `
-                    <img src="${cut.image_url}" alt="${cut.name}">
-                    <div class="main-cut-imgs-text">
-                        <h2>Destacados de la semana</h2>
-                        <h3>${cut.name}</h3>
-                        <p>${cut.description}</p>
-                        <a href="">Reserva Ahora</a>
-                    </div>
-                    <div class="carousel-dots"></div>
-                `;
-                createDots(); 
+            let cuts = [];
+            let slideCount = 0;
+            let currentIndex = 1; // Start at 1, the first "real" slide
+            let intervalId = null;
+            let isDragging = false;
+            let startX = 0;
+            let currentTranslate = 0;
+            let prevTranslate = 0;
+            let animationID = 0;
+            let isInitialLoad = true;
+            let containerWidth = carouselContainer.offsetWidth;
+            let isTransitioning = false;
+
+            function setPositionByIndex() {
+                currentTranslate = currentIndex * -containerWidth;
+                prevTranslate = currentTranslate;
+                carouselTrack.style.transform = `translateX(${currentTranslate}px)`;
+            }
+
+            function handleTransitionEnd() {
+                if (currentIndex === 0) {
+                    carouselTrack.style.transition = 'none';
+                    currentIndex = slideCount;
+                    setPositionByIndex();
+                } else if (currentIndex === slideCount + 1) {
+                    carouselTrack.style.transition = 'none';
+                    currentIndex = 1;
+                    setPositionByIndex();
+                }
+
+                isTransitioning = false;
+                const slides = carouselTrack.querySelectorAll('.slide');
+                const newText = slides[currentIndex]?.querySelector('.main-cut-imgs-text');
+                if (newText) newText.style.opacity = 1;
+            }
+
+            carouselTrack.addEventListener('transitionend', handleTransitionEnd);
+
+            function goToSlide(index) {
+                if (isTransitioning) return;
+                if (!isDragging && index === currentIndex) return;
+
+                isTransitioning = true;
+                const slides = carouselTrack.querySelectorAll('.slide');
+                const currentText = slides[currentIndex]?.querySelector('.main-cut-imgs-text');
+                if (currentText) currentText.style.opacity = 0;
+
+                carouselTrack.style.transition = 'transform 0.5s ease-out';
+                currentIndex = index;
+                setPositionByIndex();
                 updateDots();
                 resetInterval();
             }
 
             function createDots() {
-                const dotsContainer = carouselContainer.querySelector('.carousel-dots');
-                if (!dotsContainer) return;
-                dotsContainer.innerHTML = '';
+                const dotsContainer = document.createElement('div');
+                dotsContainer.className = 'carousel-dots';
+                carouselContainer.appendChild(dotsContainer);
+
                 cuts.forEach((_, index) => {
                     const dot = document.createElement('span');
                     dot.classList.add('dot');
                     dot.addEventListener('click', () => {
-                        currentIndex = index;
-                        renderSlide();
+                        goToSlide(index + 1);
                     });
                     dotsContainer.appendChild(dot);
                 });
             }
 
             function updateDots() {
-                const dotsContainer = carouselContainer.querySelector('.carousel-dots');
-                if (!dotsContainer) return;
-                const dots = dotsContainer.querySelectorAll('.dot');
+                const dots = carouselContainer.querySelectorAll('.dot');
+                let logicalIndex = currentIndex - 1;
+                if (currentIndex === 0) {
+                    logicalIndex = slideCount - 1;
+                } else if (currentIndex === slideCount + 1) {
+                    logicalIndex = 0;
+                }
                 dots.forEach((dot, index) => {
-                    if (index === currentIndex) {
-                        dot.classList.add('active');
-                    } else {
-                        dot.classList.remove('active');
-                    }
+                    dot.classList.toggle('active', index === logicalIndex);
                 });
             }
 
             function nextSlide() {
-                currentIndex = (currentIndex + 1) % cuts.length;
-                renderSlide();
+                goToSlide(currentIndex + 1);
             }
 
             function resetInterval() {
                 clearInterval(intervalId);
-                intervalId = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+                intervalId = setInterval(nextSlide, 5000);
+            }
+
+            function resizeCarousel() {
+                containerWidth = carouselContainer.offsetWidth;
+                carouselTrack.style.transition = 'none';
+                const allSlides = carouselTrack.querySelectorAll('.slide');
+                carouselTrack.style.width = `${allSlides.length * containerWidth}px`;
+                allSlides.forEach(slide => {
+                    slide.style.width = `${containerWidth}px`;
+                });
+                setPositionByIndex();
+            }
+
+            window.addEventListener('resize', resizeCarousel);
+
+            carouselContainer.addEventListener('mousedown', dragStart);
+            carouselContainer.addEventListener('touchstart', dragStart);
+            carouselContainer.addEventListener('mousemove', dragMove);
+            carouselContainer.addEventListener('touchmove', dragMove);
+            carouselContainer.addEventListener('mouseup', dragEnd);
+            carouselContainer.addEventListener('mouseleave', dragEnd);
+            carouselContainer.addEventListener('touchend', dragEnd);
+
+            function dragStart(event) {
+                if (isTransitioning) return;
+                isDragging = true;
+                startX = getPositionX(event);
+                animationID = requestAnimationFrame(animation);
+                carouselTrack.style.transition = 'none';
+                carouselContainer.classList.add('grabbing');
+            }
+
+            function dragMove(event) {
+                if (isDragging) {
+                    const currentPosition = getPositionX(event);
+                    currentTranslate = prevTranslate + currentPosition - startX;
+                }
+            }
+
+            function dragEnd(event) {
+                if (!isDragging) return;
+                isDragging = false;
+                cancelAnimationFrame(animationID);
+                carouselContainer.classList.remove('grabbing');
+
+                const movedBy = currentTranslate - prevTranslate;
+                if (movedBy < -50) {
+                    goToSlide(currentIndex + 1);
+                } else if (movedBy > 50) {
+                    goToSlide(currentIndex - 1);
+                } else {
+                    goToSlide(currentIndex); // Snap back
+                }
+            }
+
+            function getPositionX(event) {
+                return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+            }
+
+            function animation() {
+                if (isDragging) {
+                    setSliderPosition();
+                    requestAnimationFrame(animation);
+                }
+            }
+
+            function setSliderPosition() {
+                carouselTrack.style.transform = `translateX(${currentTranslate}px)`;
             }
 
             fetch('/api/cortes')
                 .then(response => response.json())
                 .then(data => {
                     cuts = data;
-                    renderSlide();
+                    slideCount = cuts.length;
+                    if (slideCount === 0) return;
+
+                    const slideElements = cuts.map((cut, index) => {
+                        const slide = document.createElement('div');
+                        slide.className = 'slide';
+                        slide.innerHTML = `
+                            <img src="${cut.image_url}" alt="${cut.name}">
+                            <div class="main-cut-imgs-text">
+                                <h2>Destacados de la semana</h2>
+                                <h3>${cut.name}</h3>
+                                <p>${cut.description}</p>
+                                <a href="">Reserva Ahora</a>
+                            </div>
+                        `;
+                        const text = slide.querySelector('.main-cut-imgs-text');
+                        if (index !== 0) {
+                            text.style.opacity = 0;
+                        }
+                        const link = slide.querySelector('a');
+                        link.addEventListener('click', (e) => e.preventDefault());
+                        return slide;
+                    });
+
+                    const firstClone = slideElements[0].cloneNode(true);
+                    const lastClone = slideElements[slideCount - 1].cloneNode(true);
+
+                    carouselTrack.appendChild(lastClone);
+                    slideElements.forEach(slide => carouselTrack.appendChild(slide));
+                    carouselTrack.appendChild(firstClone);
+
+                    // Must update slides to include clones for text fading
+                    const allSlides = Array.from(carouselTrack.children);
+                    const firstRealSlideText = allSlides[1]?.querySelector('.main-cut-imgs-text');
+                    if (firstRealSlideText) firstRealSlideText.style.opacity = 1;
+
+
+                    createDots();
+                    resizeCarousel();
+                    updateDots();
+                    resetInterval();
+
+                    if (isInitialLoad) {
+                        carouselContainer.style.opacity = 0;
+                        setTimeout(() => {
+                            carouselContainer.style.opacity = 1;
+                        }, 100);
+                        isInitialLoad = false;
+                    }
                 })
                 .catch(error => console.error('Error fetching cuts:', error));
+        });
+    </script>
+    <script>
+        // Sticky header with IntersectionObserver
+        document.addEventListener('DOMContentLoaded', function () {
+            const header = document.querySelector('header');
+            
+            // The IntersectionObserver needs a target to observe.
+            // We'll create a 1px sentinel element at the top of the page.
+            // When this sentinel scrolls out of view, we know the header is stuck.
+            const sentinel = document.createElement('div');
+            sentinel.style.position = 'absolute';
+            sentinel.style.top = '0';
+            sentinel.style.height = '1px';
+            sentinel.style.width = '1px';
+            // Prepending to body to make sure it's at the very top.
+            document.body.prepend(sentinel);
+
+            const observer = new IntersectionObserver(
+                ([entry]) => {
+                    // If the sentinel is NOT intersecting the viewport, the header is sticky.
+                    header.classList.toggle('is-sticky', !entry.isIntersecting);
+                },
+                {
+                    // The rootMargin is the key. '-1px' means the event will fire as soon as the sentinel is 1px above the viewport top.
+                    rootMargin: '-1px 0px 0px 0px',
+                    threshold: 0
+                }
+            );
+
+            // Start observing the sentinel element.
+            observer.observe(sentinel);
         });
     </script>
 </body>

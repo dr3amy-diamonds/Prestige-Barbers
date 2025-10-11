@@ -1,48 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Panel de Administración</title>
     <link rel="stylesheet" href="I-style/styles.css">
-    <style>
-        body { font-family: 'Montserrat', sans-serif; margin: 20px; }
-        h1, h2 { color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        form { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; max-width: 500px; }
-        input, textarea { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        button { background-color: #333; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
-        button.edit { background-color: #ffc107; }
-        button.delete { background-color: #dc3545; }
-        #image-preview { max-width: 200px; margin-top: 10px; }
-    </style>
+    <link rel="stylesheet" href="I-style-adm/styles.css">
 </head>
 <body>
-    <h1>Admin Panel - Featured Cuts</h1>
+    <div class="header">
+        <h1>Panel de Administración - Cortes Destacados</h1>
+        <a href="index.html" class="view-changes-btn">Ver Cambios</a>
+    </div>
 
-    <form id="cut-form">
-        <input type="hidden" id="cut-id">
-        <input type="text" id="cut-name" placeholder="Cut Name" required>
-        <textarea id="cut-description" placeholder="Description"></textarea>
-        <input type="file" id="cut-image">
-        <img id="image-preview" src="" alt="Image Preview">
-        <button type="submit">Save Cut</button>
-    </form>
+    <div class="form-container">
+        <form id="cut-form">
+            <input type="hidden" id="cut-id">
+            <input type="text" id="cut-name" placeholder="Nombre del Corte" required>
+            <textarea id="cut-description" placeholder="Descripción"></textarea>
+            <input type="file" id="cut-image">
+            <img id="image-preview" src="" alt="Vista Previa de la Imagen">
+            <button type="submit">Guardar Corte</button>
+        </form>
+    </div>
 
-    <h2>Existing Cuts</h2>
+    <h2>Cortes Existentes</h2>
     <table id="cuts-table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Image</th>
-                <th>Actions</th>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Imagen</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Rows will be injected here -->
         </tbody>
     </table>
 
@@ -61,21 +54,41 @@
             async function fetchCuts() {
                 const response = await fetch(API_URL);
                 const cuts = await response.json();
+
+                // Sort cuts by ID in ascending order
+                cuts.sort((a, b) => a.id - b.id);
+
                 tableBody.innerHTML = '';
                 cuts.forEach(cut => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
+                        <td>${cut.id}</td>
                         <td>${cut.name}</td>
                         <td>${cut.description}</td>
                         <td><img src="${cut.image_url}" width="100"></td>
                         <td>
-                            <button class="edit" data-id="${cut.id}">Edit</button>
-                            <button class="delete" data-id="${cut.id}">Delete</button>
+                            <button class="edit" data-id="${cut.id}">Editar</button>
+                            <button class="delete" data-id="${cut.id}">Eliminar</button>
                         </td>
                     `;
                     tableBody.appendChild(row);
                 });
             }
+
+            cutImageInput.addEventListener('change', () => {
+                const file = cutImageInput.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.src = '';
+                    imagePreview.style.display = 'none';
+                }
+            });
 
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -98,6 +111,7 @@
                 form.reset();
                 cutIdInput.value = '';
                 imagePreview.src = '';
+                imagePreview.style.display = 'none';
                 fetchCuts();
             });
 
@@ -112,7 +126,13 @@
                         cutIdInput.value = cutToEdit.id;
                         cutNameInput.value = cutToEdit.name;
                         cutDescriptionInput.value = cutToEdit.description;
-                        imagePreview.src = cutToEdit.image_url;
+                        if (cutToEdit.image_url) {
+                            imagePreview.src = cutToEdit.image_url;
+                            imagePreview.style.display = 'block';
+                        } else {
+                            imagePreview.src = '';
+                            imagePreview.style.display = 'none';
+                        }
                     }
                 }
 

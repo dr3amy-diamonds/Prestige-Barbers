@@ -377,8 +377,3 @@ header{
     padding: 20px 40px;
     border: #1B1B1B solid 2px;
 }
-
-
-header.is-sticky .head-lkn-cont {
-    border-bottom: 10px solid #1B1B1B;
-}

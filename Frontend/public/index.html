@@ -115,28 +115,17 @@
                 carouselTrack.style.transform = `translateX(${currentTranslate}px)`;
             }
 
-            function handleTransitionEnd() {
-                if (currentIndex === 0) {
-                    carouselTrack.style.transition = 'none';
-                    currentIndex = slideCount;
-                    setPositionByIndex();
-                } else if (currentIndex === slideCount + 1) {
-                    carouselTrack.style.transition = 'none';
-                    currentIndex = 1;
-                    setPositionByIndex();
-                }
-
-                isTransitioning = false;
-                const slides = carouselTrack.querySelectorAll('.slide');
-                const newText = slides[currentIndex]?.querySelector('.main-cut-imgs-text');
-                if (newText) newText.style.opacity = 1;
-            }
-
-            carouselTrack.addEventListener('transitionend', handleTransitionEnd);
-
+            // The transitionend event can be unreliable. A timeout matching the CSS transition is more robust.
+            // The handleTransitionEnd function and its listener are removed and replaced by this new goToSlide logic.
             function goToSlide(index) {
                 if (isTransitioning) return;
-                if (!isDragging && index === currentIndex) return;
+
+                // This handles the snap-back case in dragEnd where the drag distance is not enough to change slide.
+                if (!isDragging && index === currentIndex) {
+                    carouselTrack.style.transition = 'transform 0.5s ease-out';
+                    setPositionByIndex();
+                    return;
+                }
 
                 isTransitioning = true;
                 const slides = carouselTrack.querySelectorAll('.slide');
@@ -148,6 +137,27 @@
                 setPositionByIndex();
                 updateDots();
                 resetInterval();
+
+                setTimeout(() => {
+                    const atLastClone = currentIndex === slideCount + 1;
+                    const atFirstClone = currentIndex === 0;
+
+                    if (atLastClone || atFirstClone) {
+                        // We've finished sliding to a clone. Now, perform an instant "jump"
+                        // to the corresponding real slide by disabling the transition.
+                        carouselTrack.style.transition = 'none';
+                        currentIndex = atLastClone ? 1 : slideCount;
+                        setPositionByIndex();
+                    }
+                    
+                    // Fade in the text of the new current slide (works for both regular slides and after a jump).
+                    const newSlides = carouselTrack.querySelectorAll('.slide');
+                    const newText = newSlides[currentIndex]?.querySelector('.main-cut-imgs-text');
+                    if (newText) newText.style.opacity = 1;
+
+                    // The entire transition/jump sequence is complete, so we can allow the next one.
+                    isTransitioning = false;
+                }, 500); // IMPORTANT: This duration must match the 'transform' transition duration in milliseconds.
             }
 
             function createDots() {
@@ -286,6 +296,10 @@
                     const firstClone = slideElements[0].cloneNode(true);
                     const lastClone = slideElements[slideCount - 1].cloneNode(true);
 
+                    // Ensure text on clones is not visible to prevent flickering during loop
+                    firstClone.querySelector('.main-cut-imgs-text').style.opacity = 0;
+                    lastClone.querySelector('.main-cut-imgs-text').style.opacity = 0;
+
                     carouselTrack.appendChild(lastClone);
                     slideElements.forEach(slide => carouselTrack.appendChild(slide));
                     carouselTrack.appendChild(firstClone);
@@ -312,36 +326,5 @@
                 .catch(error => console.error('Error fetching cuts:', error));
         });
     </script>
-    <script>
-        // Sticky header with IntersectionObserver
-        document.addEventListener('DOMContentLoaded', function () {
-            const header = document.querySelector('header');
-            
-            // The IntersectionObserver needs a target to observe.
-            // We'll create a 1px sentinel element at the top of the page.
-            // When this sentinel scrolls out of view, we know the header is stuck.
-            const sentinel = document.createElement('div');
-            sentinel.style.position = 'absolute';
-            sentinel.style.top = '0';
-            sentinel.style.height = '1px';
-            sentinel.style.width = '1px';
-            // Prepending to body to make sure it's at the very top.
-            document.body.prepend(sentinel);
 
-            const observer = new IntersectionObserver(
-                ([entry]) => {
-                    // If the sentinel is NOT intersecting the viewport, the header is sticky.
-                    header.classList.toggle('is-sticky', !entry.isIntersecting);
-                },
-                {
-                    // The rootMargin is the key. '-1px' means the event will fire as soon as the sentinel is 1px above the viewport top.
-                    rootMargin: '-1px 0px 0px 0px',
-                    threshold: 0
-                }
-            );
-
-            // Start observing the sentinel element.
-            observer.observe(sentinel);
-        });
-    </script>
 </body>

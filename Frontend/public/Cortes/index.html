@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cortes - Prestige Barbers</title>
+    <link rel="stylesheet" href="C-Styles/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="head-logo-cont">
+            <a href="../index.html" style="text-decoration: none; color: inherit;">
+                <h1>Prestige Barbers</h1>
+            </a>
+        </div>
+        <div class="head-lkn-cont">
+            <a href="../index.html">Shop</a>
+            <a href="../index.html">Servicios</a>
+            <a href="../index.html">Barberos</a>
+            <a href="../index.html">Reservas</a>
+            <a href="../index.html">Acerca De</a>
+        </div>
+    </header>
+    <main>
+
+        <div class="cort-cont">
+            <div class="cort-cont-inf-img-cont">
+                <div class="cort-cont-inf">
+                    <h2> Cortes </h2>
+                    <label for="" id="cut-name-label"> Low taper fade</label>
+                </div>
+                <div class="cort-cont-img" id="cuts-carousel-container">
+                    <!-- El carrusel se inyectará aquí -->
+                </div>
+                <div class="cort-cont-inf-2">
+                    <label for="" id="cut-description-label">Sorprendente, Iconico e Original.</label>
+                    <a href="">Reserva ahora</a>
+                </div>
+            </div>
+            <div class="cort-cont-btns">
+                <button></button>
+                <button></button>
+                <button></button>
+                <button></button>
+            </div>
+        </div>
+
+        <div class="skincare-cont">
+            <div class="skincare-cont-img-inf skincare-img">
+                <h2>Skincare</h2>
+                <label for="">Cuidado facial incluido con tu corte</label>
+            </div>
+        </div>
+
+        <div class="barb-cont">
+            <div class="barb-cont-inf-img">
+                <h2>Barbas</h2>
+                <Label>Atrevete a cambiar de estilo</Label>
+                <h3>The Fade Beard</h2>
+                <a href="">Reserva Ahora</a>
+            </div>
+            <div class="barb-cont-img">
+                <button id="btn-barba-1"></button>
+                <button id="btn-barba-2"></button>
+                <button id="btn-barba-3"></button>
+                <button id="btn-barba-4"></button>
+            </div>
+        </div>
+
+    </main>
+    <script src="../js/sticky-header.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cutsData = [
+                {
+                    name: "Low Taper Fade",
+                    description: "Sorprendente, Iconico e Original.",
+                    mainImage: "C-Imgs/Corte/Low Taper/Principal/Low Taper Fade Black.png",
+                    relatedImages: [
+                        'url("C-Imgs/Corte/Low Taper/Relacionado/Burst Fade White.png")',
+                        'url("C-Imgs/Corte/Low Taper/Relacionado/Low Fade White.png")',
+                        'url("C-Imgs/Corte/Low Taper/Relacionado/Mid Fade White.png")',
+                        'url("C-Imgs/Corte/Low Taper/Relacionado/Skin Fade Black.png")'
+                    ]
+                },
+                {
+                    name: "Buzz Cut",
+                    description: "Elegante, atractivo y enigmatico",
+                    mainImage: "C-Imgs/Corte/Buzz Cut/Principal/Buz cut.png",
+                    relatedImages: [
+                        'url("C-Imgs/Corte/Buzz Cut/Relacionados/Burr Cut.png")',
+                        'url("C-Imgs/Corte/Buzz Cut/Relacionados/Butch Cut.png")',
+                        'url("C-Imgs/Corte/Buzz Cut/Relacionados/High And Tight.png")',
+                        'url("C-Imgs/Corte/Buzz Cut/Relacionados/Induction Cut.png")'
+                    ]
+                }
+            ];
+
+            class CutsCarousel {
+                constructor(containerId) {
+                    this.carouselContainer = document.getElementById(containerId);
+                    if (!this.carouselContainer) return;
+
+                    this.carouselTrack = document.createElement('div');
+                    this.carouselTrack.className = 'carousel-track';
+                    this.carouselContainer.appendChild(this.carouselTrack);
+
+                    this.cuts = cutsData;
+                    this.slideCount = this.cuts.length;
+                    if (this.slideCount === 0) return;
+
+                    this.cutNameLabel = document.getElementById('cut-name-label');
+                    this.cutDescriptionLabel = document.getElementById('cut-description-label');
+                    this.relatedButtons = document.querySelectorAll('.cort-cont-btns button');
+
+                    this.currentIndex = 1;
+                    this.intervalId = null;
+                    this.isDragging = false;
+                    this.startX = 0;
+                    this.currentTranslate = 0;
+                    this.prevTranslate = 0;
+                    this.animationID = 0;
+                    this.containerWidth = this.carouselContainer.getBoundingClientRect().width;
+                    this.isTransitioning = false;
+
+                    this.createSlides();
+                    this.createDots();
+                    this.updateContent();
+                    this.resizeCarousel();
+                    this.resetInterval();
+                    this.setupEventListeners();
+                }
+
+                createSlides() {
+                    const slideElements = this.cuts.map(cut => {
+                        const slide = document.createElement('div');
+                        slide.className = 'slide';
+                        slide.innerHTML = `<img src="${cut.mainImage}" alt="${cut.name}">`;
+                        return slide;
+                    });
+
+                    const firstClone = slideElements[0].cloneNode(true);
+                    const lastClone = slideElements[this.slideCount - 1].cloneNode(true);
+
+                    this.carouselTrack.appendChild(lastClone);
+                    slideElements.forEach(slide => this.carouselTrack.appendChild(slide));
+                    this.carouselTrack.appendChild(firstClone);
+                }
+
+                createDots() {
+                    const dotsContainer = document.createElement('div');
+                    dotsContainer.className = 'carousel-dots';
+                    this.carouselContainer.parentElement.appendChild(dotsContainer);
+
+                    this.cuts.forEach((_, index) => {
+                        const dot = document.createElement('span');
+                        dot.classList.add('dot');
+                        dot.addEventListener('click', () => this.goToSlide(index + 1));
+                        dotsContainer.appendChild(dot);
+                    });
+                }
+
+                updateContent() {
+                    let logicalIndex = this.currentIndex - 1;
+                    if (this.currentIndex === 0) {
+                        logicalIndex = this.slideCount - 1;
+                    } else if (this.currentIndex === this.slideCount + 1) {
+                        logicalIndex = 0;
+                    }
+
+                    const currentCut = this.cuts[logicalIndex];
+                    if (!currentCut) return;
+
+                    if (this.cutNameLabel.textContent.trim() !== currentCut.name) {
+                        this.cutNameLabel.style.opacity = 0;
+                        this.cutDescriptionLabel.style.opacity = 0;
+                        setTimeout(() => {
+                            this.cutNameLabel.textContent = currentCut.name;
+                            this.cutDescriptionLabel.textContent = currentCut.description;
+                            this.cutNameLabel.style.opacity = 1;
+                            this.cutDescriptionLabel.style.opacity = 1;
+                        }, 300);
+                    }
+
+                    this.relatedButtons.forEach((button, i) => {
+                        if (currentCut.relatedImages[i]) {
+                            button.style.backgroundImage = currentCut.relatedImages[i];
+                        } else {
+                            button.style.backgroundImage = 'none';
+                        }
+                    });
+
+                    const dots = this.carouselContainer.parentElement.querySelectorAll('.dot');
+                    dots.forEach((dot, index) => {
+                        dot.classList.toggle('active', index === logicalIndex);
+                    });
+                }
+
+                goToSlide(index) {
+                    if (this.isTransitioning) return;
+
+                    if (!this.isDragging && index === this.currentIndex) {
+                        this.carouselTrack.style.transition = 'transform 0.5s ease-out';
+                        this.setPositionByIndex();
+                        return;
+                    }
+
+                    this.isTransitioning = true;
+                    this.carouselTrack.style.transition = 'transform 0.5s ease-out';
+                    this.currentIndex = index;
+                    this.setPositionByIndex();
+                    this.updateContent();
+                    this.resetInterval();
+
+                    setTimeout(() => {
+                        const atLastClone = this.currentIndex === this.slideCount + 1;
+                        const atFirstClone = this.currentIndex === 0;
+
+                        if (atLastClone || atFirstClone) {
+                            this.carouselTrack.style.transition = 'none';
+                            this.currentIndex = atLastClone ? 1 : this.slideCount;
+                            this.setPositionByIndex();
+                        }
+                        this.isTransitioning = false;
+                    }, 500);
+                }
+
+                nextSlide() {
+                    this.goToSlide(this.currentIndex + 1);
+                }
+
+                resetInterval() {
+                    clearInterval(this.intervalId);
+                    this.intervalId = setInterval(() => this.nextSlide(), 5000);
+                }
+
+                resizeCarousel() {
+                    this.containerWidth = this.carouselContainer.getBoundingClientRect().width;
+                    this.carouselTrack.style.transition = 'none';
+                    const allSlides = this.carouselTrack.querySelectorAll('.slide');
+                    this.carouselTrack.style.width = `${allSlides.length * this.containerWidth}px`;
+                    allSlides.forEach(slide => {
+                        slide.style.width = `${this.containerWidth}px`;
+                    });
+                    this.setPositionByIndex();
+                }
+
+                setupEventListeners() {
+                    window.addEventListener('resize', () => this.resizeCarousel());
+                    this.carouselContainer.addEventListener('mousedown', (e) => this.dragStart(e));
+                    this.carouselContainer.addEventListener('touchstart', (e) => this.dragStart(e));
+
+                    window.addEventListener('mousemove', (e) => this.dragMove(e));
+                    window.addEventListener('touchmove', (e) => this.dragMove(e));
+
+                    window.addEventListener('mouseup', () => this.dragEnd());
+                    window.addEventListener('touchend', () => this.dragEnd());
+                }
+
+                dragStart(event) {
+                    if (this.isTransitioning) return;
+                    this.isDragging = true;
+                    this.startX = this.getPositionX(event);
+                    this.animationID = requestAnimationFrame(() => this.animation());
+                    this.carouselTrack.style.transition = 'none';
+                    this.carouselContainer.classList.add('grabbing');
+                }
+
+                dragMove(event) {
+                    if (this.isDragging) {
+                        const currentPosition = this.getPositionX(event);
+                        this.currentTranslate = this.prevTranslate + currentPosition - this.startX;
+                    }
+                }
+
+                dragEnd() {
+                    if (!this.isDragging) return;
+                    this.isDragging = false;
+                    cancelAnimationFrame(this.animationID);
+                    this.carouselContainer.classList.remove('grabbing');
+
+                    const movedBy = this.currentTranslate - this.prevTranslate;
+                    if (movedBy < -50) {
+                        this.goToSlide(this.currentIndex + 1);
+                    } else if (movedBy > 50) {
+                        this.goToSlide(this.currentIndex - 1);
+                    } else {
+                        this.goToSlide(this.currentIndex);
+                    }
+                }
+
+                getPositionX(event) {
+                    return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+                }
+
+                animation() {
+                    if (this.isDragging) {
+                        this.setSliderPosition();
+                        requestAnimationFrame(() => this.animation());
+                    }
+                }
+
+                setSliderPosition() {
+                    this.carouselTrack.style.transform = `translateX(${this.currentTranslate}px)`;
+                }
+
+                setPositionByIndex() {
+                    this.currentTranslate = this.currentIndex * -this.containerWidth;
+                    this.prevTranslate = this.currentTranslate;
+                    this.carouselTrack.style.transform = `translateX(${this.currentTranslate}px)`;
+                }
+            }
+
+            new CutsCarousel('cuts-carousel-container');
+        });
+    </script>
+</body>
+
+</html>

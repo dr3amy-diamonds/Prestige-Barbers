@@ -79,19 +79,42 @@
         </div>
 
         <div class="barb-cont">
-            <div class="barb-cont-inf-img">
-                <h2>Barbas</h2>
-                <Label>Atrevete a cambiar de estilo</Label>
-                <h3>The Fade Beard</h2>
-                <a href="">Reserva Ahora</a>
+            <div class="barb-cont-inf-img" id="beard-info" style="position: relative; background-size: cover; background-position: center; background-repeat: no-repeat;">
+                <!-- Slider de barbas (imagen principal) -->
+                <div class="cort-cont-img" id="beard-carousel-container"></div>
+
+                <!-- Texto existente (se mantiene tal cual, sólo se añade z-index para estar sobre el slider) -->
+                <h2 style="position: relative; z-index: 2;">Barbas</h2>
+                <Label style="position: relative; z-index: 2;">Atrevete a cambiar de estilo</Label>
+                <h3 style="position: relative; z-index: 2;">The Fade Beard</h3>
+                <a href="" style="position: relative; z-index: 2;">Reserva Ahora</a>
             </div>
-            <div class="barb-cont-img">
-                <button id="btn-barba-1"></button>
-                <button id="btn-barba-2"></button>
-                <button id="btn-barba-3"></button>
-                <button id="btn-barba-4"></button>
-            </div>
-        </div>
+                    <div class="barb-cont-img" id="beard-related">
+                        <button id="btn-barba-1">
+                            <div class="cort-cont-btns-info">
+                                <h3></h3>
+                                <p>15.000 COP</p>
+                            </div>
+                        </button>
+                        <button id="btn-barba-2">
+                            <div class="cort-cont-btns-info">
+                                <h3></h3>
+                                <p>15.000 COP</p>
+                            </div>
+                        </button>
+                        <button id="btn-barba-3">
+                            <div class="cort-cont-btns-info">
+                                <h3></h3>
+                                <p>15.000 COP</p>
+                            </div>
+                        </button>
+                        <button id="btn-barba-4">
+                            <div class="cort-cont-btns-info">
+                                <h3></h3>
+                                <p>15.000 COP</p>
+                            </div>
+                        </button>
+                    </div>        </div>
 
     </main>
     <script src="../js/sticky-header.js"></script>
@@ -360,6 +383,294 @@
                 button.addEventListener('mouseleave', () => {
                     carouselContainer.classList.remove('carousel-paused');
                 });
+            });
+
+            // ===== Slider de Barbas (similar a CutsCarousel) =====
+            const beardsData = [
+                {
+                    name: 'The Fade Beard',
+                    description: 'Atrevete a cambiar de estilo',
+                    mainImage: 'C-Imgs/Barba/Fade_Barb/Principal/Fade Bear Black.png',
+                    relatedImages: [
+                        { name: 'Anchor Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/Anchor bread black.png")' },
+                        { name: 'Balbo Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/balbo barba iron man.png")' },
+                        { name: 'The Viking Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/The Viking Beard.png")' },
+                        { name: 'Van Dyke Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/van dyke beard.png")' }
+                    ]
+                },
+                {
+                    name: 'Goatee',
+                    description: 'Elegante y seguro',
+                    mainImage: 'C-Imgs/Barba/Goatee/Principal/Goatee.png',
+                    relatedImages: [
+                        { name: 'Anchor Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Anchor Goatee.png")' },
+                        { name: 'Circle Beard', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Circle Beard.png")' },
+                        { name: 'Classic Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Clasic Goatee.png")' },
+                        { name: 'Full Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Full Goatee.png")' }
+                    ]
+                }
+            ];
+
+            class BeardCarousel {
+                constructor(containerId) {
+                    this.carouselContainer = document.getElementById(containerId);
+                    if (!this.carouselContainer) return;
+
+                    // Contenedor base, sin slides internos (usamos fondo por capas)
+                    this.carouselTrack = null;
+
+                    this.beards = beardsData;
+                    this.slideCount = this.beards.length;
+                    if (this.slideCount === 0) return;
+
+                    // Etiquetas de texto ya existen en el layout; sólo las animamos como en cortes
+                    this.titleEl = document.querySelector('.barb-cont-inf-img h3');
+                    this.subtitleEl = document.querySelector('.barb-cont-inf-img label, .barb-cont-inf-img Label');
+                    // Escenario de fondo deslizante (tres capas: prev, curr, next)
+                    this.bgContainer = document.getElementById('beard-info');
+                    this.bgStage = document.createElement('div');
+                    this.bgStage.className = 'beard-bg-stage';
+                    this.layerPrev = document.createElement('div');
+                    this.layerPrev.className = 'beard-bg-layer layer-prev';
+                    this.layerCurr = document.createElement('div');
+                    this.layerCurr.className = 'beard-bg-layer layer-curr';
+                    this.layerNext = document.createElement('div');
+                    this.layerNext.className = 'beard-bg-layer layer-next';
+                    this.bgStage.appendChild(this.layerPrev);
+                    this.bgStage.appendChild(this.layerCurr);
+                    this.bgStage.appendChild(this.layerNext);
+                    this.bgContainer.insertBefore(this.bgStage, this.bgContainer.firstChild);
+
+                    // Botones relacionados (lado derecho)
+                    this.relatedButtons = document.querySelectorAll('#beard-related button');
+
+                    this.currentIndex = 1;
+                    this.intervalId = null;
+                    this.isDragging = false;
+                    this.startX = 0;
+                    this.currentTranslate = 0;
+                    this.prevTranslate = 0;
+                    this.animationID = 0;
+                    this.containerWidth = this.carouselContainer.getBoundingClientRect().width;
+                    this.isTransitioning = false;
+
+                    this.createSlides();
+                    this.createDots();
+                    // Fondo/UI inicial
+                    this.setTripleBackgroundImmediate();
+                    this.updateUI(this.currentIndex - 1);
+                    this.resizeCarousel();
+                    this.resetInterval();
+                    this.setupEventListeners();
+                }
+
+                createSlides() { /* no-op: fondo por capas, sin slides */ }
+
+                createDots() {
+                    const dotsContainer = document.createElement('div');
+                    dotsContainer.className = 'carousel-dots';
+                    this.carouselContainer.parentElement.appendChild(dotsContainer);
+
+                    this.beards.forEach((_, index) => {
+                        const dot = document.createElement('span');
+                        dot.classList.add('dot');
+                        dot.addEventListener('click', () => this.goToSlide(index + 1));
+                        dotsContainer.appendChild(dot);
+                    });
+                }
+
+                updateUI(logicalIndex) {
+                    const current = this.beards[logicalIndex];
+                    if (!current) return;
+
+                    if (this.titleEl && this.titleEl.textContent.trim() !== current.name) {
+                        this.titleEl.style.opacity = 0;
+                        if (this.subtitleEl) this.subtitleEl.style.opacity = 0;
+                        setTimeout(() => {
+                            this.titleEl.textContent = current.name;
+                            if (this.subtitleEl) {
+                                this.subtitleEl.textContent = current.description || '';
+                                this.subtitleEl.style.opacity = 1;
+                            }
+                            this.titleEl.style.opacity = 1;
+                        }, 300);
+                    } else if (this.subtitleEl) {
+                        this.subtitleEl.textContent = current.description || '';
+                    }
+
+                    this.relatedButtons.forEach((button, i) => {
+                        const infoBox = button.querySelector('.cort-cont-btns-info h3');
+                        if (current.relatedImages[i]) {
+                            button.style.backgroundImage = current.relatedImages[i].url;
+                            if (infoBox) infoBox.textContent = current.relatedImages[i].name;
+                        } else {
+                            button.style.backgroundImage = 'none';
+                            if (infoBox) infoBox.textContent = '';
+                        }
+                    });
+
+                    const dots = this.carouselContainer.parentElement.querySelectorAll('.dot');
+                    dots.forEach((dot, index) => {
+                        dot.classList.toggle('active', index === logicalIndex);
+                    });
+                }
+
+                setTripleBackgroundImmediate() {
+                    const n = this.slideCount;
+                    const w = this.containerWidth;
+                    const curr = (this.currentIndex - 1 + n) % n;
+                    const prev = (curr - 1 + n) % n;
+                    const next = (curr + 1) % n;
+                    this.layerPrev.style.transition = 'none';
+                    this.layerCurr.style.transition = 'none';
+                    this.layerNext.style.transition = 'none';
+                    this.layerPrev.style.backgroundImage = `url("${this.beards[prev].mainImage}")`;
+                    this.layerCurr.style.backgroundImage = `url("${this.beards[curr].mainImage}")`;
+                    this.layerNext.style.backgroundImage = `url("${this.beards[next].mainImage}")`;
+                    this.layerPrev.style.transform = `translateX(${-w}px)`;
+                    this.layerCurr.style.transform = `translateX(0px)`;
+                    this.layerNext.style.transform = `translateX(${w}px)`;
+                }
+
+                animateToNext() {
+                    if (this.isTransitioning) return;
+                    this.isTransitioning = true;
+                    const w = this.containerWidth;
+                    this.layerPrev.style.transition = 'transform 0.5s ease-out';
+                    this.layerCurr.style.transition = 'transform 0.5s ease-out';
+                    this.layerNext.style.transition = 'transform 0.5s ease-out';
+                    this.layerPrev.style.transform = `translateX(${-2 * w}px)`;
+                    this.layerCurr.style.transform = `translateX(${-w}px)`;
+                    this.layerNext.style.transform = `translateX(0px)`;
+                    setTimeout(() => {
+                        this.currentIndex = (this.currentIndex % this.slideCount) + 1;
+                        this.setTripleBackgroundImmediate();
+                        this.updateUI(this.currentIndex - 1);
+                        this.isTransitioning = false;
+                    }, 500);
+                }
+
+                animateToPrev() {
+                    if (this.isTransitioning) return;
+                    this.isTransitioning = true;
+                    const w = this.containerWidth;
+                    this.layerPrev.style.transition = 'transform 0.5s ease-out';
+                    this.layerCurr.style.transition = 'transform 0.5s ease-out';
+                    this.layerNext.style.transition = 'transform 0.5s ease-out';
+                    this.layerPrev.style.transform = `translateX(0px)`;
+                    this.layerCurr.style.transform = `translateX(${w}px)`;
+                    this.layerNext.style.transform = `translateX(${2 * w}px)`;
+                    setTimeout(() => {
+                        this.currentIndex = (this.currentIndex - 2 + this.slideCount) % this.slideCount + 1;
+                        this.setTripleBackgroundImmediate();
+                        this.updateUI(this.currentIndex - 1);
+                        this.isTransitioning = false;
+                    }, 500);
+                }
+
+                goToSlide(index) {
+                    if (this.isTransitioning) return;
+                    const n = this.slideCount;
+                    const currLogical = (this.currentIndex - 1 + n) % n;
+                    const targetLogical = (index - 1 + n) % n;
+                    if (targetLogical === currLogical) return;
+                    this.resetInterval();
+
+                    // Para 2 slides, la dirección es simplemente si el índice de destino es mayor.
+                    // Para más de 2, la lógica original es para ir al slide adyacente.
+                    // Esta corrección soluciona el problema para 2 slides, que es el caso actual.
+                    const forward = n === 2 ? targetLogical > currLogical : targetLogical === (currLogical + 1) % n;
+
+                    if (forward) {
+                        this.animateToNext();
+                    } else {
+                        this.animateToPrev();
+                    }
+                }
+
+                nextSlide() {
+                    if (this.carouselContainer.classList.contains('carousel-paused')) return;
+                    this.animateToNext();
+                }
+
+                resetInterval() {
+                    clearInterval(this.intervalId);
+                    this.intervalId = setInterval(() => this.nextSlide(), 5000);
+                }
+
+                resizeCarousel() {
+                    this.containerWidth = this.carouselContainer.getBoundingClientRect().width;
+                }
+
+                setupEventListeners() {
+                    window.addEventListener('resize', () => this.resizeCarousel());
+                    this.carouselContainer.addEventListener('mousedown', (e) => this.dragStart(e));
+                    this.carouselContainer.addEventListener('touchstart', (e) => this.dragStart(e));
+                    window.addEventListener('mousemove', (e) => this.dragMove(e));
+                    window.addEventListener('touchmove', (e) => this.dragMove(e));
+                    window.addEventListener('mouseup', () => this.dragEnd());
+                    window.addEventListener('touchend', () => this.dragEnd());
+                }
+
+                dragStart(event) {
+                    if (this.carouselContainer.classList.contains('carousel-paused')) return;
+                    if (this.isTransitioning) return;
+                    this.isDragging = true;
+                    this.startX = this.getPositionX(event);
+                    this.dragDelta = 0;
+                    // Quitar transiciones para seguimiento del dedo
+                    this.layerPrev.style.transition = 'none';
+                    this.layerCurr.style.transition = 'none';
+                    this.layerNext.style.transition = 'none';
+                    this.carouselContainer.classList.add('grabbing');
+                }
+                dragMove(event) {
+                    if (!this.isDragging) return;
+                    const currentX = this.getPositionX(event);
+                    this.dragDelta = currentX - this.startX; // + derecha, - izquierda
+                    const w = this.containerWidth;
+                    this.layerPrev.style.transform = `translateX(${ -w + this.dragDelta }px)`;
+                    this.layerCurr.style.transform = `translateX(${ 0 + this.dragDelta }px)`;
+                    this.layerNext.style.transform = `translateX(${ w + this.dragDelta }px)`;
+                }
+                dragEnd() {
+                    if (!this.isDragging) return;
+                    this.isDragging = false;
+                    this.carouselContainer.classList.remove('grabbing');
+
+                    const threshold = Math.min(120, this.containerWidth * 0.15);
+                    // Restaurar transiciones para completar o revertir
+                    this.layerPrev.style.transition = 'transform 0.5s ease-out';
+                    this.layerCurr.style.transition = 'transform 0.5s ease-out';
+                    this.layerNext.style.transition = 'transform 0.5s ease-out';
+
+                    if (this.dragDelta < -threshold) {
+                        this.animateToNext();
+                    } else if (this.dragDelta > threshold) {
+                        this.animateToPrev();
+                    } else {
+                        const w = this.containerWidth;
+                        this.layerPrev.style.transform = `translateX(${-w}px)`;
+                        this.layerCurr.style.transform = `translateX(0px)`;
+                        this.layerNext.style.transform = `translateX(${w}px)`;
+                    }
+
+                    // Limpiar estado
+                    this.dragDelta = 0;
+                }
+                getPositionX(event) {
+                    return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+                }
+            }
+
+            const beardCarousel = new BeardCarousel('beard-carousel-container');
+
+            // Pausar autoplay al interactuar con los relacionados de barbas
+            const beardButtons = document.querySelectorAll('#beard-related button');
+            const beardContainer = document.getElementById('beard-carousel-container');
+            beardButtons.forEach(button => {
+                button.addEventListener('mouseenter', () => beardContainer.classList.add('carousel-paused'));
+                button.addEventListener('mouseleave', () => beardContainer.classList.remove('carousel-paused'));
             });
         });
     </script>

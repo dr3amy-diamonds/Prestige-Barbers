@@ -312,10 +312,35 @@ header:stuck .head-lkn-cont {
     align-items: flex-start;
     justify-content: flex-end;
     gap: 10px;
-    background: url(../C-Imgs/Barba/Fade\ Bear\ Black.png);
     background-size: cover;
     background-position: center
 }
+
+/* Ajuste específico del contenedor del slider de barbas para ocupar todo el alto sin desplazamiento */
+#beard-info .cort-cont-img {
+    top: 0; /* sobrescribe el 5% del slider general */
+}
+
+/* Escenario y capas de fondo deslizante para barbas */
+#beard-info .beard-bg-stage {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 1; /* debajo del texto (z-index: 2) y encima del fondo blanco */
+}
+#beard-info .beard-bg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform 0.5s ease-in-out;
+}
+#beard-info .beard-bg-layer.layer-a { transform: translateX(0); }
+#beard-info .beard-bg-layer.layer-b { transform: translateX(100%); }
 
 .barb-cont-inf-img h2 {
     font-size: 1rem;
@@ -332,6 +357,7 @@ header:stuck .head-lkn-cont {
     margin: 0;
     font-size: 0.9em;
     text-transform: uppercase;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .barb-cont-inf-img h3 {
@@ -342,6 +368,7 @@ header:stuck .head-lkn-cont {
     text-transform: uppercase;
     width: 45%;
     margin: 0;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .barb-cont-inf-img a {
@@ -352,6 +379,36 @@ header:stuck .head-lkn-cont {
     font-weight: 600;
     text-decoration: underline solid 1px;
     text-transform: uppercase;
+}
+
+/* Dots del slider dentro de la sección de barbas */
+.barb-cont-inf-img .carousel-dots {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 3;
+}
+.barb-cont-inf-img .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #000;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.barb-cont-inf-img .dot.active {
+    background: #1B1B1B;
+    opacity: 0.5;
+}
+
+/* El slider de barbas ahora pinta el background del contenedor; ocultamos las imágenes internas */
+.barb-cont-inf-img .slide img {
+    width: 100%;
+    height: 100%;
+    visibility: hidden; /* evita parpadeos/doble imagen; el background es la fuente real */
 }
 
 
@@ -369,17 +426,25 @@ header:stuck .head-lkn-cont {
     background-size: cover;
     background-position: center;
     border: none;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background-image 0.5s ease-in-out;
+}
+
+.barb-cont-img button:hover .cort-cont-btns-info {
+    opacity: 1;
 }
 
 #btn-barba-1 {
-    background-image: url('../C-Imgs/Barba/Anchor bread black.png');
+    background-image: url('../C-Imgs/Barba/Fade_Barb/Relacionados/Anchor\ bread\ black.png');
 }
 #btn-barba-2 {
-    background-image: url('../C-Imgs/Barba/balbo barba iron man.png');
+    background-image: url('../C-Imgs/Barba/Fade_Barb/Relacionados/balbo\ barba\ iron\ man.png');
 }
 #btn-barba-3 {
-    background-image: url('../C-Imgs/Barba/van dyke beard.png');
+    background-image: url('../C-Imgs/Barba/Fade_Barb/Relacionados/The\ Viking\ Beard.png');
 }
 #btn-barba-4 {
-    background-image: url('../C-Imgs/Barba/The Viking Beard.png');
+    background-image: url('../C-Imgs/Barba/Fade_Barb/Relacionados/van\ dyke\ beard.png');
 }

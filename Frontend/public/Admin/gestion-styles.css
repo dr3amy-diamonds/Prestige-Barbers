@@ -1,0 +1,150 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* Light grey background */
+    color: #333; /* Darker text for readability */
+    margin: 0;
+    padding: 20px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    color: #000; /* Black title */
+    font-size: 2.5em;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.back-link {
+    text-decoration: none;
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.back-link:hover {
+    background-color: #5a6268;
+}
+
+.management-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    background-color: #fff; /* White card background */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.card-header h2 {
+    color: #000; /* Black card titles */
+    margin: 0 0 10px 0;
+}
+
+.card-header p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.card-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Shared form styles */
+.card-body h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.card-body select,
+.card-body textarea,
+.card-body input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
+
+.card-body button {
+    background-color: #28a745; /* Green accent */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    align-self: flex-start;
+    transition: background-color 0.3s;
+}
+
+.card-body button:hover {
+    background-color: #218838; /* Darker green */
+}
+
+/* Specific styles for previous cards */
+.principal-cut-container {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+}
+
+.principal-cut-container img {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    float: left;
+    margin-right: 15px;
+}
+
+.relations-form .selectors-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.relations-form button {
+    align-self: flex-end;
+}
+
+/* Styles for new forms */
+.description-form, .featured-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.image-preview {
+    max-width: 100px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 5px;
+}

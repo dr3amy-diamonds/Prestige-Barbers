@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+        .form-container {
+            flex: 1;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .tables-container {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .filter-container {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .table-wrapper {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .preview-container img {
+            max-width: 100px;
+            max-height: 100px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+        .action-buttons button {
+            margin-right: 5px;
+            padding: 5px 10px;
+        }
+        .action-buttons .edit-btn { background-color: #007bff; }
+        .action-buttons .delete-btn { background-color: #dc3545; }
+        .action-buttons .config-btn { background-color: #ffc107; }
+
+        /* Modal Styles */
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
+        .modal-content { background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 8px; }
+        .close-button { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
+        .close-button:hover, .close-button:focus { color: black; text-decoration: none; cursor: pointer; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+        <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+        <h1>Panel de Administración</h1>
+        <a href="gestion.html" style="text-decoration: none; background-color: #007bff; color: white; padding: 10px 15px; border-radius: 4px; font-size: 16px;">Gestionar Relaciones</a>
+    </div>
+
+    <div class="main-container">
+        <div class="form-container">
+            <h2>Registrar Nuevo Item</h2>
+            <form id="itemForm">
+                <label for="itemType">Tipo:</label>
+                <select id="itemType" required>
+                    <option value="corte">Corte de Pelo</option>
+                    <option value="barba">Barba</option>
+                </select>
+
+                <label for="itemRol">Rol:</label>
+                <select id="itemRol" required>
+                    <option value="Principal">Principal</option>
+                    <option value="Relacionado">Relacionado</option>
+                </select>
+
+                <label for="itemName">Nombre:</label>
+                <input type="text" id="itemName" required>
+
+                <label for="itemDescription">Descripción:</label>
+                <textarea id="itemDescription" rows="3" required></textarea>
+
+                <label for="itemPrice">Precio:</label>
+                <input type="number" id="itemPrice" step="0.01" required>
+
+                <label for="itemImage">Imagen:</label>
+                <input type="file" id="itemImage" accept="image/*">
+
+                <div class="preview-container">
+                    <p>Previsualización de la imagen:</p>
+                    <img id="imagePreview" src="#" alt="Previsualización">
+                </div>
+
+                <button type="submit">Guardar</button>
+            </form>
+        </div>
+
+        <div class="tables-container">
+            <div class="filter-container">
+                <label><input type="radio" name="tableFilter" value="cortes" checked> Mostrar Cortes</label>
+                <label><input type="radio" name="tableFilter" value="barbas"> Mostrar Barbas</label>
+            </div>
+
+            <div id="cortesTable" class="table-wrapper">
+                <h2>Tabla de Cortes</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Rol</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Imagen</th>
+                            <th>Destacado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cortesTableBody">
+                        <!-- Cortes pre-cargados -->
+                        <tr>
+                            <td>1</td>
+                            <td>Buzz Cut</td>
+                            <td>Principal</td>
+                            <td>Corte clásico y corto.</td>
+                            <td>12.00</td>
+                            <td><img src="../Cortes/C-Imgs/Corte/Buzz Cut/Principal/Buz cut.png" alt="Buz cut" style="width: 50px; height: 50px;"></td>
+                            <td>Sí</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Burr Cut</td>
+                            <td>Relacionado</td>
+                            <td>Variación del Buzz Cut.</td>
+                            <td>12.00</td>
+                            <td><img src="../Cortes/C-Imgs/Corte/Buzz Cut/Relacionados/Burr Cut.png" alt="Burr Cut" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Butch Cut</td>
+                            <td>Relacionado</td>
+                            <td>Variación del Buzz Cut.</td>
+                            <td>12.00</td>
+                            <td><img src="../Cortes/C-Imgs/Corte/Buzz Cut/Relacionados/Butch Cut.png" alt="Butch Cut" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>High And Tight</td>
+                            <td>Relacionado</td>
+                            <td>Corte de estilo militar.</td>
+                            <td>15.00</td>
+                            <td><img src="../Cortes/C-Imgs/Corte/Buzz Cut/Relacionados/High And Tight.png" alt="High And Tight" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Induction Cut</td>
+                            <td>Relacionado</td>
+                            <td>El más corto de los Buzz.</td>
+                            <td>10.00</td>
+                            <td><img src="../Cortes/C-Imgs/Corte/Buzz Cut/Relacionados/Induction Cut.png" alt="Induction Cut" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Low Taper Fade</td>
+                            <td>Principal</td>
+                            <td>Moderno y popular.</td>
+                            <td>18.00</td>
+                            <td><img src="../Cortes/C-Imgs/Corte/Low Taper/Principal/Low Taper Fade Black.png" alt="Low Taper Fade" style="width: 50px; height: 50px;"></td>
+                            <td>Sí</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Burst Fade</td>
+                            <td>Relacionado</td>
+                            <td>Fade en forma de ráfaga.</td>
+                            <td>18.00</td>
+                            <td><img src="../Cortes/C-Imgs/Corte/Low Taper/Relacionado/Burst Fade White.png" alt="Burst Fade" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                         <tr>
+                            <td>8</td>
+                            <td>Low Fade</td>
+                            <td>Relacionado</td>
+                            <td>Fade bajo.</td>
+                            <td>16.00</td>
+                            <td><img src="../Cortes/C-Imgs/Corte/Low Taper/Relacionado/Low Fade White.png" alt="Low Fade" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Mid Fade</td>
+                            <td>Relacionado</td>
+                            <td>Fade a media altura.</td>
+                            <td>16.00</td>
+                            <td><img src="../Cortes/C-Imgs/Corte/Low Taper/Relacionado/Mid Fade White.png" alt="Mid Fade" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Skin Fade</td>
+                            <td>Relacionado</td>
+                            <td>Fade hasta la piel.</td>
+                            <td>20.00</td>
+                            <td><img src="../Cortes/C-Imgs/Corte/Low Taper/Relacionado/Skin Fade Black.png" alt="Skin Fade" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="barbasTable" class="table-wrapper hidden">
+                <h2>Tabla de Barbas</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Rol</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Imagen</th>
+                            <th>Destacado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="barbasTableBody">
+                        <!-- Barbas pre-cargadas -->
+                        <tr>
+                            <td>11</td>
+                            <td>Fade Bear</td>
+                            <td>Principal</td>
+                            <td>Barba con degradado.</td>
+                            <td>10.00</td>
+                            <td><img src="../Cortes/C-Imgs/Barba/Fade_Barb/Principal/Fade Bear Black.png" alt="Fade Bear" style="width: 50px; height: 50px;"></td>
+                            <td>Sí</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>Anchor Beard</td>
+                            <td>Relacionado</td>
+                            <td>Estilo de ancla.</td>
+                            <td>12.00</td>
+                            <td><img src="../Cortes/C-Imgs/Barba/Fade_Barb/Relacionados/Anchor bread black.png" alt="Anchor Beard" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>Balbo Beard</td>
+                            <td>Relacionado</td>
+                            <td>Famosa por Iron Man.</td>
+                            <td>15.00</td>
+                            <td><img src="../Cortes/C-Imgs/Barba/Fade_Barb/Relacionados/balbo barba iron man.png" alt="Balbo Beard" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>The Viking Beard</td>
+                            <td>Relacionado</td>
+                            <td>Larga y robusta.</td>
+                            <td>14.00</td>
+                            <td><img src="../Cortes/C-Imgs/Barba/Fade_Barb/Relacionados/The Viking Beard.png" alt="The Viking Beard" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>Van Dyke Beard</td>
+                            <td>Relacionado</td>
+                            <td>Perilla y bigote.</td>
+                            <td>12.00</td>
+                            <td><img src="../Cortes/C-Imgs/Barba/Fade_Barb/Relacionados/van dyke beard.png" alt="Van Dyke Beard" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td>Goatee</td>
+                            <td>Principal</td>
+                            <td>Estilo perilla clásico.</td>
+                            <td>8.00</td>
+                            <td><img src="../Cortes/C-Imgs/Barba/Goatee/Principal/Goatee.png" alt="Goatee" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>17</td>
+                            <td>Anchor Goatee</td>
+                            <td>Relacionado</td>
+                            <td>Perilla en forma de ancla.</td>
+                            <td>9.00</td>
+                            <td><img src="../Cortes/C-Imgs/Barba/Goatee/Relacionados/Anchor Goatee.png" alt="Anchor Goatee" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>18</td>
+                            <td>Circle Beard</td>
+                            <td>Relacionado</td>
+                            <td>Perilla circular.</td>
+                            <td>10.00</td>
+                            <td><img src="../Cortes/C-Imgs/Barba/Goatee/Relacionados/Circle Beard.png" alt="Circle Beard" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>19</td>
+                            <td>Clasic Goatee</td>
+                            <td>Relacionado</td>
+                            <td>La perilla clásica.</td>
+                            <td>8.00</td>
+                            <td><img src="../Cortes/C-Imgs/Barba/Goatee/Relacionados/Clasic Goatee.png" alt="Clasic Goatee" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td>Full Goatee</td>
+                            <td>Relacionado</td>
+                            <td>Perilla completa.</td>
+                            <td>10.00</td>
+                            <td><img src="../Cortes/C-Imgs/Barba/Goatee/Relacionados/Full Goatee.png" alt="Full Goatee" style="width: 50px; height: 50px;"></td>
+                            <td>No</td>
+                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Modal -->
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Configurar Item</h2>
+            <form id="configForm">
+                <label><input type="radio" name="configOption" value="destacado" checked> Agregar a Destacado</label>
+                <label><input type="radio" name="configOption" value="principal"> Designar como Principal</label>
+                <div id="destacadoOptions">
+                    <label for="destacadoImage">Subir Imagen:</label>
+                    <input type="file" id="destacadoImage" accept="image/*">
+                    <div class="preview-container"><p>Previsualización:</p><img id="destacadoImagePreview" src="#" alt="Previsualización"></div>
+                    <label for="destacadoDescription">Descripción Corta:</label>
+                    <textarea id="destacadoDescription" rows="2"></textarea>
+                </div>
+                <div id="principalOptions" class="hidden">
+                    <label for="principalDescription">Descripción:</label>
+                    <textarea id="principalDescription" rows="4"></textarea>
+                </div>
+                <button type="submit">Guardar Configuración</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Main form elements
+        const form = document.getElementById('itemForm');
+        const imageInput = document.getElementById('itemImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const cortesTableBody = document.getElementById('cortesTableBody');
+        const barbasTableBody = document.getElementById('barbasTableBody');
+        let itemIdCounter = 21; // Start after pre-loaded items
+
+        // Modal elements
+        const modal = document.getElementById('configModal');
+        const closeModalBtn = document.querySelector('.close-button');
+        const configForm = document.getElementById('configForm');
+        const destacadoOptions = document.getElementById('destacadoOptions');
+        const principalOptions = document.getElementById('principalOptions');
+        const destacadoImageInput = document.getElementById('destacadoImage');
+        const destacadoImagePreview = document.getElementById('destacadoImagePreview');
+
+        function handleImagePreview(input, preview) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '#';
+                preview.style.display = 'none';
+            }
+        }
+
+        imageInput.addEventListener('change', () => handleImagePreview(imageInput, imagePreview));
+        destacadoImageInput.addEventListener('change', () => handleImagePreview(destacadoImageInput, destacadoImagePreview));
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const type = document.getElementById('itemType').value;
+            const rol = document.getElementById('itemRol').value;
+            const name = document.getElementById('itemName').value;
+            const description = document.getElementById('itemDescription').value;
+            const price = document.getElementById('itemPrice').value;
+            const imageSrc = imagePreview.src;
+
+            const tableBody = type === 'corte' ? cortesTableBody : barbasTableBody;
+            
+            const newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td>${itemIdCounter++}</td>
+                <td>${name}</td>
+                <td>${rol}</td>
+                <td>${description}</td>
+                <td>$${parseFloat(price).toFixed(2)}</td>
+                <td><img src="${imageSrc}" alt="${name}" style="width: 50px; height: 50px;"></td>
+                <td class="action-buttons">
+                    <button class="edit-btn">Editar</button>
+                    <button class="delete-btn">Eliminar</button>
+                    <button class="config-btn">Configurar</button>
+                </td>
+            `;
+            form.reset();
+            imagePreview.src = '#';
+            imagePreview.style.display = 'none';
+        });
+
+        function handleTableClick(event) {
+            const target = event.target;
+            if (target.classList.contains('delete-btn')) {
+                target.closest('tr').remove();
+            }
+            if (target.classList.contains('config-btn')) {
+                // Here you could pass the row data to the modal if needed
+                modal.style.display = 'block';
+            }
+        }
+
+        cortesTableBody.addEventListener('click', handleTableClick);
+        barbasTableBody.addEventListener('click', handleTableClick);
+
+        closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
+        window.addEventListener('click', (e) => {
+            if (e.target == modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        configForm.configOption.forEach(radio => {
+            radio.addEventListener('change', function() {
+                destacadoOptions.classList.toggle('hidden', this.value !== 'destacado');
+                principalOptions.classList.toggle('hidden', this.value !== 'principal');
+            });
+        });
+        
+        configForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Configuración guardada (estáticamente).');
+            modal.style.display = 'none';
+            configForm.reset();
+            destacadoOptions.classList.remove('hidden');
+            principalOptions.classList.add('hidden');
+            destacadoImagePreview.style.display = 'none';
+        });
+
+        // Filter logic
+        const tableFilters = document.querySelectorAll('input[name="tableFilter"]');
+        const cortesTable = document.getElementById('cortesTable');
+        const barbasTable = document.getElementById('barbasTable');
+
+        tableFilters.forEach(filter => {
+            filter.addEventListener('change', function() {
+                if (this.value === 'cortes') {
+                    cortesTable.classList.remove('hidden');
+                    barbasTable.classList.add('hidden');
+                } else {
+                    cortesTable.classList.add('hidden');
+                    barbasTable.classList.remove('hidden');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

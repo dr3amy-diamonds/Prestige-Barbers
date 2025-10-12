@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Gestión - Prestige Barbers</title>
+    <link rel="stylesheet" href="gestion-styles.css">
+</head>
+<body>
+
+    <header class="page-header">
+        <h1>Panel de Gestión</h1>
+        <a href="index.html" class="back-link">Volver al Inicio</a>
+    </header>
+
+    <main class="management-grid">
+        <!-- Card para Cortes de Pelo -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Relación Cortes de Pelo</h2>
+                <p>Administra los cortes de pelo principales y sus relaciones.</p>
+            </div>
+            <div class="card-body">
+                <div class="principal-cut-container">
+                    <h4>Corte Principal: Buzz Cut</h4>
+                    <img src="../Cortes/C-Imgs/Corte/Buzz Cut/Principal/Buz cut.png" alt="Buz cut">
+                    <form class="relations-form">
+                        <div class="selectors-container">
+                            <select><option value="">Relacionado 1</option><option value="2">Burr Cut</option></select>
+                            <select><option value="">Relacionado 2</option><option value="3">Butch Cut</option></select>
+                            <select><option value="">Relacionado 3</option><option value="4">High And Tight</option></select>
+                            <select><option value="">Relacionado 4</option><option value="5">Induction Cut</option></select>
+                        </div>
+                        <button type="submit">Guardar</button>
+                    </form>
+                </div>
+                <div class="principal-cut-container">
+                    <h4>Corte Principal: Low Taper Fade</h4>
+                    <img src="../Cortes/C-Imgs/Corte/Low Taper/Principal/Low Taper Fade Black.png" alt="Low Taper Fade">
+                    <form class="relations-form">
+                        <div class="selectors-container">
+                            <select><option value="">Relacionado 1</option><option value="7">Burst Fade</option></select>
+                            <select><option value="">Relacionado 2</option><option value="8">Low Fade</option></select>
+                            <select><option value="">Relacionado 3</option><option value="9">Mid Fade</option></select>
+                            <select><option value="">Relacionado 4</option><option value="10">Skin Fade</option></select>
+                        </div>
+                        <button type="submit">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card para Cortes de Barba -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Relación Cortes de Barba</h2>
+                <p>Administra los estilos de barba y sus variaciones.</p>
+            </div>
+            <div class="card-body">
+                <div class="principal-cut-container">
+                    <h4>Barba Principal: Fade Bear</h4>
+                    <img src="../Cortes/C-Imgs/Barba/Fade_Barb/Principal/Fade Bear Black.png" alt="Fade Bear">
+                    <form class="relations-form">
+                        <div class="selectors-container">
+                            <select><option value="">Relacionado 1</option><option value="2">Anchor Beard</option></select>
+                            <select><option value="">Relacionado 2</option><option value="3">Balbo Beard</option></select>
+                            <select><option value="">Relacionado 3</option><option value="4">Viking Beard</option></select>
+                            <select><option value="">Relacionado 4</option><option value="5">Van Dyke Beard</option></select>
+                        </div>
+                        <button type="submit">Guardar</button>
+                    </form>
+                </div>
+                <div class="principal-cut-container">
+                    <h4>Barba Principal: Goatee</h4>
+                    <img src="../Cortes/C-Imgs/Barba/Goatee/Principal/Goatee.png" alt="Goatee">
+                    <form class="relations-form">
+                        <div class="selectors-container">
+                            <select><option value="">Relacionado 1</option><option value="7">Anchor Goatee</option></select>
+                            <select><option value="">Relacionado 2</option><option value="8">Circle Beard</option></select>
+                            <select><option value="">Relacionado 3</option><option value="9">Clasic Goatee</option></select>
+                            <select><option value="">Relacionado 4</option><option value="10">Full Goatee</option></select>
+                        </div>
+                        <button type="submit">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card para Descripciones de Cortes Principales -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Descripciones de Cortes Principales</h2>
+                <p>Edita el texto descriptivo de cada corte principal.</p>
+            </div>
+            <div class="card-body">
+                <form class="description-form">
+                    <h4>Selecciona el corte</h4>
+                    <select id="edit-desc-select">
+                        <option value="buzz">Buzz Cut</option>
+                        <option value="low-taper">Low Taper Fade</option>
+                        <option value="fade-bear">Fade Bear (Barba)</option>
+                        <option value="goatee">Goatee (Barba)</option>
+                    </select>
+                    <h4>Descripción</h4>
+                    <textarea id="edit-desc-textarea" rows="6" placeholder="La descripción del corte aparecerá aquí..."></textarea>
+                    <button type="submit">Guardar Descripción</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Card para Cortes Destacados -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Cortes Destacados</h2>
+                <p>Administra las imágenes y descripciones de los cortes mostrados en la página principal.</p>
+            </div>
+            <div class="card-body">
+                <form class="featured-form">
+                    <h4>Selecciona el corte destacado</h4>
+                    <select id="edit-featured-select">
+                        <option value="destacado1">Destacado 1 (Buzz Cut)</option>
+                        <option value="destacado2">Destacado 2 (Low Taper Fade)</option>
+                        <option value="destacado3">Destacado 3 (Fade Bear)</option>
+                    </select>
+                    <h4>Descripción</h4>
+                    <textarea id="edit-featured-textarea" rows="4" placeholder="Descripción para la sección de destacados..."></textarea>
+                    <h4>Cambiar Imagen</h4>
+                    <input type="file" id="edit-featured-image">
+                    <img id="featured-image-preview" class="image-preview" src="#" alt="Previsualización" style="display: none;">
+                    <button type="submit">Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Script para simular la funcionalidad
+        document.querySelectorAll('.relations-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const principalCut = this.closest('.principal-cut-container').querySelector('h4').textContent;
+                alert(`Relaciones para '${principalCut}' guardadas (simulación).`);
+            });
+        });
+
+        document.querySelector('.description-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const select = document.getElementById('edit-desc-select');
+            const selectedCut = select.options[select.selectedIndex].text;
+            alert(`Descripción para '${selectedCut}' guardada (simulación).`);
+        });
+
+        document.querySelector('.featured-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const select = document.getElementById('edit-featured-select');
+            const selectedFeatured = select.options[select.selectedIndex].text;
+            alert(`Cambios para '${selectedFeatured}' guardados (simulación).`);
+        });
+
+        // Preview para la imagen de destacados
+        const featuredImageInput = document.getElementById('edit-featured-image');
+        const featuredImagePreview = document.getElementById('featured-image-preview');
+        featuredImageInput.addEventListener('change', () => {
+            const file = featuredImageInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    featuredImagePreview.src = e.target.result;
+                    featuredImagePreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+
+</body>
+</html>

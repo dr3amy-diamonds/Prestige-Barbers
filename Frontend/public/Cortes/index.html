@@ -44,10 +44,30 @@
                 </div>
             </div>
             <div class="cort-cont-btns">
-                <button></button>
-                <button></button>
-                <button></button>
-                <button></button>
+                <button>
+                    <div class="cort-cont-btns-info">
+                        <h3></h3>
+                        <p>18.900 COP</p>
+                    </div>
+                </button>
+                <button>
+                    <div class="cort-cont-btns-info">
+                        <h3></h3>
+                        <p>18.900 COP</p>
+                    </div>
+                </button>
+                <button>
+                    <div class="cort-cont-btns-info">
+                        <h3></h3>
+                        <p>18.900 COP</p>
+                    </div>
+                </button>
+                <button>
+                    <div class="cort-cont-btns-info">
+                        <h3></h3>
+                        <p>18.900 COP</p>
+                    </div>
+                </button>
             </div>
         </div>
 
@@ -84,10 +104,10 @@
                     description: "Sorprendente, Iconico e Original.",
                     mainImage: "C-Imgs/Corte/Low Taper/Principal/Low Taper Fade Black.png",
                     relatedImages: [
-                        'url("C-Imgs/Corte/Low Taper/Relacionado/Burst Fade White.png")',
-                        'url("C-Imgs/Corte/Low Taper/Relacionado/Low Fade White.png")',
-                        'url("C-Imgs/Corte/Low Taper/Relacionado/Mid Fade White.png")',
-                        'url("C-Imgs/Corte/Low Taper/Relacionado/Skin Fade Black.png")'
+                        { name: "Burst Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Burst Fade White.png")' },
+                        { name: "Low Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Low Fade White.png")' },
+                        { name: "Mid Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Mid Fade White.png")' },
+                        { name: "Skin Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Skin Fade Black.png")' }
                     ]
                 },
                 {
@@ -95,10 +115,10 @@
                     description: "Elegante, atractivo y enigmatico",
                     mainImage: "C-Imgs/Corte/Buzz Cut/Principal/Buz cut.png",
                     relatedImages: [
-                        'url("C-Imgs/Corte/Buzz Cut/Relacionados/Burr Cut.png")',
-                        'url("C-Imgs/Corte/Buzz Cut/Relacionados/Butch Cut.png")',
-                        'url("C-Imgs/Corte/Buzz Cut/Relacionados/High And Tight.png")',
-                        'url("C-Imgs/Corte/Buzz Cut/Relacionados/Induction Cut.png")'
+                        { name: "Burr Cut", url: 'url("C-Imgs/Corte/Buzz Cut/Relacionados/Burr Cut.png")' },
+                        { name: "Butch Cut", url: 'url("C-Imgs/Corte/Buzz Cut/Relacionados/Butch Cut.png")' },
+                        { name: "High And Tight", url: 'url("C-Imgs/Corte/Buzz Cut/Relacionados/High And Tight.png")' },
+                        { name: "Induction Cut", url: 'url("C-Imgs/Corte/Buzz Cut/Relacionados/Induction Cut.png")' }
                     ]
                 }
             ];
@@ -190,10 +210,17 @@
                     }
 
                     this.relatedButtons.forEach((button, i) => {
+                        const infoBox = button.querySelector('.cort-cont-btns-info h3');
                         if (currentCut.relatedImages[i]) {
-                            button.style.backgroundImage = currentCut.relatedImages[i];
+                            button.style.backgroundImage = currentCut.relatedImages[i].url;
+                            if (infoBox) {
+                                infoBox.textContent = currentCut.relatedImages[i].name;
+                            }
                         } else {
                             button.style.backgroundImage = 'none';
+                            if (infoBox) {
+                                infoBox.textContent = '';
+                            }
                         }
                     });
 
@@ -233,6 +260,7 @@
                 }
 
                 nextSlide() {
+                    if (this.carouselContainer.classList.contains('carousel-paused')) return;
                     this.goToSlide(this.currentIndex + 1);
                 }
 
@@ -265,6 +293,7 @@
                 }
 
                 dragStart(event) {
+                    if (this.carouselContainer.classList.contains('carousel-paused')) return;
                     if (this.isTransitioning) return;
                     this.isDragging = true;
                     this.startX = this.getPositionX(event);
@@ -319,6 +348,19 @@
             }
 
             new CutsCarousel('cuts-carousel-container');
+
+            const buttons = document.querySelectorAll('.cort-cont-btns button');
+            const carouselContainer = document.getElementById('cuts-carousel-container');
+
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    carouselContainer.classList.add('carousel-paused');
+                });
+
+                button.addEventListener('mouseleave', () => {
+                    carouselContainer.classList.remove('carousel-paused');
+                });
+            });
         });
     </script>
 </body>

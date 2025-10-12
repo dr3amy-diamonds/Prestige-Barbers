@@ -169,7 +169,6 @@ header:stuck .head-lkn-cont {
     cursor: grabbing;
 }
 
-
 .cort-cont-inf-2 {
     display: flex;
     flex-flow: column;
@@ -214,6 +213,40 @@ header:stuck .head-lkn-cont {
     background-size: cover;
     background-position: center;
     transition: background-image 0.5s ease-in-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.cort-cont-btns-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    color: #1b1b1b;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none; 
+}
+
+.cort-cont-btns button:hover .cort-cont-btns-info {
+    opacity: 1;
+}
+
+.cort-cont-btns-info h3 {
+    text-transform: uppercase;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.cort-cont-btns-info p {
+    margin: 0;
+    font-size: 1rem;
 }
 
 .skincare-cont {

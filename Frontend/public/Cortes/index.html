@@ -120,31 +120,57 @@
     <script src="../js/sticky-header.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const cutsData = [
-                {
-                    name: "Low Taper Fade",
-                    description: "Sorprendente, Iconico e Original.",
-                    mainImage: "C-Imgs/Corte/Low Taper/Principal/Low Taper Fade Black.png",
-                    relatedImages: [
-                        { name: "Burst Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Burst Fade White.png")' },
-                        { name: "Low Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Low Fade White.png")' },
-                        { name: "Mid Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Mid Fade White.png")' },
-                        { name: "Skin Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Skin Fade Black.png")' }
-                    ]
-                },
-                {
-                    name: "Buzz Cut",
-                    description: "Elegante, atractivo y enigmatico",
-                    mainImage: "C-Imgs/Corte/Buzz Cut/Principal/Buz cut.png",
-                    relatedImages: [
-                        { name: "Burr Cut", url: 'url("C-Imgs/Corte/Buzz Cut/Relacionados/Burr Cut.png")' },
-                        { name: "Butch Cut", url: 'url("C-Imgs/Corte/Buzz Cut/Relacionados/Butch Cut.png")' },
-                        { name: "High And Tight", url: 'url("C-Imgs/Corte/Buzz Cut/Relacionados/High And Tight.png")' },
-                        { name: "Induction Cut", url: 'url("C-Imgs/Corte/Buzz Cut/Relacionados/Induction Cut.png")' }
-                    ]
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Cargar datos dinámicamente desde la API
+            let cutsData = [];
+            try {
+                const response = await fetch('/api/cortes/principales-con-relacionados');
+                if (!response.ok) throw new Error('Error al cargar los cortes');
+                cutsData = await response.json();
+                
+                // Si no hay datos, usar los estáticos como fallback
+                if (cutsData.length === 0) {
+                    console.warn('No hay cortes principales en la base de datos, usando datos estáticos');
+                    cutsData = [
+                        {
+                            name: "Low Taper Fade",
+                            description: "Sorprendente, Iconico e Original.",
+                            mainImage: "C-Imgs/Corte/Low Taper/Principal/Low Taper Fade Black.png",
+                            relatedImages: [
+                                { name: "Burst Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Burst Fade White.png")', price: 19900 },
+                                { name: "Low Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Low Fade White.png")', price: 19900 },
+                                { name: "Mid Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Mid Fade White.png")', price: 19900 },
+                                { name: "Skin Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Skin Fade Black.png")', price: 19900 }
+                            ]
+                        }
+                    ];
                 }
-            ];
+            } catch (error) {
+                console.error('Error al cargar cortes desde la API:', error);
+                // Datos estáticos como fallback
+                cutsData = [
+                    {
+                        name: "Low Taper Fade",
+                        description: "Sorprendente, Iconico e Original.",
+                        mainImage: "C-Imgs/Corte/Low Taper/Principal/Low Taper Fade Black.png",
+                        relatedImages: [
+                            { name: "Burst Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Burst Fade White.png")', price: 19900 },
+                            { name: "Low Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Low Fade White.png")', price: 19900 },
+                            { name: "Mid Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Mid Fade White.png")', price: 19900 },
+                            { name: "Skin Fade", url: 'url("C-Imgs/Corte/Low Taper/Relacionado/Skin Fade Black.png")', price: 19900 }
+                        ]
+                    }
+                ];
+            }
+
+            // Función para formatear precios
+            function formatPrice(price) {
+                return new Intl.NumberFormat('es-CO', {
+                    style: 'currency',
+                    currency: 'COP',
+                    minimumFractionDigits: 0
+                }).format(price);
+            }
 
             class CutsCarousel {
                 constructor(containerId) {
@@ -234,15 +260,22 @@
 
                     this.relatedButtons.forEach((button, i) => {
                         const infoBox = button.querySelector('.cort-cont-btns-info h3');
+                        const priceBox = button.querySelector('.cort-cont-btns-info p');
                         if (currentCut.relatedImages[i]) {
                             button.style.backgroundImage = currentCut.relatedImages[i].url;
                             if (infoBox) {
                                 infoBox.textContent = currentCut.relatedImages[i].name;
                             }
+                            if (priceBox && currentCut.relatedImages[i].price) {
+                                priceBox.textContent = formatPrice(currentCut.relatedImages[i].price);
+                            }
                         } else {
                             button.style.backgroundImage = 'none';
                             if (infoBox) {
                                 infoBox.textContent = '';
+                            }
+                            if (priceBox) {
+                                priceBox.textContent = '';
                             }
                         }
                     });
@@ -386,30 +419,68 @@
             });
 
             // ===== Slider de Barbas (similar a CutsCarousel) =====
-            const beardsData = [
-                {
-                    name: 'The Fade Beard',
-                    description: 'Atrevete a cambiar de estilo',
-                    mainImage: 'C-Imgs/Barba/Fade_Barb/Principal/Fade Bear Black.png',
-                    relatedImages: [
-                        { name: 'Anchor Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/Anchor bread black.png")' },
-                        { name: 'Balbo Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/balbo barba iron man.png")' },
-                        { name: 'The Viking Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/The Viking Beard.png")' },
-                        { name: 'Van Dyke Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/van dyke beard.png")' }
-                    ]
-                },
-                {
-                    name: 'Goatee',
-                    description: 'Elegante y seguro',
-                    mainImage: 'C-Imgs/Barba/Goatee/Principal/Goatee.png',
-                    relatedImages: [
-                        { name: 'Anchor Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Anchor Goatee.png")' },
-                        { name: 'Circle Beard', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Circle Beard.png")' },
-                        { name: 'Classic Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Clasic Goatee.png")' },
-                        { name: 'Full Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Full Goatee.png")' }
-                    ]
+            let beardsData = [];
+            try {
+                const responseBarbas = await fetch('/api/barbas/principales-con-relacionados');
+                if (!responseBarbas.ok) throw new Error('Error al cargar las barbas');
+                beardsData = await responseBarbas.json();
+                
+                // Si no hay datos, usar los estáticos como fallback
+                if (beardsData.length === 0) {
+                    console.warn('No hay barbas principales en la base de datos, usando datos estáticos');
+                    beardsData = [
+                        {
+                            name: 'The Fade Beard',
+                            description: 'Atrevete a cambiar de estilo',
+                            mainImage: 'C-Imgs/Barba/Fade_Barb/Principal/Fade Bear Black.png',
+                            relatedImages: [
+                                { name: 'Anchor Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/Anchor bread black.png")' },
+                                { name: 'Balbo Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/balbo barba iron man.png")' },
+                                { name: 'The Viking Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/The Viking Beard.png")' },
+                                { name: 'Van Dyke Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/van dyke beard.png")' }
+                            ]
+                        },
+                        {
+                            name: 'Goatee',
+                            description: 'Elegante y seguro',
+                            mainImage: 'C-Imgs/Barba/Goatee/Principal/Goatee.png',
+                            relatedImages: [
+                                { name: 'Anchor Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Anchor Goatee.png")' },
+                                { name: 'Circle Beard', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Circle Beard.png")' },
+                                { name: 'Classic Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Clasic Goatee.png")' },
+                                { name: 'Full Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Full Goatee.png")' }
+                            ]
+                        }
+                    ];
                 }
-            ];
+            } catch (error) {
+                console.error('Error al cargar barbas desde la API:', error);
+                // Datos estáticos como fallback
+                beardsData = [
+                    {
+                        name: 'The Fade Beard',
+                        description: 'Atrevete a cambiar de estilo',
+                        mainImage: 'C-Imgs/Barba/Fade_Barb/Principal/Fade Bear Black.png',
+                        relatedImages: [
+                            { name: 'Anchor Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/Anchor bread black.png")' },
+                            { name: 'Balbo Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/balbo barba iron man.png")' },
+                            { name: 'The Viking Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/The Viking Beard.png")' },
+                            { name: 'Van Dyke Beard', url: 'url("C-Imgs/Barba/Fade_Barb/Relacionados/van dyke beard.png")' }
+                        ]
+                    },
+                    {
+                        name: 'Goatee',
+                        description: 'Elegante y seguro',
+                        mainImage: 'C-Imgs/Barba/Goatee/Principal/Goatee.png',
+                        relatedImages: [
+                            { name: 'Anchor Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Anchor Goatee.png")' },
+                            { name: 'Circle Beard', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Circle Beard.png")' },
+                            { name: 'Classic Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Clasic Goatee.png")' },
+                            { name: 'Full Goatee', url: 'url("C-Imgs/Barba/Goatee/Relacionados/Full Goatee.png")' }
+                        ]
+                    }
+                ];
+            }
 
             class BeardCarousel {
                 constructor(containerId) {

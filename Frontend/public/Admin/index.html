@@ -108,25 +108,19 @@
 </head>
 <body>
 
-        <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+    <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
         <h1>Panel de Administración</h1>
         <a href="gestion.html" style="text-decoration: none; background-color: #007bff; color: white; padding: 10px 15px; border-radius: 4px; font-size: 16px;">Gestionar Relaciones</a>
     </div>
 
     <div class="main-container">
         <div class="form-container">
-            <h2>Registrar Nuevo Item</h2>
+            <h2 id="form-title">Registrar Nuevo Item</h2>
             <form id="itemForm">
                 <label for="itemType">Tipo:</label>
                 <select id="itemType" required>
                     <option value="corte">Corte de Pelo</option>
                     <option value="barba">Barba</option>
-                </select>
-
-                <label for="itemRol">Rol:</label>
-                <select id="itemRol" required>
-                    <option value="Principal">Principal</option>
-                    <option value="Relacionado">Relacionado</option>
                 </select>
 
                 <label for="itemName">Nombre:</label>
@@ -136,9 +130,9 @@
                 <textarea id="itemDescription" rows="3" required></textarea>
 
                 <label for="itemPrice">Precio:</label>
-                <input type="number" id="itemPrice" step="0.01" required>
+                <input type="number" id="itemPrice" step="1" required>
 
-                <label for="itemImage">Imagen:</label>
+                <label for="itemImage">Imagen (opcional si editas):</label>
                 <input type="file" id="itemImage" accept="image/*">
 
                 <div class="preview-container">
@@ -172,107 +166,7 @@
                         </tr>
                     </thead>
                     <tbody id="cortesTableBody">
-                        <!-- Cortes pre-cargados -->
-                        <tr>
-                            <td>1</td>
-                            <td>Buzz Cut</td>
-                            <td>Principal</td>
-                            <td>Corte clásico y corto.</td>
-                            <td>12.00</td>
-                            <td><img src="../Cortes/C-Imgs/Corte/Buzz Cut/Principal/Buz cut.png" alt="Buz cut" style="width: 50px; height: 50px;"></td>
-                            <td>Sí</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Burr Cut</td>
-                            <td>Relacionado</td>
-                            <td>Variación del Buzz Cut.</td>
-                            <td>12.00</td>
-                            <td><img src="../Cortes/C-Imgs/Corte/Buzz Cut/Relacionados/Burr Cut.png" alt="Burr Cut" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Butch Cut</td>
-                            <td>Relacionado</td>
-                            <td>Variación del Buzz Cut.</td>
-                            <td>12.00</td>
-                            <td><img src="../Cortes/C-Imgs/Corte/Buzz Cut/Relacionados/Butch Cut.png" alt="Butch Cut" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>High And Tight</td>
-                            <td>Relacionado</td>
-                            <td>Corte de estilo militar.</td>
-                            <td>15.00</td>
-                            <td><img src="../Cortes/C-Imgs/Corte/Buzz Cut/Relacionados/High And Tight.png" alt="High And Tight" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Induction Cut</td>
-                            <td>Relacionado</td>
-                            <td>El más corto de los Buzz.</td>
-                            <td>10.00</td>
-                            <td><img src="../Cortes/C-Imgs/Corte/Buzz Cut/Relacionados/Induction Cut.png" alt="Induction Cut" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td>Low Taper Fade</td>
-                            <td>Principal</td>
-                            <td>Moderno y popular.</td>
-                            <td>18.00</td>
-                            <td><img src="../Cortes/C-Imgs/Corte/Low Taper/Principal/Low Taper Fade Black.png" alt="Low Taper Fade" style="width: 50px; height: 50px;"></td>
-                            <td>Sí</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>7</td>
-                            <td>Burst Fade</td>
-                            <td>Relacionado</td>
-                            <td>Fade en forma de ráfaga.</td>
-                            <td>18.00</td>
-                            <td><img src="../Cortes/C-Imgs/Corte/Low Taper/Relacionado/Burst Fade White.png" alt="Burst Fade" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                         <tr>
-                            <td>8</td>
-                            <td>Low Fade</td>
-                            <td>Relacionado</td>
-                            <td>Fade bajo.</td>
-                            <td>16.00</td>
-                            <td><img src="../Cortes/C-Imgs/Corte/Low Taper/Relacionado/Low Fade White.png" alt="Low Fade" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td>Mid Fade</td>
-                            <td>Relacionado</td>
-                            <td>Fade a media altura.</td>
-                            <td>16.00</td>
-                            <td><img src="../Cortes/C-Imgs/Corte/Low Taper/Relacionado/Mid Fade White.png" alt="Mid Fade" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>10</td>
-                            <td>Skin Fade</td>
-                            <td>Relacionado</td>
-                            <td>Fade hasta la piel.</td>
-                            <td>20.00</td>
-                            <td><img src="../Cortes/C-Imgs/Corte/Low Taper/Relacionado/Skin Fade Black.png" alt="Skin Fade" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
+                        <!-- Las filas se insertarán aquí dinámicamente -->
                     </tbody>
                 </table>
             </div>
@@ -293,107 +187,7 @@
                         </tr>
                     </thead>
                     <tbody id="barbasTableBody">
-                        <!-- Barbas pre-cargadas -->
-                        <tr>
-                            <td>11</td>
-                            <td>Fade Bear</td>
-                            <td>Principal</td>
-                            <td>Barba con degradado.</td>
-                            <td>10.00</td>
-                            <td><img src="../Cortes/C-Imgs/Barba/Fade_Barb/Principal/Fade Bear Black.png" alt="Fade Bear" style="width: 50px; height: 50px;"></td>
-                            <td>Sí</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>12</td>
-                            <td>Anchor Beard</td>
-                            <td>Relacionado</td>
-                            <td>Estilo de ancla.</td>
-                            <td>12.00</td>
-                            <td><img src="../Cortes/C-Imgs/Barba/Fade_Barb/Relacionados/Anchor bread black.png" alt="Anchor Beard" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>13</td>
-                            <td>Balbo Beard</td>
-                            <td>Relacionado</td>
-                            <td>Famosa por Iron Man.</td>
-                            <td>15.00</td>
-                            <td><img src="../Cortes/C-Imgs/Barba/Fade_Barb/Relacionados/balbo barba iron man.png" alt="Balbo Beard" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>14</td>
-                            <td>The Viking Beard</td>
-                            <td>Relacionado</td>
-                            <td>Larga y robusta.</td>
-                            <td>14.00</td>
-                            <td><img src="../Cortes/C-Imgs/Barba/Fade_Barb/Relacionados/The Viking Beard.png" alt="The Viking Beard" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>15</td>
-                            <td>Van Dyke Beard</td>
-                            <td>Relacionado</td>
-                            <td>Perilla y bigote.</td>
-                            <td>12.00</td>
-                            <td><img src="../Cortes/C-Imgs/Barba/Fade_Barb/Relacionados/van dyke beard.png" alt="Van Dyke Beard" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>16</td>
-                            <td>Goatee</td>
-                            <td>Principal</td>
-                            <td>Estilo perilla clásico.</td>
-                            <td>8.00</td>
-                            <td><img src="../Cortes/C-Imgs/Barba/Goatee/Principal/Goatee.png" alt="Goatee" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>17</td>
-                            <td>Anchor Goatee</td>
-                            <td>Relacionado</td>
-                            <td>Perilla en forma de ancla.</td>
-                            <td>9.00</td>
-                            <td><img src="../Cortes/C-Imgs/Barba/Goatee/Relacionados/Anchor Goatee.png" alt="Anchor Goatee" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>18</td>
-                            <td>Circle Beard</td>
-                            <td>Relacionado</td>
-                            <td>Perilla circular.</td>
-                            <td>10.00</td>
-                            <td><img src="../Cortes/C-Imgs/Barba/Goatee/Relacionados/Circle Beard.png" alt="Circle Beard" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>19</td>
-                            <td>Clasic Goatee</td>
-                            <td>Relacionado</td>
-                            <td>La perilla clásica.</td>
-                            <td>8.00</td>
-                            <td><img src="../Cortes/C-Imgs/Barba/Goatee/Relacionados/Clasic Goatee.png" alt="Clasic Goatee" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
-                        <tr>
-                            <td>20</td>
-                            <td>Full Goatee</td>
-                            <td>Relacionado</td>
-                            <td>Perilla completa.</td>
-                            <td>10.00</td>
-                            <td><img src="../Cortes/C-Imgs/Barba/Goatee/Relacionados/Full Goatee.png" alt="Full Goatee" style="width: 50px; height: 50px;"></td>
-                            <td>No</td>
-                            <td class="action-buttons"><button class="edit-btn">Editar</button><button class="delete-btn">Eliminar</button><button class="config-btn">Configurar</button></td>
-                        </tr>
+                        <!-- Contenido de la tabla de barbas -->
                     </tbody>
                 </table>
             </div>
@@ -406,17 +200,28 @@
             <span class="close-button">&times;</span>
             <h2>Configurar Item</h2>
             <form id="configForm">
-                <label><input type="radio" name="configOption" value="destacado" checked> Agregar a Destacado</label>
-                <label><input type="radio" name="configOption" value="principal"> Designar como Principal</label>
-                <div id="destacadoOptions">
-                    <label for="destacadoImage">Subir Imagen:</label>
+                <label><input type="radio" name="configOption" value="destacado"> Agregar a Destacado</label>
+                <label><input type="radio" name="configOption" value="principal" checked> Designar como Principal</label>
+                
+                <div id="destacadoOptions" class="hidden">
+                    <label for="destacadoImagePreview">Imagen Actual:</label>
+                    <img id="destacadoImagePreview" src="#" alt="Imagen destacado actual" style="max-width: 150px; display: none; margin-bottom: 10px; border-radius: 4px;">
+                    
+                    <label for="destacadoImage">Subir/Cambiar Imagen Destacado:</label>
                     <input type="file" id="destacadoImage" accept="image/*">
-                    <div class="preview-container"><p>Previsualización:</p><img id="destacadoImagePreview" src="#" alt="Previsualización"></div>
-                    <label for="destacadoDescription">Descripción Corta:</label>
-                    <textarea id="destacadoDescription" rows="2"></textarea>
+                    
+                    <div class="preview-container">
+                        <p>Previsualización de nueva imagen:</p>
+                        <img id="destacadoImageNewPreview" src="#" alt="Previsualización" style="max-width: 150px;">
+                    </div>
+                    
+                    <label for="destacadoDescription">Descripción para Destacado:</label>
+                    <textarea id="destacadoDescription" rows="3" placeholder="Escribe una descripción corta y llamativa..."></textarea>
+                    <small style="color: #666;">Si el corte es principal, se prellenará con su descripción principal</small>
                 </div>
-                <div id="principalOptions" class="hidden">
-                    <label for="principalDescription">Descripción:</label>
+
+                <div id="principalOptions">
+                    <label for="principalDescription">Descripción Principal (palabras clave, gancho):</label>
                     <textarea id="principalDescription" rows="4"></textarea>
                 </div>
                 <button type="submit">Guardar Configuración</button>
@@ -425,84 +230,245 @@
     </div>
 
     <script>
-        // Main form elements
-        const form = document.getElementById('itemForm');
+        const itemForm = document.getElementById('itemForm');
         const imageInput = document.getElementById('itemImage');
         const imagePreview = document.getElementById('imagePreview');
         const cortesTableBody = document.getElementById('cortesTableBody');
-        const barbasTableBody = document.getElementById('barbasTableBody');
-        let itemIdCounter = 21; // Start after pre-loaded items
+        const formButton = itemForm.querySelector('button[type="submit"]');
+        let editingId = null;
+        let allCortes = []; // Caché para los datos de los cortes
+        let currentConfigId = null; // ID del corte/barba que se está configurando
+        let currentConfigType = 'corte'; // 'corte' o 'barba'
 
-        // Modal elements
+        // --- MODAL ELEMENTS ---
         const modal = document.getElementById('configModal');
-        const closeModalBtn = document.querySelector('.close-button');
+        const closeModalBtn = modal.querySelector('.close-button');
         const configForm = document.getElementById('configForm');
         const destacadoOptions = document.getElementById('destacadoOptions');
         const principalOptions = document.getElementById('principalOptions');
-        const destacadoImageInput = document.getElementById('destacadoImage');
-        const destacadoImagePreview = document.getElementById('destacadoImagePreview');
 
-        function handleImagePreview(input, preview) {
-            const file = input.files[0];
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCortes();
+            loadBarbas();
+        });
+
+        imageInput.addEventListener('change', () => {
+            const file = imageInput.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
                 }
                 reader.readAsDataURL(file);
             } else {
-                preview.src = '#';
-                preview.style.display = 'none';
+                imagePreview.src = '#';
+                imagePreview.style.display = 'none';
             }
-        }
-
-        imageInput.addEventListener('change', () => handleImagePreview(imageInput, imagePreview));
-        destacadoImageInput.addEventListener('change', () => handleImagePreview(destacadoImageInput, destacadoImagePreview));
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const type = document.getElementById('itemType').value;
-            const rol = document.getElementById('itemRol').value;
-            const name = document.getElementById('itemName').value;
-            const description = document.getElementById('itemDescription').value;
-            const price = document.getElementById('itemPrice').value;
-            const imageSrc = imagePreview.src;
-
-            const tableBody = type === 'corte' ? cortesTableBody : barbasTableBody;
-            
-            const newRow = tableBody.insertRow();
-            newRow.innerHTML = `
-                <td>${itemIdCounter++}</td>
-                <td>${name}</td>
-                <td>${rol}</td>
-                <td>${description}</td>
-                <td>$${parseFloat(price).toFixed(2)}</td>
-                <td><img src="${imageSrc}" alt="${name}" style="width: 50px; height: 50px;"></td>
-                <td class="action-buttons">
-                    <button class="edit-btn">Editar</button>
-                    <button class="delete-btn">Eliminar</button>
-                    <button class="config-btn">Configurar</button>
-                </td>
-            `;
-            form.reset();
-            imagePreview.src = '#';
-            imagePreview.style.display = 'none';
         });
 
-        function handleTableClick(event) {
-            const target = event.target;
-            if (target.classList.contains('delete-btn')) {
-                target.closest('tr').remove();
+        // Preview para imagen destacado
+        const destacadoImageInput = document.getElementById('destacadoImage');
+        const destacadoImageNewPreview = document.getElementById('destacadoImageNewPreview');
+        
+        destacadoImageInput.addEventListener('change', () => {
+            const file = destacadoImageInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    destacadoImageNewPreview.src = e.target.result;
+                    destacadoImageNewPreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                destacadoImageNewPreview.src = '#';
+                destacadoImageNewPreview.style.display = 'none';
             }
-            if (target.classList.contains('config-btn')) {
-                // Here you could pass the row data to the modal if needed
-                modal.style.display = 'block';
+        });
+
+        async function loadCortes() {
+            try {
+                const response = await fetch('/api/cortes_admin');
+                if (!response.ok) throw new Error('Error al cargar los cortes');
+                allCortes = await response.json(); // Guardar en caché
+
+                cortesTableBody.innerHTML = '';
+                allCortes.forEach(corte => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${corte.id}</td>
+                        <td>${corte.nombre}</td>
+                        <td>${corte.rol || 'No asignado'}</td>
+                        <td style="max-width: 300px; white-space: normal;">${corte.descripcion}</td>
+                        <td>${formatPrice(corte.precio)}</td>
+                        <td><img src="${corte.imagen}" alt="${corte.nombre}" style="width: 50px; height: 50px;"></td>
+                        <td>${corte.destacado ? 'Sí' : 'No'}</td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" onclick="editItem(${corte.id})">Editar</button>
+                            <button class="delete-btn" onclick="deleteItem(${corte.id})">Eliminar</button>
+                            <button class="config-btn" onclick="openConfigModal(${corte.id})">Configurar</button>
+                            <button style="background-color: #17a2b8; color: white;" onclick="moverABarbas(${corte.id})">Mover a Barbas</button>
+                        </td>
+                    `;
+                    cortesTableBody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error(error);
+                alert('No se pudieron cargar los cortes.');
             }
         }
 
-        cortesTableBody.addEventListener('click', handleTableClick);
-        barbasTableBody.addEventListener('click', handleTableClick);
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        async function loadBarbas() {
+            try {
+                const response = await fetch('/api/barbas_admin');
+                if (!response.ok) throw new Error('Error al cargar las barbas');
+                const allBarbas = await response.json();
+
+                const barbasTableBody = document.getElementById('barbasTableBody');
+                barbasTableBody.innerHTML = '';
+                allBarbas.forEach(barba => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${barba.id}</td>
+                        <td>${barba.nombre}</td>
+                        <td>${barba.rol || 'No asignado'}</td>
+                        <td style="max-width: 300px; white-space: normal;">${barba.descripcion}</td>
+                        <td>${formatPrice(barba.precio)}</td>
+                        <td><img src="${barba.imagen}" alt="${barba.nombre}" style="width: 50px; height: 50px;"></td>
+                        <td>${barba.destacado ? 'Sí' : 'No'}</td>
+                        <td class="action-buttons">
+                            <button class="edit-btn" onclick="editBarba(${barba.id})">Editar</button>
+                            <button class="delete-btn" onclick="deleteBarba(${barba.id})">Eliminar</button>
+                            <button class="config-btn" onclick="openConfigModalBarba(${barba.id})">Configurar</button>
+                            <button style="background-color: #17a2b8; color: white;" onclick="moverACortes(${barba.id})">Mover a Cortes</button>
+                        </td>
+                    `;
+                    barbasTableBody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error(error);
+                alert('No se pudieron cargar las barbas.');
+            }
+        }
+
+        itemForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('nombre', document.getElementById('itemName').value);
+            formData.append('descripcion', document.getElementById('itemDescription').value);
+            formData.append('precio', document.getElementById('itemPrice').value);
+            if (imageInput.files[0]) {
+                formData.append('imagen', imageInput.files[0]);
+            }
+
+            // Obtener el tipo seleccionado del dropdown
+            const itemType = document.getElementById('itemType').value; // 'corte' o 'barba'
+            
+            // Determinar si estamos editando o creando nuevo
+            const isBarba = itemType === 'barba' || editingBarbaId !== null;
+            const editingItemId = isBarba ? editingBarbaId : editingId;
+            const apiBase = isBarba ? '/api/barbas_admin' : '/api/cortes_admin';
+            const url = editingItemId ? `${apiBase}/${editingItemId}` : apiBase;
+            const method = editingItemId ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, { method, body: formData });
+                if (!response.ok) throw new Error('La operación falló.');
+                
+                alert(`${isBarba ? 'Barba' : 'Corte'} ${editingItemId ? 'actualizado' : 'registrado'} con éxito.`);
+                itemForm.reset();
+                imagePreview.src = '#';
+                imagePreview.style.display = 'none';
+                formButton.textContent = 'Guardar';
+                editingId = null;
+                editingBarbaId = null;
+                itemForm.dataset.editingType = '';
+                loadCortes();
+                loadBarbas();
+            } catch (error) {
+                console.error(error);
+                alert(`Error al guardar ${isBarba ? 'la barba' : 'el corte'}.`);
+            }
+        });
+
+        function editItem(id) {
+            const item = allCortes.find(c => c.id === id);
+            if (item) {
+                document.getElementById('itemType').value = 'corte'; // Establecer tipo como corte
+                document.getElementById('itemName').value = item.nombre;
+                document.getElementById('itemDescription').value = item.descripcion;
+                document.getElementById('itemPrice').value = item.precio;
+                imagePreview.src = item.imagen;
+                imagePreview.style.display = 'block';
+                
+                formButton.textContent = 'Actualizar';
+                editingId = id;
+                editingBarbaId = null; // Asegurar que no esté editando barba
+                window.scrollTo(0, 0);
+            }
+        }
+
+        async function deleteItem(id) {
+            if (!confirm('¿Estás seguro de que quieres eliminar este corte?')) return;
+
+            try {
+                const response = await fetch(`/api/cortes_admin/${id}`, { method: 'DELETE' });
+                const result = await response.json();
+                alert(result.message);
+                if (response.ok) {
+                    loadCortes();
+                }
+            } catch (error) {
+                console.error('Error al eliminar:', error);
+                alert('Error al eliminar el corte.');
+            }
+        }
+
+        // --- MODAL LOGIC ---
+        function openConfigModal(id) {
+            currentConfigId = id;
+            currentConfigType = 'corte'; // Importante: marcar que estamos configurando un corte
+            const corte = allCortes.find(c => c.id === id);
+
+            if (corte) {
+                // Llenar descripción principal
+                document.getElementById('principalDescription').value = corte.descripcion_principal || '';
+                
+                // Llenar campos de destacado
+                const destacadoDesc = document.getElementById('destacadoDescription');
+                const destacadoImgPreview = document.getElementById('destacadoImagePreview');
+                
+                // Si el corte es principal y tiene descripcion_principal, prellenarla
+                if (corte.rol === 'Principal' && corte.descripcion_principal) {
+                    destacadoDesc.value = corte.descripcion_destacado || corte.descripcion_principal;
+                } else {
+                    destacadoDesc.value = corte.descripcion_destacado || '';
+                }
+                
+                // Mostrar imagen destacado actual si existe
+                if (corte.imagen_destacado) {
+                    destacadoImgPreview.src = corte.imagen_destacado;
+                    destacadoImgPreview.style.display = 'block';
+                } else {
+                    destacadoImgPreview.style.display = 'none';
+                }
+            }
+
+            // Reset radio buttons to default
+            configForm.configOption.value = 'principal';
+            destacadoOptions.classList.add('hidden');
+            principalOptions.classList.remove('hidden');
+
+            modal.style.display = 'block';
+        }
 
         closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
         window.addEventListener('click', (e) => {
@@ -517,18 +483,86 @@
                 principalOptions.classList.toggle('hidden', this.value !== 'principal');
             });
         });
-        
-        configForm.addEventListener('submit', function(e) {
+
+        configForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            alert('Configuración guardada (estáticamente).');
-            modal.style.display = 'none';
-            configForm.reset();
-            destacadoOptions.classList.remove('hidden');
-            principalOptions.classList.add('hidden');
-            destacadoImagePreview.style.display = 'none';
+            const option = this.configOption.value;
+            const isBarba = currentConfigType === 'barba';
+            const apiBase = isBarba ? '/api/barbas' : '/api/cortes';
+            const allItems = isBarba ? allBarbas : allCortes;
+
+            if (option === 'principal') {
+                const descripcion_principal = document.getElementById('principalDescription').value;
+
+                try {
+                    const response = await fetch(`${apiBase}/principal/${currentConfigId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ descripcion_principal })
+                    });
+
+                    const result = await response.json();
+                    alert(result.message);
+
+                    if (response.ok) {
+                        modal.style.display = 'none';
+                        if (isBarba) {
+                            loadBarbas();
+                        } else {
+                            loadCortes();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error al guardar la descripción principal:', error);
+                    alert('Error al guardar.');
+                }
+
+            } else if (option === 'destacado') {
+                const descripcion_destacado = document.getElementById('destacadoDescription').value;
+                const imageFile = destacadoImageInput.files[0];
+                const item = allItems.find(c => c.id === currentConfigId);
+
+                // Crear FormData para enviar archivo e información
+                const formData = new FormData();
+                formData.append('descripcion_destacado', descripcion_destacado);
+                
+                // Si hay imagen nueva, agregarla
+                if (imageFile) {
+                    formData.append('imagen_destacado', imageFile);
+                } else if (item && item.imagen_destacado) {
+                    // Si no hay imagen nueva pero ya existe una, mantenerla
+                    formData.append('imagen_destacado_existente', item.imagen_destacado);
+                }
+
+                try {
+                    const response = await fetch(`${apiBase}/destacado/${currentConfigId}`, {
+                        method: 'PUT',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    alert(result.message);
+
+                    if (response.ok) {
+                        modal.style.display = 'none';
+                        // Limpiar preview
+                        destacadoImageNewPreview.src = '#';
+                        destacadoImageNewPreview.style.display = 'none';
+                        destacadoImageInput.value = '';
+                        if (isBarba) {
+                            loadBarbas();
+                        } else {
+                            loadCortes();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error al marcar como destacado:', error);
+                    alert('Error al guardar como destacado.');
+                }
+            }
         });
 
-        // Filter logic
+        // --- FILTER LOGIC FOR TABLES ---
         const tableFilters = document.querySelectorAll('input[name="tableFilter"]');
         const cortesTable = document.getElementById('cortesTable');
         const barbasTable = document.getElementById('barbasTable');
@@ -544,6 +578,150 @@
                 }
             });
         });
+
+        // ==================== FUNCIONES CRUD PARA BARBAS ====================
+
+        let editingBarbaId = null;
+        let allBarbas = [];
+
+        async function editBarba(id) {
+            try {
+                const response = await fetch('/api/barbas_admin');
+                if (!response.ok) throw new Error('Error al cargar las barbas');
+                allBarbas = await response.json();
+                
+                const barba = allBarbas.find(b => b.id === id);
+                if (!barba) throw new Error('Barba no encontrada');
+                
+                editingBarbaId = id;
+                editingId = null; // Asegurar que no esté editando corte
+                document.getElementById('itemType').value = 'barba'; // Establecer tipo como barba
+                document.getElementById('itemName').value = barba.nombre;
+                document.getElementById('itemDescription').value = barba.descripcion;
+                document.getElementById('itemPrice').value = barba.precio;
+                
+                imagePreview.src = barba.imagen;
+                imagePreview.style.display = 'block';
+                
+                formButton.textContent = 'Actualizar';
+                
+                // Modificar temporalmente el formulario para editar barbas
+                itemForm.dataset.editingType = 'barba';
+                
+                window.scrollTo(0, 0);
+            } catch (error) {
+                console.error(error);
+                alert('No se pudo cargar la barba para editar.');
+            }
+        }
+
+        async function deleteBarba(id) {
+            if (!confirm('¿Estás seguro de eliminar esta barba?')) return;
+            try {
+                const response = await fetch(`/api/barbas_admin/${id}`, { method: 'DELETE' });
+                if (!response.ok) throw new Error('Error al eliminar la barba');
+                alert('Barba eliminada correctamente');
+                loadBarbas();
+            } catch (error) {
+                console.error(error);
+                alert('No se pudo eliminar la barba.');
+            }
+        }
+
+        async function openConfigModalBarba(id) {
+            try {
+                const response = await fetch('/api/barbas_admin');
+                if (!response.ok) throw new Error('Error al cargar las barbas');
+                allBarbas = await response.json();
+                
+                const barba = allBarbas.find(b => b.id === id);
+                if (!barba) throw new Error('Barba no encontrada');
+                
+                currentConfigId = id;
+                currentConfigType = 'barba'; // Importante: marcar que estamos configurando una barba
+                
+                // Llenar descripción principal
+                document.getElementById('principalDescription').value = barba.descripcion_principal || '';
+                
+                // Llenar campos de destacado
+                const destacadoDesc = document.getElementById('destacadoDescription');
+                const destacadoImgPreview = document.getElementById('destacadoImagePreview');
+                
+                // Si la barba es principal y tiene descripcion_principal, prellenarla
+                if (barba.rol === 'Principal' && barba.descripcion_principal) {
+                    destacadoDesc.value = barba.descripcion_destacado || barba.descripcion_principal;
+                } else {
+                    destacadoDesc.value = barba.descripcion_destacado || '';
+                }
+                
+                // Mostrar imagen destacado actual si existe
+                if (barba.imagen_destacado) {
+                    destacadoImgPreview.src = barba.imagen_destacado;
+                    destacadoImgPreview.style.display = 'block';
+                } else {
+                    destacadoImgPreview.style.display = 'none';
+                }
+                
+                // Reset radio buttons to default
+                configForm.configOption.value = 'principal';
+                destacadoOptions.classList.add('hidden');
+                principalOptions.classList.remove('hidden');
+                
+                modal.style.display = 'block';
+            } catch (error) {
+                console.error(error);
+                alert('No se pudo cargar la barba para configurar.');
+            }
+        }
+
+        // ==================== FUNCIONES PARA MOVER ENTRE TABLAS ====================
+
+        async function moverABarbas(corteId) {
+            if (!confirm('¿Estás seguro de mover este corte a la tabla de Barbas?')) return;
+            
+            try {
+                const response = await fetch(`/api/mover/corte-a-barba/${corteId}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert('✅ ' + result.message);
+                    loadCortes();
+                    loadBarbas();
+                } else {
+                    alert('❌ Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error al mover:', error);
+                alert('❌ Error al mover el registro.');
+            }
+        }
+
+        async function moverACortes(barbaId) {
+            if (!confirm('¿Estás seguro de mover esta barba a la tabla de Cortes?')) return;
+            
+            try {
+                const response = await fetch(`/api/mover/barba-a-corte/${barbaId}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert('✅ ' + result.message);
+                    loadCortes();
+                    loadBarbas();
+                } else {
+                    alert('❌ Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error al mover:', error);
+                alert('❌ Error al mover el registro.');
+            }
+        }
+
     </script>
 
 </body>

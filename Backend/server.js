@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'Frontend', 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const storage = multer.diskStorage({
@@ -36,9 +36,35 @@ db.connect(err => {
 });
 
 
-app.get('/api/cortes', (req, res) => {
+// Endpoint ANTIGUO para cortes_destacados (mantener por compatibilidad temporal)
+app.get('/api/cortes_antiguos', (req, res) => {
     db.query('SELECT * FROM cortes_destacados ORDER BY id ASC LIMIT 7', (err, results) => {
         if (err) {
+            res.status(500).send('Error fetching featured cuts');
+            return;
+        }
+        res.json(results);
+    });
+});
+
+// Endpoint NUEVO para cortes destacados desde la tabla 'cortes'
+app.get('/api/cortes', (req, res) => {
+    const query = `
+        SELECT 
+            id,
+            nombre as name,
+            descripcion_destacado as description,
+            imagen_destacado as image_url
+        FROM cortes 
+        WHERE destacado = 1 
+        AND imagen_destacado IS NOT NULL 
+        AND descripcion_destacado IS NOT NULL
+        ORDER BY id ASC
+    `;
+    
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener cortes destacados:', err);
             res.status(500).send('Error fetching featured cuts');
             return;
         }
@@ -93,10 +119,648 @@ app.delete('/api/cortes/:id', (req, res) => {
     const query = 'DELETE FROM cortes_destacados WHERE id = ?';
     db.query(query, [id], (err, result) => {
         if (err) {
-            res.status(500).send('Error deleting cut');
+            console.error('Error al eliminar el corte:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Corte no encontrado' });
+        }
+        res.json({ message: 'Corte eliminado correctamente' });
+    });
+});
+
+// Endpoint para actualizar la descripción principal de un corte y marcarlo como principal
+app.put('/api/cortes/principal/:id', (req, res) => {
+    const { id } = req.params;
+    const { descripcion_principal } = req.body;
+
+    if (descripcion_principal === undefined) {
+        return res.status(400).json({ message: 'La descripción principal es requerida' });
+    }
+
+    // Actualizar la descripción principal Y cambiar el rol a 'Principal'
+    const sql = 'UPDATE cortes SET descripcion_principal = ?, rol = ? WHERE id = ?';
+    db.query(sql, [descripcion_principal, 'Principal', id], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar la descripción principal:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Corte no encontrado' });
+        }
+        res.json({ message: 'Corte designado como principal correctamente' });
+    });
+});
+
+// Endpoint para marcar un corte como destacado y actualizar su información
+app.put('/api/cortes/destacado/:id', upload.single('imagen_destacado'), (req, res) => {
+    const { id } = req.params;
+    const { descripcion_destacado } = req.body;
+    
+    // Si hay imagen nueva, usar esa; si no, mantener la existente o NULL
+    const imagen_destacado = req.file ? `/uploads/${req.file.filename}` : req.body.imagen_destacado_existente || null;
+
+    // Marcar como destacado (destacado = 1)
+    const sql = 'UPDATE cortes SET destacado = 1, descripcion_destacado = ?, imagen_destacado = ? WHERE id = ?';
+    
+    db.query(sql, [descripcion_destacado, imagen_destacado, id], (err, result) => {
+        if (err) {
+            console.error('Error al marcar como destacado:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Corte no encontrado' });
+        }
+        res.json({ 
+            message: 'Corte marcado como destacado correctamente',
+            imagen_destacado: imagen_destacado
+        });
+    });
+});
+
+app.get('/api/cortes_admin', (req, res) => {
+    const query = 'SELECT id, nombre, descripcion, precio, imagen, destacado, corte_principal_id, rol, descripcion_principal, imagen_destacado, descripcion_destacado FROM cortes ORDER BY id';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener los cortes:', err);
+            res.status(500).send('Error al obtener los cortes.');
             return;
         }
-        res.send('Cut deleted successfully');
+        res.json(results);
+    });
+});
+
+app.post('/api/cortes_admin', upload.single('imagen'), (req, res) => {
+    const { nombre, descripcion, precio } = req.body;
+    const imagen = req.file ? `/uploads/${req.file.filename}` : null;
+
+    if (!nombre || !imagen) {
+        return res.status(400).send('El nombre y la imagen son obligatorios.');
+    }
+
+    const query = 'INSERT INTO cortes (nombre, descripcion, precio, imagen, corte_principal_id) VALUES (?, ?, ?, ?, NULL)';
+    
+    db.query(query, [nombre, descripcion, precio, imagen], (err, result) => {
+        if (err) {
+            console.error('Error al guardar el corte:', err);
+            res.status(500).send('Error al guardar el nuevo corte.');
+            return;
+        }
+        res.status(201).send({ id: result.insertId, message: 'Corte guardado exitosamente' });
+    });
+});
+
+app.put('/api/cortes_admin/:id', upload.single('imagen'), (req, res) => {
+    const { id } = req.params;
+    const { nombre, descripcion, precio } = req.body;
+    
+    let query;
+    const params = [nombre, descripcion, precio];
+
+    if (req.file) {
+        const imagen = `/uploads/${req.file.filename}`;
+        query = 'UPDATE cortes SET nombre = ?, descripcion = ?, precio = ?, imagen = ? WHERE id = ?';
+        params.push(imagen, id);
+    } else {
+        query = 'UPDATE cortes SET nombre = ?, descripcion = ?, precio = ? WHERE id = ?';
+        params.push(id);
+    }
+
+    db.query(query, params, (err, result) => {
+        if (err) {
+            console.error('Error al actualizar el corte:', err);
+            res.status(500).send('Error al actualizar el corte.');
+            return;
+        }
+        res.status(200).send({ message: 'Corte actualizado exitosamente' });
+    });
+});
+
+// Eliminar corte
+app.delete('/api/cortes_admin/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM cortes WHERE id = ?';
+    db.query(query, [id], (err, result) => {
+        if (err) {
+            console.error('Error al eliminar el corte:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Corte no encontrado' });
+        }
+        res.json({ message: 'Corte eliminado correctamente' });
+    });
+});
+
+// Endpoint para obtener solo los cortes principales
+app.get('/api/cortes/principales', (req, res) => {
+    const query = 'SELECT * FROM cortes WHERE rol = ? ORDER BY id';
+    db.query(query, ['Principal'], (err, results) => {
+        if (err) {
+            console.error('Error al obtener los cortes principales:', err);
+            res.status(500).json({ message: 'Error al obtener los cortes principales' });
+            return;
+        }
+        res.json(results);
+    });
+});
+
+// Endpoint para obtener los cortes relacionados a un principal
+app.get('/api/cortes/relacionados/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'SELECT * FROM cortes WHERE corte_principal_id = ? ORDER BY id';
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener los cortes relacionados:', err);
+            res.status(500).json({ message: 'Error al obtener los cortes relacionados' });
+            return;
+        }
+        res.json(results);
+    });
+});
+
+// Endpoint para obtener cortes disponibles (sin rol o ya relacionados a un principal específico)
+app.get('/api/cortes/disponibles/:principalId', (req, res) => {
+    const { principalId } = req.params;
+    let query = 'SELECT * FROM cortes WHERE (rol IS NULL OR rol = ?) OR (corte_principal_id = ?) ORDER BY nombre';
+    const params = ['Relacionado', principalId];
+    
+    db.query(query, params, (err, results) => {
+        if (err) {
+            console.error('Error al obtener cortes disponibles:', err);
+            res.status(500).json({ message: 'Error al obtener cortes disponibles' });
+            return;
+        }
+        res.json(results);
+    });
+});
+
+// Endpoint para relacionar cortes a un principal
+app.put('/api/cortes/relacionar/:id', (req, res) => {
+    const { id } = req.params; // ID del corte principal
+    const { relacionados } = req.body; // Array de IDs de cortes relacionados [1, 2, 3, 4]
+
+    if (!Array.isArray(relacionados) || relacionados.length > 4) {
+        return res.status(400).json({ message: 'Debe proporcionar un array de hasta 4 IDs de cortes relacionados' });
+    }
+
+    // Primero, desvinculamos todos los cortes que estaban relacionados a este principal
+    const queryReset = 'UPDATE cortes SET corte_principal_id = NULL, rol = NULL WHERE corte_principal_id = ?';
+    
+    db.query(queryReset, [id], (err) => {
+        if (err) {
+            console.error('Error al resetear relaciones:', err);
+            return res.status(500).json({ message: 'Error al resetear relaciones' });
+        }
+
+        // Si no hay relacionados, terminamos aquí
+        if (relacionados.length === 0) {
+            return res.json({ message: 'Relaciones actualizadas correctamente' });
+        }
+
+        // Ahora vinculamos los nuevos cortes relacionados
+        const queryUpdate = 'UPDATE cortes SET corte_principal_id = ?, rol = ? WHERE id IN (?)';
+        
+        db.query(queryUpdate, [id, 'Relacionado', relacionados], (err, result) => {
+            if (err) {
+                console.error('Error al actualizar relaciones:', err);
+                return res.status(500).json({ message: 'Error al actualizar relaciones' });
+            }
+            res.json({ message: 'Relaciones actualizadas correctamente', affectedRows: result.affectedRows });
+        });
+    });
+});
+
+// Endpoint para obtener cortes principales con sus relacionados (para el carrusel del frontend)
+app.get('/api/cortes/principales-con-relacionados', (req, res) => {
+    // Obtener todos los cortes principales
+    const queryPrincipales = 'SELECT * FROM cortes WHERE rol = ? ORDER BY id';
+    
+    db.query(queryPrincipales, ['Principal'], (err, principales) => {
+        if (err) {
+            console.error('Error al obtener cortes principales:', err);
+            return res.status(500).json({ message: 'Error al obtener cortes principales' });
+        }
+
+        if (principales.length === 0) {
+            return res.json([]);
+        }
+
+        // Para cada principal, obtener sus relacionados
+        const promises = principales.map(principal => {
+            return new Promise((resolve, reject) => {
+                const queryRelacionados = 'SELECT * FROM cortes WHERE corte_principal_id = ? ORDER BY id LIMIT 4';
+                db.query(queryRelacionados, [principal.id], (err, relacionados) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve({
+                            id: principal.id,
+                            name: principal.nombre,
+                            description: principal.descripcion_principal || principal.descripcion,
+                            mainImage: principal.imagen,
+                            price: principal.precio,
+                            relatedImages: relacionados.map(rel => ({
+                                id: rel.id,
+                                name: rel.nombre,
+                                url: `url("${rel.imagen}")`,
+                                image: rel.imagen,
+                                price: rel.precio
+                            }))
+                        });
+                    }
+                });
+            });
+        });
+
+        Promise.all(promises)
+            .then(results => res.json(results))
+            .catch(error => {
+                console.error('Error al obtener relacionados:', error);
+                res.status(500).json({ message: 'Error al obtener los cortes con relacionados' });
+            });
+    });
+});
+
+// ==================== ENDPOINTS PARA BARBAS ====================
+
+// Obtener todas las barbas para el panel admin
+app.get('/api/barbas_admin', (req, res) => {
+    const query = 'SELECT id, nombre, descripcion, precio, imagen, destacado, barba_principal_id, rol, descripcion_principal, imagen_destacado, descripcion_destacado FROM barbas ORDER BY id';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener las barbas:', err);
+            res.status(500).send('Error al obtener las barbas.');
+            return;
+        }
+        res.json(results);
+    });
+});
+
+// Crear nueva barba
+app.post('/api/barbas_admin', upload.single('imagen'), (req, res) => {
+    const { nombre, descripcion, precio } = req.body;
+    const imagen = req.file ? `/uploads/${req.file.filename}` : null;
+
+    if (!nombre || !imagen) {
+        return res.status(400).send('El nombre y la imagen son obligatorios.');
+    }
+
+    const query = 'INSERT INTO barbas (nombre, descripcion, precio, imagen, barba_principal_id) VALUES (?, ?, ?, ?, NULL)';
+    
+    db.query(query, [nombre, descripcion, precio, imagen], (err, result) => {
+        if (err) {
+            console.error('Error al guardar la barba:', err);
+            res.status(500).send('Error al guardar la nueva barba.');
+            return;
+        }
+        res.status(201).send({ id: result.insertId, message: 'Barba guardada exitosamente' });
+    });
+});
+
+// Actualizar barba existente
+app.put('/api/barbas_admin/:id', upload.single('imagen'), (req, res) => {
+    const { id } = req.params;
+    const { nombre, descripcion, precio } = req.body;
+    
+    let query;
+    const params = [nombre, descripcion, precio];
+
+    if (req.file) {
+        const imagen = `/uploads/${req.file.filename}`;
+        query = 'UPDATE barbas SET nombre = ?, descripcion = ?, precio = ?, imagen = ? WHERE id = ?';
+        params.push(imagen, id);
+    } else {
+        query = 'UPDATE barbas SET nombre = ?, descripcion = ?, precio = ? WHERE id = ?';
+        params.push(id);
+    }
+
+    db.query(query, params, (err, result) => {
+        if (err) {
+            console.error('Error al actualizar la barba:', err);
+            res.status(500).send('Error al actualizar la barba.');
+            return;
+        }
+        res.status(200).send({ message: 'Barba actualizada exitosamente' });
+    });
+});
+
+// Eliminar barba
+app.delete('/api/barbas_admin/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM barbas WHERE id = ?';
+    db.query(query, [id], (err, result) => {
+        if (err) {
+            console.error('Error al eliminar la barba:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Barba no encontrada' });
+        }
+        res.json({ message: 'Barba eliminada correctamente' });
+    });
+});
+
+// Marcar barba como principal
+app.put('/api/barbas/principal/:id', (req, res) => {
+    const { id } = req.params;
+    const { descripcion_principal } = req.body;
+
+    if (descripcion_principal === undefined) {
+        return res.status(400).json({ message: 'La descripción principal es requerida' });
+    }
+
+    const sql = 'UPDATE barbas SET descripcion_principal = ?, rol = ? WHERE id = ?';
+    db.query(sql, [descripcion_principal, 'Principal', id], (err, result) => {
+        if (err) {
+            console.error('Error al actualizar la descripción principal:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Barba no encontrada' });
+        }
+        res.json({ message: 'Barba designada como principal correctamente' });
+    });
+});
+
+// Marcar barba como destacada
+app.put('/api/barbas/destacado/:id', upload.single('imagen_destacado'), (req, res) => {
+    const { id } = req.params;
+    const { descripcion_destacado } = req.body;
+    
+    const imagen_destacado = req.file ? `/uploads/${req.file.filename}` : req.body.imagen_destacado_existente || null;
+
+    const sql = 'UPDATE barbas SET destacado = 1, descripcion_destacado = ?, imagen_destacado = ? WHERE id = ?';
+    
+    db.query(sql, [descripcion_destacado, imagen_destacado, id], (err, result) => {
+        if (err) {
+            console.error('Error al marcar como destacado:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Barba no encontrada' });
+        }
+        res.json({ 
+            message: 'Barba marcada como destacada correctamente',
+            imagen_destacado: imagen_destacado
+        });
+    });
+});
+
+// Obtener solo las barbas principales
+app.get('/api/barbas/principales', (req, res) => {
+    const query = 'SELECT * FROM barbas WHERE rol = ? ORDER BY id';
+    db.query(query, ['Principal'], (err, results) => {
+        if (err) {
+            console.error('Error al obtener las barbas principales:', err);
+            res.status(500).json({ message: 'Error al obtener las barbas principales' });
+            return;
+        }
+        res.json(results);
+    });
+});
+
+// Obtener barbas relacionadas a una principal
+app.get('/api/barbas/relacionados/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'SELECT * FROM barbas WHERE barba_principal_id = ? ORDER BY id';
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener barbas relacionadas:', err);
+            res.status(500).json({ message: 'Error al obtener barbas relacionadas' });
+            return;
+        }
+        res.json(results);
+    });
+});
+
+// Obtener barbas disponibles para relacionar
+app.get('/api/barbas/disponibles/:principalId', (req, res) => {
+    const { principalId } = req.params;
+    let query = 'SELECT * FROM barbas WHERE (rol IS NULL OR rol = ?) OR (barba_principal_id = ?) ORDER BY nombre';
+    const params = ['Relacionado', principalId];
+    
+    db.query(query, params, (err, results) => {
+        if (err) {
+            console.error('Error al obtener barbas disponibles:', err);
+            res.status(500).json({ message: 'Error al obtener barbas disponibles' });
+            return;
+        }
+        res.json(results);
+    });
+});
+
+// Relacionar barbas a una principal
+app.put('/api/barbas/relacionar/:id', (req, res) => {
+    const { id } = req.params;
+    const { relacionados } = req.body;
+
+    if (!Array.isArray(relacionados) || relacionados.length > 4) {
+        return res.status(400).json({ message: 'Debe proporcionar un array de hasta 4 IDs de barbas relacionadas' });
+    }
+
+    const queryReset = 'UPDATE barbas SET barba_principal_id = NULL, rol = NULL WHERE barba_principal_id = ?';
+    
+    db.query(queryReset, [id], (err) => {
+        if (err) {
+            console.error('Error al resetear relaciones:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+
+        if (relacionados.length === 0) {
+            return res.json({ message: 'Relaciones actualizadas correctamente', affectedRows: 0 });
+        }
+
+        const queryUpdate = 'UPDATE barbas SET barba_principal_id = ?, rol = ? WHERE id IN (?)';
+        
+        db.query(queryUpdate, [id, 'Relacionado', relacionados], (err, result) => {
+            if (err) {
+                console.error('Error al relacionar barbas:', err);
+                return res.status(500).json({ message: 'Error en el servidor' });
+            }
+            res.json({ message: 'Barbas relacionadas correctamente', affectedRows: result.affectedRows });
+        });
+    });
+});
+
+// Obtener barbas principales con sus relacionadas (para el carrusel del frontend)
+app.get('/api/barbas/principales-con-relacionados', (req, res) => {
+    const queryPrincipales = 'SELECT * FROM barbas WHERE rol = ? ORDER BY id';
+    
+    db.query(queryPrincipales, ['Principal'], (err, principales) => {
+        if (err) {
+            console.error('Error al obtener barbas principales:', err);
+            return res.status(500).json({ message: 'Error al obtener barbas principales' });
+        }
+
+        if (principales.length === 0) {
+            return res.json([]);
+        }
+
+        const promises = principales.map(principal => {
+            return new Promise((resolve, reject) => {
+                const queryRelacionados = 'SELECT * FROM barbas WHERE barba_principal_id = ? ORDER BY id LIMIT 4';
+                db.query(queryRelacionados, [principal.id], (err, relacionados) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve({
+                            id: principal.id,
+                            name: principal.nombre,
+                            description: principal.descripcion_principal || principal.descripcion,
+                            mainImage: principal.imagen,
+                            price: principal.precio,
+                            relatedImages: relacionados.map(rel => ({
+                                id: rel.id,
+                                name: rel.nombre,
+                                url: `url("${rel.imagen}")`,
+                                price: rel.precio
+                            }))
+                        });
+                    }
+                });
+            });
+        });
+
+        Promise.all(promises)
+            .then(results => res.json(results))
+            .catch(error => {
+                console.error('Error al obtener relacionados:', error);
+                res.status(500).json({ message: 'Error al obtener las barbas con relacionadas' });
+            });
+    });
+});
+
+// Obtener barbas destacadas para el slider del index principal
+app.get('/api/barbas/destacadas', (req, res) => {
+    const query = `
+        SELECT 
+            id,
+            nombre as name,
+            descripcion_destacado as description,
+            imagen_destacado as image_url
+        FROM barbas 
+        WHERE destacado = 1 
+        AND imagen_destacado IS NOT NULL 
+        AND descripcion_destacado IS NOT NULL
+        ORDER BY id ASC
+    `;
+    
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener barbas destacadas:', err);
+            res.status(500).send('Error fetching featured beards');
+            return;
+        }
+        res.json(results);
+    });
+});
+
+// ==================== ENDPOINTS PARA MOVER ENTRE TABLAS ====================
+
+// Mover de cortes a barbas
+app.post('/api/mover/corte-a-barba/:id', (req, res) => {
+    const { id } = req.params;
+    
+    // Primero obtener los datos del corte
+    db.query('SELECT * FROM cortes WHERE id = ?', [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener el corte:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Corte no encontrado' });
+        }
+        
+        const corte = results[0];
+        
+        // Insertar en la tabla barbas con los mismos datos
+        const queryInsert = `INSERT INTO barbas (nombre, descripcion, precio, imagen, destacado, rol, descripcion_principal, imagen_destacado, descripcion_destacado) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        
+        db.query(queryInsert, [
+            corte.nombre,
+            corte.descripcion,
+            corte.precio,
+            corte.imagen,
+            corte.destacado,
+            corte.rol,
+            corte.descripcion_principal,
+            corte.imagen_destacado,
+            corte.descripcion_destacado
+        ], (err, insertResult) => {
+            if (err) {
+                console.error('Error al insertar en barbas:', err);
+                return res.status(500).json({ message: 'Error al mover a barbas' });
+            }
+            
+            // Eliminar de la tabla cortes
+            db.query('DELETE FROM cortes WHERE id = ?', [id], (err) => {
+                if (err) {
+                    console.error('Error al eliminar de cortes:', err);
+                    return res.status(500).json({ message: 'Error al completar el movimiento' });
+                }
+                
+                res.json({ 
+                    message: `"${corte.nombre}" movido exitosamente de Cortes a Barbas`,
+                    newId: insertResult.insertId
+                });
+            });
+        });
+    });
+});
+
+// Mover de barbas a cortes
+app.post('/api/mover/barba-a-corte/:id', (req, res) => {
+    const { id } = req.params;
+    
+    // Primero obtener los datos de la barba
+    db.query('SELECT * FROM barbas WHERE id = ?', [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener la barba:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Barba no encontrada' });
+        }
+        
+        const barba = results[0];
+        
+        // Insertar en la tabla cortes con los mismos datos
+        const queryInsert = `INSERT INTO cortes (nombre, descripcion, precio, imagen, destacado, rol, descripcion_principal, imagen_destacado, descripcion_destacado) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        
+        db.query(queryInsert, [
+            barba.nombre,
+            barba.descripcion,
+            barba.precio,
+            barba.imagen,
+            barba.destacado,
+            barba.rol,
+            barba.descripcion_principal,
+            barba.imagen_destacado,
+            barba.descripcion_destacado
+        ], (err, insertResult) => {
+            if (err) {
+                console.error('Error al insertar en cortes:', err);
+                return res.status(500).json({ message: 'Error al mover a cortes' });
+            }
+            
+            // Eliminar de la tabla barbas
+            db.query('DELETE FROM barbas WHERE id = ?', [id], (err) => {
+                if (err) {
+                    console.error('Error al eliminar de barbas:', err);
+                    return res.status(500).json({ message: 'Error al completar el movimiento' });
+                }
+                
+                res.json({ 
+                    message: `"${barba.nombre}" movido exitosamente de Barbas a Cortes`,
+                    newId: insertResult.insertId
+                });
+            });
+        });
     });
 });
 

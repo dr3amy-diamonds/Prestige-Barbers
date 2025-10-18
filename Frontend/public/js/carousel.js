@@ -29,10 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         fetchCuts() {
-            fetch('/api/cortes')
-                .then(response => response.json())
-                .then(data => {
-                    this.cuts = data;
+            // Cargar tanto cortes como barbas destacadas
+            Promise.all([
+                fetch('/api/cortes').then(res => res.json()),
+                fetch('/api/barbas/destacadas').then(res => res.json())
+            ])
+                .then(([cortes, barbas]) => {
+                    // Combinar cortes y barbas destacadas
+                    this.cuts = [...cortes, ...barbas];
                     this.slideCount = this.cuts.length;
                     if (this.slideCount === 0) return;
 
@@ -50,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         this.isInitialLoad = false;
                     }
                 })
-                .catch(error => console.error('Error fetching cuts:', error));
+                .catch(error => console.error('Error fetching cuts and beards:', error));
         }
 
         createSlides() {

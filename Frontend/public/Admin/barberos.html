@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Barberos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .nav-buttons a {
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .nav-buttons a:hover {
+            background-color: #0056b3;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+        .form-container {
+            flex: 1;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .table-container {
+            flex: 2;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        .horarios-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .cortes-container, .barbas-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .cortes-section, .barbas-section {
+            transition: opacity 0.3s ease;
+        }
+        .cortes-section.hidden, .barbas-section.hidden {
+            display: none;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        button.cancel {
+            background-color: #6c757d;
+        }
+        button.cancel:hover {
+            background-color: #5a6268;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #6f42c1;
+            color: white;
+        }
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+        .actions button {
+            padding: 5px 10px;
+            font-size: 14px;
+            width: auto;
+            margin: 0;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+        }
+        .edit-btn:hover {
+            background-color: #e0a800;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .tipo-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .tipo-peluquero {
+            background-color: #007bff;
+            color: white;
+        }
+        .tipo-barbero {
+            background-color: #28a745;
+            color: white;
+        }
+        .tipo-ambos {
+            background-color: #6f42c1;
+            color: white;
+        }
+        img {
+            max-width: 50px;
+            max-height: 50px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-buttons">
+        <h1>Gestión de Barberos</h1>
+        <a href="index.html">← Volver al Panel Principal</a>
+    </div>
+
+    <div class="main-container">
+        <div class="form-container">
+            <h2 id="form-title">Registrar Nuevo Barbero</h2>
+            <form id="barberoForm">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" required>
+
+                <label for="tipo">Tipo:</label>
+                <select id="tipo" required>
+                    <option value="Peluquero">Peluquero</option>
+                    <option value="Barbero">Barbero</option>
+                    <option value="Ambos">Ambos</option>
+                </select>
+
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" rows="4" required></textarea>
+
+                <label for="imagen">Imagen del Barbero:</label>
+                <input type="file" id="imagen" accept="image/*">
+
+                <div class="cortes-section" id="cortesSection">
+                    <h3>Cortes Realizados</h3>
+                    <div class="cortes-container">
+                        <div>
+                            <label for="corte1">Corte 1:</label>
+                            <select id="corte1">
+                                <option value="">-- Ninguno --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="corte2">Corte 2:</label>
+                            <select id="corte2">
+                                <option value="">-- Ninguno --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="corte3">Corte 3:</label>
+                            <select id="corte3">
+                                <option value="">-- Ninguno --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="corte4">Corte 4:</label>
+                            <select id="corte4">
+                                <option value="">-- Ninguno --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="barbas-section" id="barbasSection">
+                    <h3>Barbas Realizadas</h3>
+                    <div class="barbas-container">
+                        <div>
+                            <label for="barba1">Barba 1:</label>
+                            <select id="barba1">
+                                <option value="">-- Ninguno --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="barba2">Barba 2:</label>
+                            <select id="barba2">
+                                <option value="">-- Ninguno --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="barba3">Barba 3:</label>
+                            <select id="barba3">
+                                <option value="">-- Ninguno --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="barba4">Barba 4:</label>
+                            <select id="barba4">
+                                <option value="">-- Ninguno --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Horarios de Disponibilidad</h3>
+                <div class="horarios-container">
+                    <div>
+                        <label for="horario_manana">Horario Mañana:</label>
+                        <input type="text" id="horario_manana" placeholder="9:00 AM - 12:00 PM">
+                    </div>
+                    <div>
+                        <label for="horario_tarde">Horario Tarde:</label>
+                        <input type="text" id="horario_tarde" placeholder="2:00 PM - 6:00 PM">
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn">Guardar Barbero</button>
+                <button type="button" class="cancel" id="cancelBtn" style="display: none;">Cancelar Edición</button>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <h2>Lista de Barberos</h2>
+            <table id="barberosTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                        <th>Horarios</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Barberos se cargarán aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let editingBarberoId = null;
+
+        // Cargar cortes y barbas disponibles al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBarberos();
+            loadCortesOptions();
+            loadBarbasOptions();
+            updateSectionsVisibility(); // Inicializar visibilidad
+            
+            // Escuchar cambios en el selector de tipo
+            document.getElementById('tipo').addEventListener('change', updateSectionsVisibility);
+        });
+
+        // Actualizar visibilidad de secciones según el tipo
+        function updateSectionsVisibility() {
+            const tipo = document.getElementById('tipo').value;
+            const cortesSection = document.getElementById('cortesSection');
+            const barbasSection = document.getElementById('barbasSection');
+            
+            // Limpiar selecciones cuando se oculta una sección
+            if (tipo === 'Peluquero') {
+                // Solo mostrar cortes
+                cortesSection.classList.remove('hidden');
+                barbasSection.classList.add('hidden');
+                // Limpiar selecciones de barbas
+                ['barba1', 'barba2', 'barba3', 'barba4'].forEach(id => {
+                    document.getElementById(id).value = '';
+                });
+            } else if (tipo === 'Barbero') {
+                // Solo mostrar barbas
+                cortesSection.classList.add('hidden');
+                barbasSection.classList.remove('hidden');
+                // Limpiar selecciones de cortes
+                ['corte1', 'corte2', 'corte3', 'corte4'].forEach(id => {
+                    document.getElementById(id).value = '';
+                });
+            } else if (tipo === 'Ambos') {
+                // Mostrar ambos
+                cortesSection.classList.remove('hidden');
+                barbasSection.classList.remove('hidden');
+            }
+        }
+
+        // Cargar opciones de cortes
+        async function loadCortesOptions() {
+            try {
+                const response = await fetch('/api/cortes_admin');
+                const cortes = await response.json();
+                
+                const selects = ['corte1', 'corte2', 'corte3', 'corte4'];
+                selects.forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    select.innerHTML = '<option value="">-- Ninguno --</option>';
+                    cortes.forEach(corte => {
+                        const option = document.createElement('option');
+                        option.value = corte.id;
+                        option.textContent = corte.nombre;
+                        select.appendChild(option);
+                    });
+                });
+            } catch (error) {
+                console.error('Error al cargar cortes:', error);
+            }
+        }
+
+        // Cargar opciones de barbas
+        async function loadBarbasOptions() {
+            try {
+                const response = await fetch('/api/barbas_admin');
+                const barbas = await response.json();
+                
+                const selects = ['barba1', 'barba2', 'barba3', 'barba4'];
+                selects.forEach(selectId => {
+                    const select = document.getElementById(selectId);
+                    select.innerHTML = '<option value="">-- Ninguno --</option>';
+                    barbas.forEach(barba => {
+                        const option = document.createElement('option');
+                        option.value = barba.id;
+                        option.textContent = barba.nombre;
+                        select.appendChild(option);
+                    });
+                });
+            } catch (error) {
+                console.error('Error al cargar barbas:', error);
+            }
+        }
+
+        // Cargar barberos
+        async function loadBarberos() {
+            try {
+                const response = await fetch('/api/barberos');
+                const barberos = await response.json();
+                
+                const tbody = document.querySelector('#barberosTable tbody');
+                tbody.innerHTML = '';
+                
+                barberos.forEach(barbero => {
+                    const tr = document.createElement('tr');
+                    
+                    const tipoBadge = getTipoBadge(barbero.tipo);
+                    const horarios = formatHorarios(barbero.horario_manana, barbero.horario_tarde);
+                    
+                    tr.innerHTML = `
+                        <td>${barbero.id}</td>
+                        <td><img src="${barbero.imagen || '/uploads/default-avatar.png'}" alt="${barbero.nombre}"></td>
+                        <td>${barbero.nombre}</td>
+                        <td>${tipoBadge}</td>
+                        <td>${barbero.descripcion ? barbero.descripcion.substring(0, 50) + '...' : 'Sin descripción'}</td>
+                        <td>${horarios}</td>
+                        <td class="actions">
+                            <button class="edit-btn" onclick="editBarbero(${barbero.id})">Editar</button>
+                            <button class="delete-btn" onclick="deleteBarbero(${barbero.id}, '${barbero.nombre}')">Eliminar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Error al cargar barberos:', error);
+                alert('Error al cargar la lista de barberos');
+            }
+        }
+
+        // Formatear tipo con badge
+        function getTipoBadge(tipo) {
+            const badges = {
+                'Peluquero': '<span class="tipo-badge tipo-peluquero">Peluquero</span>',
+                'Barbero': '<span class="tipo-badge tipo-barbero">Barbero</span>',
+                'Ambos': '<span class="tipo-badge tipo-ambos">Ambos</span>'
+            };
+            return badges[tipo] || tipo;
+        }
+
+        // Formatear horarios
+        function formatHorarios(manana, tarde) {
+            const horarios = [];
+            if (manana) horarios.push(`M: ${manana}`);
+            if (tarde) horarios.push(`T: ${tarde}`);
+            return horarios.length > 0 ? horarios.join('<br>') : 'Sin horarios';
+        }
+
+        // Guardar barbero (crear o actualizar)
+        document.getElementById('barberoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('nombre', document.getElementById('nombre').value);
+            formData.append('tipo', document.getElementById('tipo').value);
+            formData.append('descripcion', document.getElementById('descripcion').value);
+            formData.append('corte1_id', document.getElementById('corte1').value || '');
+            formData.append('corte2_id', document.getElementById('corte2').value || '');
+            formData.append('corte3_id', document.getElementById('corte3').value || '');
+            formData.append('corte4_id', document.getElementById('corte4').value || '');
+            formData.append('barba1_id', document.getElementById('barba1').value || '');
+            formData.append('barba2_id', document.getElementById('barba2').value || '');
+            formData.append('barba3_id', document.getElementById('barba3').value || '');
+            formData.append('barba4_id', document.getElementById('barba4').value || '');
+            formData.append('horario_manana', document.getElementById('horario_manana').value);
+            formData.append('horario_tarde', document.getElementById('horario_tarde').value);
+            
+            const imagenFile = document.getElementById('imagen').files[0];
+            if (imagenFile) {
+                formData.append('imagen', imagenFile);
+            }
+            
+            try {
+                let response;
+                if (editingBarberoId) {
+                    response = await fetch(`/api/barberos/${editingBarberoId}`, {
+                        method: 'PUT',
+                        body: formData
+                    });
+                } else {
+                    response = await fetch('/api/barberos', {
+                        method: 'POST',
+                        body: formData
+                    });
+                }
+                
+                if (response.ok) {
+                    alert(editingBarberoId ? 'Barbero actualizado exitosamente' : 'Barbero creado exitosamente');
+                    resetForm();
+                    loadBarberos();
+                } else {
+                    alert('Error al guardar el barbero');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al guardar el barbero');
+            }
+        });
+
+        // Editar barbero
+        async function editBarbero(id) {
+            try {
+                const response = await fetch(`/api/barberos/${id}`);
+                const barbero = await response.json();
+                
+                editingBarberoId = id;
+                document.getElementById('form-title').textContent = 'Editar Barbero';
+                document.getElementById('submitBtn').textContent = 'Actualizar Barbero';
+                document.getElementById('cancelBtn').style.display = 'block';
+                
+                document.getElementById('nombre').value = barbero.nombre;
+                document.getElementById('tipo').value = barbero.tipo;
+                document.getElementById('descripcion').value = barbero.descripcion || '';
+                document.getElementById('corte1').value = barbero.corte1_id || '';
+                document.getElementById('corte2').value = barbero.corte2_id || '';
+                document.getElementById('corte3').value = barbero.corte3_id || '';
+                document.getElementById('corte4').value = barbero.corte4_id || '';
+                document.getElementById('barba1').value = barbero.barba1_id || '';
+                document.getElementById('barba2').value = barbero.barba2_id || '';
+                document.getElementById('barba3').value = barbero.barba3_id || '';
+                document.getElementById('barba4').value = barbero.barba4_id || '';
+                document.getElementById('horario_manana').value = barbero.horario_manana || '';
+                document.getElementById('horario_tarde').value = barbero.horario_tarde || '';
+                
+                // Actualizar visibilidad de secciones
+                updateSectionsVisibility();
+                
+                // Scroll to form
+                document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error('Error al cargar barbero:', error);
+                alert('Error al cargar los datos del barbero');
+            }
+        }
+
+        // Eliminar barbero
+        async function deleteBarbero(id, nombre) {
+            if (!confirm(`¿Estás seguro de eliminar a ${nombre}?`)) return;
+            
+            try {
+                const response = await fetch(`/api/barberos/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('Barbero eliminado exitosamente');
+                    loadBarberos();
+                } else {
+                    alert('Error al eliminar el barbero');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al eliminar el barbero');
+            }
+        }
+
+        // Cancelar edición
+        document.getElementById('cancelBtn').addEventListener('click', resetForm);
+
+        // Reset form
+        function resetForm() {
+            editingBarberoId = null;
+            document.getElementById('form-title').textContent = 'Registrar Nuevo Barbero';
+            document.getElementById('submitBtn').textContent = 'Guardar Barbero';
+            document.getElementById('cancelBtn').style.display = 'none';
+            document.getElementById('barberoForm').reset();
+        }
+    </script>
+</body>
+</html>

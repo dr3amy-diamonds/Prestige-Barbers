@@ -28,6 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
             this.setupEventListeners();
         }
 
+        determinarTipo(cut, index) {
+            // Si ya tiene el marcador _tipo, usarlo
+            if (cut._tipo) {
+                return cut._tipo;
+            }
+            // Fallback: asumir que los primeros son cortes
+            return 'corte';
+        }
+
         fetchCuts() {
             // Cargar tanto cortes como barbas destacadas
             Promise.all([
@@ -35,8 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetch('/api/barbas/destacadas').then(res => res.json())
             ])
                 .then(([cortes, barbas]) => {
+                    // Marcar el tipo en cada elemento para identificarlo después
+                    const cortesConTipo = cortes.map(c => ({ ...c, _tipo: 'corte' }));
+                    const barbasConTipo = barbas.map(b => ({ ...b, _tipo: 'barba' }));
+                    
                     // Combinar cortes y barbas destacadas
-                    this.cuts = [...cortes, ...barbas];
+                    this.cuts = [...cortesConTipo, ...barbasConTipo];
                     this.slideCount = this.cuts.length;
                     if (this.slideCount === 0) return;
 
@@ -61,21 +74,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const slideElements = this.cuts.map((cut, index) => {
                 const slide = document.createElement('div');
                 slide.className = 'slide';
+                
+                // Determinar si es corte o barba basándose en si viene de /api/cortes o /api/barbas/destacadas
+                // Los cortes tienen estructura de la tabla 'cortes', las barbas de la tabla 'barbas'
+                const tipo = this.determinarTipo(cut, index);
+                
                 slide.innerHTML = `
                     <img src="${cut.image_url}" alt="${cut.name}">
                     <div class="main-cut-imgs-text">
                         <h2>Destacados de la semana</h2>
                         <h3>${cut.name}</h3>
                         <p>${cut.description}</p>
-                        <a href="">Reserva Ahora</a>
+                        <a href="Reserva/index.html?id=${cut.id}&type=${tipo}">Reserva Ahora</a>
                     </div>
                 `;
                 const text = slide.querySelector('.main-cut-imgs-text');
                 if (index !== 0) {
                     text.style.opacity = 0;
                 }
-                const link = slide.querySelector('a');
-                link.addEventListener('click', (e) => e.preventDefault());
                 return slide;
             });
 

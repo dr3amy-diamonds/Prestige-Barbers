@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar - Prestige Barbers</title>
+    <link rel="stylesheet" href="R-Styles/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* Prevenir parpadeo inicial - Ocultar contenido hasta que cargue */
+        .res-cont {
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+        }
+        .res-cont.loaded {
+            opacity: 1;
+        }
+        /* Loader centrado */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            background: #fff;
+            z-index: 9999;
+        }
+        .loader-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1b1b1b;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loader.hidden {
+            display: none;
+        }
+        .loader p {
+            color: #1b1b1b;
+            font-weight: 500;
+            font-size: 1rem;
+            margin: 0;
+        }
+    </style>
+</head>
+<header>
+    <div class="head-logo-cont">
+        <a href="../index.html" style="text-decoration: none; color: inherit;">
+            <h1>Prestige Barbers</h1>
+        </a>
+    </div>
+    <div class="head-lkn-cont">
+        <a href="../index.html">Shop</a>
+        <a href="../Cortes/index.html">Servicios</a>
+        <a href="../index.html">Barberos</a>
+        <a href="../index.html">Reservas</a>
+        <a href="../index.html">Acerca De</a>
+    </div>
+</header>
+<main>
+    <!-- Loader mientras carga (centrado en pantalla completa) -->
+    <div class="loader" id="pageLoader">
+        <div class="loader-spinner"></div>
+        <p>Cargando información...</p>
+    </div>
+
+    <!-- Contenedor principal (oculto inicialmente) -->
+    <div class="res-cont" id="mainContent">
+        <div class="img-cut-cont">
+            <img id="serviceImage" src="" alt="" style="display: none;">
+        </div>
+        <div class="info-cut-cont">
+            <label id="serviceType"></label>
+            <h2 id="serviceName"></h2>
+            <p id="serviceDescription"></p>
+            <label id="barbersLabel"></label>
+            <div class="barb-btn-cont" id="barbersContainer">
+                <!-- Los barberos se cargarán dinámicamente aquí -->
+            </div>
+            <div class="lkns-res-con">
+                <a href="#" id="reserveButton">Reservar</a>
+                <a href="../index.html#contacto">Contáctenos</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<body>
+    <script src="R-js/Reserva.js"></script>
+</body>
+
+</html>

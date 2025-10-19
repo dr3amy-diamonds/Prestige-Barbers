@@ -252,6 +252,22 @@ app.delete('/api/cortes_admin/:id', (req, res) => {
     });
 });
 
+// Obtener un corte específico por ID
+app.get('/api/cortes_admin/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'SELECT * FROM cortes WHERE id = ?';
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener el corte:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Corte no encontrado' });
+        }
+        res.json(results[0]);
+    });
+});
+
 // Endpoint para obtener solo los cortes principales
 app.get('/api/cortes/principales', (req, res) => {
     const query = 'SELECT * FROM cortes WHERE rol = ? ORDER BY id';
@@ -458,6 +474,22 @@ app.delete('/api/barbas_admin/:id', (req, res) => {
             return res.status(404).json({ message: 'Barba no encontrada' });
         }
         res.json({ message: 'Barba eliminada correctamente' });
+    });
+});
+
+// Obtener una barba específica por ID
+app.get('/api/barbas_admin/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'SELECT * FROM barbas WHERE id = ?';
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener la barba:', err);
+            return res.status(500).json({ message: 'Error en el servidor' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Barba no encontrada' });
+        }
+        res.json(results[0]);
     });
 });
 
@@ -761,6 +793,142 @@ app.post('/api/mover/barba-a-corte/:id', (req, res) => {
                 });
             });
         });
+    });
+});
+
+// ==================== ENDPOINTS PARA BARBEROS ====================
+
+// GET - Obtener todos los barberos
+app.get('/api/barberos', (req, res) => {
+    const query = 'SELECT * FROM barberos ORDER BY id ASC';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener barberos:', err);
+            return res.status(500).json({ message: 'Error al obtener barberos' });
+        }
+        res.json(results);
+    });
+});
+
+// GET - Obtener un barbero específico por ID
+app.get('/api/barberos/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'SELECT * FROM barberos WHERE id = ?';
+    
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener barbero:', err);
+            return res.status(500).json({ message: 'Error al obtener barbero' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Barbero no encontrado' });
+        }
+        res.json(results[0]);
+    });
+});
+
+// POST - Crear un nuevo barbero
+app.post('/api/barberos', upload.single('imagen'), (req, res) => {
+    const {
+        nombre, tipo, descripcion,
+        corte1_id, corte2_id, corte3_id, corte4_id,
+        barba1_id, barba2_id, barba3_id, barba4_id,
+        horario_manana, horario_tarde
+    } = req.body;
+    
+    const imagen = req.file ? `/uploads/${req.file.filename}` : null;
+    
+    const query = `
+        INSERT INTO barberos (
+            nombre, tipo, descripcion, imagen,
+            corte1_id, corte2_id, corte3_id, corte4_id,
+            barba1_id, barba2_id, barba3_id, barba4_id,
+            horario_manana, horario_tarde
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    
+    db.query(query, [
+        nombre, tipo, descripcion, imagen,
+        corte1_id || null, corte2_id || null, corte3_id || null, corte4_id || null,
+        barba1_id || null, barba2_id || null, barba3_id || null, barba4_id || null,
+        horario_manana || null, horario_tarde || null
+    ], (err, result) => {
+        if (err) {
+            console.error('Error al crear barbero:', err);
+            return res.status(500).json({ message: 'Error al crear barbero' });
+        }
+        res.json({ 
+            message: 'Barbero creado exitosamente',
+            id: result.insertId
+        });
+    });
+});
+
+// PUT - Actualizar un barbero existente
+app.put('/api/barberos/:id', upload.single('imagen'), (req, res) => {
+    const { id } = req.params;
+    const {
+        nombre, tipo, descripcion,
+        corte1_id, corte2_id, corte3_id, corte4_id,
+        barba1_id, barba2_id, barba3_id, barba4_id,
+        horario_manana, horario_tarde
+    } = req.body;
+    
+    let query, params;
+    
+    if (req.file) {
+        query = `
+            UPDATE barberos SET
+                nombre = ?, tipo = ?, descripcion = ?, imagen = ?,
+                corte1_id = ?, corte2_id = ?, corte3_id = ?, corte4_id = ?,
+                barba1_id = ?, barba2_id = ?, barba3_id = ?, barba4_id = ?,
+                horario_manana = ?, horario_tarde = ?
+            WHERE id = ?
+        `;
+        params = [
+            nombre, tipo, descripcion, `/uploads/${req.file.filename}`,
+            corte1_id || null, corte2_id || null, corte3_id || null, corte4_id || null,
+            barba1_id || null, barba2_id || null, barba3_id || null, barba4_id || null,
+            horario_manana || null, horario_tarde || null,
+            id
+        ];
+    } else {
+        query = `
+            UPDATE barberos SET
+                nombre = ?, tipo = ?, descripcion = ?,
+                corte1_id = ?, corte2_id = ?, corte3_id = ?, corte4_id = ?,
+                barba1_id = ?, barba2_id = ?, barba3_id = ?, barba4_id = ?,
+                horario_manana = ?, horario_tarde = ?
+            WHERE id = ?
+        `;
+        params = [
+            nombre, tipo, descripcion,
+            corte1_id || null, corte2_id || null, corte3_id || null, corte4_id || null,
+            barba1_id || null, barba2_id || null, barba3_id || null, barba4_id || null,
+            horario_manana || null, horario_tarde || null,
+            id
+        ];
+    }
+    
+    db.query(query, params, (err) => {
+        if (err) {
+            console.error('Error al actualizar barbero:', err);
+            return res.status(500).json({ message: 'Error al actualizar barbero' });
+        }
+        res.json({ message: 'Barbero actualizado exitosamente' });
+    });
+});
+
+// DELETE - Eliminar un barbero
+app.delete('/api/barberos/:id', (req, res) => {
+    const { id } = req.params;
+    
+    db.query('DELETE FROM barberos WHERE id = ?', [id], (err) => {
+        if (err) {
+            console.error('Error al eliminar barbero:', err);
+            return res.status(500).json({ message: 'Error al eliminar barbero' });
+        }
+        res.json({ message: 'Barbero eliminado exitosamente' });
     });
 });
 

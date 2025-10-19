@@ -10,6 +10,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
+    <script>
+        // Capturar y remover el hash INMEDIATAMENTE para prevenir el salto del navegador
+        var savedHash = '';
+        if (window.location.hash) {
+            savedHash = window.location.hash;
+            // Remover el hash de la URL SIN recargar la página
+            history.replaceState(null, null, ' ');
+            // Desactivar restauración de scroll
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -21,7 +34,7 @@
         </div>
         <div class="head-lkn-cont">
             <a href="../index.html">Shop</a>
-            <a href="../index.html">Servicios</a>
+            <a href="../Cortes/index.html">Servicios</a>
             <a href="../index.html">Barberos</a>
             <a href="../index.html">Reservas</a>
             <a href="../index.html">Acerca De</a>
@@ -29,7 +42,7 @@
     </header>
     <main>
 
-        <div class="cort-cont">
+        <div class="cort-cont" id="seccion-cabello">
             <div class="cort-cont-inf-img-cont">
                 <div class="cort-cont-inf">
                     <h2> Cortes </h2>
@@ -71,14 +84,14 @@
             </div>
         </div>
 
-        <div class="skincare-cont">
+        <div class="skincare-cont" id="seccion-rostro">
             <div class="skincare-cont-img-inf skincare-img">
                 <h2>Skincare</h2>
                 <label for="">Cuidado facial incluido con tu corte</label>
             </div>
         </div>
 
-        <div class="barb-cont">
+        <div class="barb-cont" id="seccion-barba">
             <div class="barb-cont-inf-img" id="beard-info" style="position: relative; background-size: cover; background-position: center; background-repeat: no-repeat;">
                 <!-- Slider de barbas (imagen principal) -->
                 <div class="cort-cont-img" id="beard-carousel-container"></div>
@@ -188,6 +201,7 @@
                     this.cutNameLabel = document.getElementById('cut-name-label');
                     this.cutDescriptionLabel = document.getElementById('cut-description-label');
                     this.relatedButtons = document.querySelectorAll('.cort-cont-btns button');
+                    this.reserveLink = document.querySelector('.cort-cont-inf-2 a');
 
                     this.currentIndex = 1;
                     this.intervalId = null;
@@ -258,6 +272,11 @@
                         }, 300);
                     }
 
+                    // Actualizar enlace de reserva para el corte principal
+                    if (this.reserveLink) {
+                        this.reserveLink.href = `../Reserva/index.html?id=${currentCut.id}&type=corte`;
+                    }
+
                     this.relatedButtons.forEach((button, i) => {
                         const infoBox = button.querySelector('.cort-cont-btns-info h3');
                         const priceBox = button.querySelector('.cort-cont-btns-info p');
@@ -269,6 +288,10 @@
                             if (priceBox && currentCut.relatedImages[i].price) {
                                 priceBox.textContent = formatPrice(currentCut.relatedImages[i].price);
                             }
+                            // Actualizar onclick del botón para ir a reservas con el corte relacionado
+                            button.onclick = () => {
+                                window.location.href = `../Reserva/index.html?id=${currentCut.relatedImages[i].id}&type=corte`;
+                            };
                         } else {
                             button.style.backgroundImage = 'none';
                             if (infoBox) {
@@ -277,6 +300,7 @@
                             if (priceBox) {
                                 priceBox.textContent = '';
                             }
+                            button.onclick = null;
                         }
                     });
 
@@ -497,6 +521,7 @@
                     // Etiquetas de texto ya existen en el layout; sólo las animamos como en cortes
                     this.titleEl = document.querySelector('.barb-cont-inf-img h3');
                     this.subtitleEl = document.querySelector('.barb-cont-inf-img label, .barb-cont-inf-img Label');
+                    this.reserveLink = document.querySelector('.barb-cont-inf-img a');
                     // Escenario de fondo deslizante (tres capas: prev, curr, next)
                     this.bgContainer = document.getElementById('beard-info');
                     this.bgStage = document.createElement('div');
@@ -569,14 +594,29 @@
                         this.subtitleEl.textContent = current.description || '';
                     }
 
+                    // Actualizar enlace de reserva para la barba principal
+                    if (this.reserveLink) {
+                        this.reserveLink.href = `../Reserva/index.html?id=${current.id}&type=barba`;
+                    }
+
                     this.relatedButtons.forEach((button, i) => {
                         const infoBox = button.querySelector('.cort-cont-btns-info h3');
+                        const priceBox = button.querySelector('.cort-cont-btns-info p');
                         if (current.relatedImages[i]) {
                             button.style.backgroundImage = current.relatedImages[i].url;
                             if (infoBox) infoBox.textContent = current.relatedImages[i].name;
+                            if (priceBox && current.relatedImages[i].price) {
+                                priceBox.textContent = formatPrice(current.relatedImages[i].price);
+                            }
+                            // Actualizar onclick del botón para ir a reservas con la barba relacionada
+                            button.onclick = () => {
+                                window.location.href = `../Reserva/index.html?id=${current.relatedImages[i].id}&type=barba`;
+                            };
                         } else {
                             button.style.backgroundImage = 'none';
                             if (infoBox) infoBox.textContent = '';
+                            if (priceBox) priceBox.textContent = '';
+                            button.onclick = null;
                         }
                     });
 
@@ -744,6 +784,65 @@
                 button.addEventListener('mouseleave', () => beardContainer.classList.remove('carousel-paused'));
             });
         });
+    </script>
+
+    <!-- Script para smooth scroll animado cuando viene con hash -->
+    <script>
+        (function() {
+            // Usar el hash guardado en el script anterior
+            if (savedHash) {
+                window.addEventListener('load', function() {
+                    // Asegurar scroll al top
+                    window.scrollTo(0, 0);
+                    
+                    // Delay mínimo para que la página se estabilice
+                    setTimeout(function() {
+                        const targetId = savedHash.substring(1); // Remover el #
+                        const targetElement = document.getElementById(targetId);
+                        
+                        // Si es la sección de cabello, no hacer animación (ya está al inicio)
+                        if (targetId === 'seccion-cabello') {
+                            // Solo restaurar el hash sin animación
+                            history.replaceState(null, null, savedHash);
+                            return;
+                        }
+                        
+                        if (targetElement) {
+                            // Calcular la posición del elemento
+                            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                            const startPosition = window.pageYOffset;
+                            const distance = targetPosition - startPosition;
+                            const duration = 1000; // 1 segundo - más rápido y fluido
+                            let start = null;
+
+                            // Función de animación con easing suave
+                            function animationScroll(currentTime) {
+                                if (start === null) start = currentTime;
+                                const timeElapsed = currentTime - start;
+                                const run = ease(timeElapsed, startPosition, distance, duration);
+                                window.scrollTo(0, run);
+                                if (timeElapsed < duration) {
+                                    requestAnimationFrame(animationScroll);
+                                } else {
+                                    // Al terminar, restaurar el hash en la URL
+                                    history.replaceState(null, null, savedHash);
+                                }
+                            }
+
+                            // Función easing para suavizar la animación (ease-in-out cuadrático)
+                            function ease(t, b, c, d) {
+                                t /= d / 2;
+                                if (t < 1) return c / 2 * t * t + b;
+                                t--;
+                                return -c / 2 * (t * (t - 2) - 1) + b;
+                            }
+
+                            requestAnimationFrame(animationScroll);
+                        }
+                    }, 200); // 200ms de delay
+                });
+            }
+        })();
     </script>
 </body>
 

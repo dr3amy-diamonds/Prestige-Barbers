@@ -1,0 +1,273 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat", sans-serif;
+}
+
+header {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    position: -webkit-sticky;
+    /* For Safari */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.head-logo-cont {
+    display: flex;
+    text-transform: uppercase;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+    background: #1b1b1b;
+}
+
+.head-logo-cont h1 {
+    font-weight: 550;
+    font-size: 1.3rem;
+}
+
+.head-lkn-cont {
+    padding: 15px 0;
+    display: flex;
+    justify-content: center;
+    background: #fff;
+    display: flex;
+    gap: 40px;
+    border-bottom: 10px solid #1b1b1b;
+    transition: border-color 0.3s ease-in-out;
+}
+
+header:stuck .head-lkn-cont {
+    border-color: #1b1b1b;
+}
+
+.head-lkn-cont a {
+    text-decoration: none;
+    color: #000;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.imp-barb-cont{
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+    height: 50%; /* Altura del viewport */
+    background: #1B1B1B;
+    color: #fff;
+}
+
+
+
+.inf-cont{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    padding: 3% 8%;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+}
+
+.res-lab-cont{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    margin: 0;
+}
+
+.res-lab-cont label{
+    color: #1B1B1B;
+    background-color: white;
+    padding: 5px 5px;
+}
+
+.res-lab-cont a{
+    color: #fff;
+    padding: 5px 10px;
+}
+
+.inf-cont{
+    margin: 0;
+}
+
+.info-cont h2{
+    margin: 0;
+    margin-top: 5px;
+    text-transform: uppercase;
+    font-size: 2.5rem;
+}
+
+.info-cont p{
+    font-size: 1rem;
+    margin: 0;
+    line-height: 1.5rem;
+}
+
+.labs-divs{
+    display: flex;
+    flex-direction: column;
+    font-size: 0.85em;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.labs-divs label:first-child{
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.cort-cont{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cort-cont img{
+    width: 10%;
+    border-radius: 50%;
+}
+
+.img-barb-cont{
+    margin: 0;
+    display: flex;
+    width: 50%;
+    /* Remover height: 100% y dejar que flex se encargue */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    align-self: stretch; /* Estirar al 100% del contenedor padre */
+}
+
+.img-barb-cont img{
+    margin: 0;
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    height: 100%; /* Ocupar todo el alto del contenedor */
+    object-fit: cover; /* Cubrir todo el espacio sin deformar */
+}
+
+/* ========== ESTILOS PARA EL SEGUNDO BARBERO (PAR) ========== */
+
+.par-barb-cont{
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+    height: 50%;
+    background: #fff; /* Fondo blanco */
+    color: #1B1B1B; /* Texto negro */
+}
+
+.img-barb-cont-par{
+    margin: 0;
+    display: flex;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    align-self: stretch;
+    order: 1; /* Imagen a la derecha */
+}
+
+.img-barb-cont-par img{
+    margin: 0;
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    object-fit: cover;
+}
+
+.inf-cont-par{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    padding: 3% 8%;
+    align-items: center;
+    text-align: center;
+    margin: 0;
+    order: 2; /* Información a la izquierda */
+}
+
+.res-lab-cont-par{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    margin: 0;
+}
+
+.res-lab-cont-par label{
+    color: #fff; /* Invertido: texto blanco */
+    background-color: #1B1B1B; /* Fondo negro */
+    padding: 5px 5px;
+}
+
+.res-lab-cont-par a{
+    color: #1B1B1B; /* Texto negro */
+    padding: 5px 10px;
+}
+
+.info-cont-par h2{
+    margin: 0;
+    margin-top: 5px;
+    text-transform: uppercase;
+    font-size: 2.5rem;
+    color: #1B1B1B; /* Texto negro */
+}
+
+.info-cont-par p{
+    font-size: 1rem;
+    margin: 0;
+    line-height: 1.5rem;
+    color: #1B1B1B; /* Texto negro */
+}
+
+.labs-divs-par{
+    display: flex;
+    flex-direction: column;
+    font-size: 0.85em;
+    gap: 5px;
+    margin-top: 10px;
+    color: #1B1B1B; /* Texto negro */
+}
+
+.labs-divs-par label:first-child{
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.cort-cont-par{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cort-cont-par img{
+    width: 10%;
+    border-radius: 50%;
+    border: #1B1B1B 3px solid;
+}

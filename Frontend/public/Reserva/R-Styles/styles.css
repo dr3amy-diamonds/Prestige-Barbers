@@ -4,22 +4,27 @@
 
 html {
     scroll-behavior: smooth;
-    height: 100%;
 }
 
 body {
     margin: 0;
     padding: 0;
     font-family: "Montserrat", sans-serif;
-    height: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-header {
+header{
     background: #333;
     color: #fff;
     text-align: center;
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
 }
 
 .head-logo-cont {
@@ -29,6 +34,7 @@ header {
     justify-content: center;
     padding: 5px 0;
     background: #1b1b1b;
+    position: relative;
 }
 
 .head-logo-cont h1 {
@@ -40,11 +46,12 @@ header {
     padding: 15px 0;
     display: flex;
     justify-content: center;
+    align-items: center;
     background: #fff;
-    display: flex;
     gap: 40px;
     border-bottom: 10px solid #1b1b1b;
     transition: border-color 0.3s ease-in-out;
+    position: relative;
 }
 
 header:stuck .head-lkn-cont {
@@ -58,6 +65,38 @@ header:stuck .head-lkn-cont {
     font-weight: 500;
 }
 
+/* Estilos para los iconos del header */
+.head-icons-cont {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.head-icons-cont .icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.head-icons-cont .icon-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+/* Ajuste específico para el icono del carrito */
+.head-icons-cont .icon-link:first-child img {
+    width: 20px;
+    height: 20px;
+}
+
 main {
     flex: 1;
     display: flex;
@@ -66,30 +105,37 @@ main {
 
 .res-cont{
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     display: flex;
 }
 
 .img-cut-cont{
     width: 50%;
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: flex-end;
+    padding: 20px 0;
+    overflow: hidden;
+    position: relative;
 }
 
 .img-cut-cont img{
-    max-width: 70%;
-    max-height: 100%;
+    max-width: 35%;
+    height: auto;
     object-fit: contain;
+    position: fixed;
+    bottom: 0;
+    left: 25%;
+    transform: translateX(-50%);
 }
 
 
 .info-cut-cont{
     width: 50%;
-    height: 100%;
     color: #1b1b1b;
-    padding: 10%;
+    padding: 5% 10%;
+    overflow-y: auto;
+    max-height: 100%;
 }
 
 .info-cut-cont label{

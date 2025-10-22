@@ -1,0 +1,397 @@
+/* ==================== ESTILOS ESPECÍFICOS DE PERFIL ==================== */
+
+body {
+    background: #f5f5f5;
+}
+
+/* ==================== CONTENEDOR PRINCIPAL ==================== */
+.perfil-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* ==================== HEADER DE PERFIL ==================== */
+.perfil-header {
+    background: white;
+    border: 1px solid #1b1b1b;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.perfil-avatar {
+    flex-shrink: 0;
+}
+
+.avatar-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #1b1b1b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #1b1b1b;
+}
+
+.avatar-circle span {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.perfil-info {
+    flex: 1;
+}
+
+.perfil-titulo {
+    margin: 0 0 8px 0;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1b1b1b;
+}
+
+.perfil-email {
+    margin: 0;
+    color: #666;
+    font-size: 1rem;
+}
+
+/* ==================== TABS ==================== */
+.perfil-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 30px;
+    border: 1px solid #1b1b1b;
+    background: white;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px 20px;
+    background: white;
+    border: none;
+    border-right: 1px solid #1b1b1b;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:last-child {
+    border-right: none;
+}
+
+.tab-btn:hover {
+    background: #f5f5f5;
+}
+
+.tab-btn.active {
+    background: #1b1b1b;
+    color: white;
+}
+
+/* ==================== CONTENIDO DE TABS ==================== */
+.perfil-content {
+    background: white;
+    border: 1px solid #1b1b1b;
+    padding: 40px;
+    min-height: 500px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.seccion-titulo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1b1b1b;
+    margin: 0 0 25px 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #1b1b1b;
+}
+
+/* ==================== TARJETAS DE INFORMACIÓN ==================== */
+.info-card {
+    background: white;
+    border: 1px solid #1b1b1b;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.info-row {
+    margin-bottom: 20px;
+}
+
+.info-row:last-of-type {
+    margin-bottom: 0;
+}
+
+.info-row label {
+    display: block;
+    font-weight: 600;
+    color: #1b1b1b;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.info-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #1b1b1b;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.95rem;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.info-input:focus {
+    outline: none;
+    background: white;
+    border-color: #1b1b1b;
+}
+
+.info-input:read-only {
+    background: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.info-input:not(:read-only) {
+    background: white;
+}
+
+.info-actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+}
+
+/* ==================== BOTONES ==================== */
+.btn-editar,
+.btn-guardar,
+.btn-cancelar,
+.btn-primary,
+.btn-cerrar-sesion,
+.btn-eliminar-cuenta {
+    padding: 12px 25px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 1px solid #1b1b1b;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-editar,
+.btn-primary {
+    background: #1b1b1b;
+    color: white;
+}
+
+.btn-editar:hover,
+.btn-primary:hover {
+    background: white;
+    color: #1b1b1b;
+}
+
+.btn-guardar {
+    background: #1b1b1b;
+    color: white;
+    border-color: #1b1b1b;
+}
+
+.btn-guardar:hover {
+    background: white;
+    color: #1b1b1b;
+}
+
+.btn-cancelar {
+    background: white;
+    color: #1b1b1b;
+    border-color: #1b1b1b;
+}
+
+.btn-cancelar:hover {
+    background: #1b1b1b;
+    color: white;
+}
+
+.btn-primary {
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* ==================== BOTONES DE PELIGRO ==================== */
+.danger-zone {
+    border-color: #1b1b1b;
+}
+
+.btn-cerrar-sesion {
+    background: #1b1b1b;
+    color: white;
+    width: 100%;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.btn-eliminar-cuenta {
+    background: white;
+    color: #1b1b1b;
+    border-color: #1b1b1b;
+    width: 100%;
+    cursor: pointer;
+}
+
+/* ==================== ESTADOS VACÍOS ==================== */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-state p {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+/* ==================== LISTAS DE RESERVAS Y FAVORITOS ==================== */
+.reservas-list,
+.favoritos-grid {
+    min-height: 300px;
+}
+
+/* ==================== CONFIGURACIÓN ==================== */
+.config-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.config-option:last-child {
+    border-bottom: none;
+}
+
+.config-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1b1b1b;
+}
+
+.config-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* ==================== SWITCH TOGGLE ==================== */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 26px;
+    border: 1px solid #1b1b1b;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #1b1b1b;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* ==================== FOOTER ==================== */
+footer {
+    background: #1b1b1b;
+    color: white;
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 60px;
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .perfil-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
+    }
+
+    .perfil-titulo {
+        font-size: 1.5rem;
+    }
+
+    .perfil-tabs {
+        flex-wrap: wrap;
+    }
+
+    .tab-btn {
+        flex: 1 1 50%;
+        border-right: 1px solid #1b1b1b;
+        border-bottom: 1px solid #1b1b1b;
+    }
+
+    .tab-btn:nth-child(2n) {
+        border-right: none;
+    }
+
+    .perfil-content {
+        padding: 20px;
+    }
+
+    .info-actions {
+        flex-direction: column;
+    }
+
+    .info-actions button {
+        width: 100%;
+    }
+}

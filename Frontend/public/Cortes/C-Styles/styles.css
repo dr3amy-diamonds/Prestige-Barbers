@@ -21,6 +21,8 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
 }
 
 .head-logo-cont {
@@ -30,6 +32,7 @@ header {
     justify-content: center;
     padding: 5px 0;
     background: #1b1b1b;
+    position: relative;
 }
 
 .head-logo-cont h1 {
@@ -41,11 +44,12 @@ header {
     padding: 15px 0;
     display: flex;
     justify-content: center;
+    align-items: center;
     background: #fff;
-    display: flex;
     gap: 40px;
     border-bottom: 10px solid #1b1b1b;
     transition: border-color 0.3s ease-in-out;
+    position: relative;
 }
 
 header:stuck .head-lkn-cont {
@@ -57,6 +61,38 @@ header:stuck .head-lkn-cont {
     color: #000;
     font-size: 0.9rem;
     font-weight: 500;
+}
+
+/* Estilos para los iconos del header */
+.head-icons-cont {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.head-icons-cont .icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.head-icons-cont .icon-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+/* Ajuste específico para el icono del carrito */
+.head-icons-cont .icon-link:first-child img {
+    width: 20px;
+    height: 20px;
 }
 
 .cort-cont {

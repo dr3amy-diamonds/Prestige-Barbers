@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Prestige Barbers</title>
+    <link rel="stylesheet" href="../I-style/styles.css">
+    <link rel="stylesheet" href="../I-style/custom-modal.css">
+    <link rel="stylesheet" href="perfil-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="head-logo-cont">
+            <h1><a href="../index.html" style="text-decoration: none; color: inherit;">Prestige Barbers</a></h1>
+            <div class="head-icons-cont">
+                <a href="" class="icon-link" title="Carrito">
+                    <img src="../Icons/cart.svg" alt="Carrito">
+                </a>
+                <a href="" class="icon-link" title="Buscar">
+                    <img src="../Icons/search.svg" alt="Buscar">
+                </a>
+                <a href="" class="icon-link" title="Usuario">
+                    <img src="../Icons/user.svg" alt="Usuario">
+                </a>
+            </div>
+        </div>
+        <div class="head-lkn-cont">
+            <a href="../index.html">Shop</a>
+            <a href="../Cortes/index.html">Servicios</a>
+            <a href="../Barberos/index.html">Barberos</a>
+            <a href="">Acerca De</a>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="perfil-container">
+        <!-- ENCABEZADO DE PERFIL -->
+        <section class="perfil-header">
+            <div class="perfil-avatar">
+                <div class="avatar-circle" id="avatarCircle">
+                    <span id="avatarInitial">U</span>
+                </div>
+            </div>
+            <div class="perfil-info">
+                <h1 class="perfil-titulo" id="nombreUsuario">Cargando...</h1>
+                <p class="perfil-email" id="emailUsuario">Cargando datos...</p>
+            </div>
+        </section>
+
+        <!-- TABS DE NAVEGACIÓN -->
+        <section class="perfil-tabs">
+            <button class="tab-btn active" data-tab="informacion">Mi Información</button>
+            <button class="tab-btn" data-tab="reservas">Mis Reservas</button>
+            <button class="tab-btn" data-tab="configuracion">Configuración</button>
+        </section>
+
+        <!-- CONTENIDO DE TABS -->
+        <section class="perfil-content">
+            <!-- TAB: MI INFORMACIÓN -->
+            <div class="tab-content active" id="tab-informacion">
+                <h2 class="seccion-titulo">Mi Información</h2>
+                <div class="info-card">
+                    <div class="info-row">
+                        <label>Nombre Completo</label>
+                        <input type="text" id="editNombre" class="info-input" readonly>
+                    </div>
+                    <div class="info-row">
+                        <label>Correo Electrónico</label>
+                        <input type="email" id="editEmail" class="info-input" readonly>
+                    </div>
+                    <div class="info-row">
+                        <label>Miembro desde</label>
+                        <input type="text" id="fechaRegistro" class="info-input" readonly>
+                    </div>
+                    <div class="info-actions">
+                        <button class="btn-editar" id="btnEditarInfo">Editar Información</button>
+                        <button class="btn-guardar" id="btnGuardarInfo" style="display: none;">Guardar Cambios</button>
+                        <button class="btn-cancelar" id="btnCancelarInfo" style="display: none;">Cancelar</button>
+                    </div>
+                </div>
+
+                <h2 class="seccion-titulo">Cambiar Contraseña</h2>
+                <div class="info-card">
+                    <div class="info-row">
+                        <label>Contraseña Actual</label>
+                        <input type="password" id="passwordActual" class="info-input" placeholder="Ingresa tu contraseña actual">
+                    </div>
+                    <div class="info-row">
+                        <label>Nueva Contraseña</label>
+                        <input type="password" id="passwordNueva" class="info-input" placeholder="Mínimo 6 caracteres">
+                    </div>
+                    <div class="info-row">
+                        <label>Confirmar Nueva Contraseña</label>
+                        <input type="password" id="passwordConfirmar" class="info-input" placeholder="Repite la nueva contraseña">
+                    </div>
+                    <div class="info-actions">
+                        <button class="btn-editar" id="btnCambiarPassword">Cambiar Contraseña</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: MIS RESERVAS -->
+            <div class="tab-content" id="tab-reservas">
+                <h2 class="seccion-titulo">Mis Reservas</h2>
+                <div class="reservas-list">
+                    <div class="empty-state">
+                        <p>No tienes reservas próximas</p>
+                        <a href="../Reserva/index.html" class="btn-primary">Hacer una Reserva</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: CONFIGURACIÓN -->
+            <div class="tab-content" id="tab-configuracion">
+                <h2 class="seccion-titulo">Configuración</h2>
+                <div class="info-card">
+                    <div class="config-option">
+                        <div class="config-info">
+                            <h3>Notificaciones por Email</h3>
+                            <p>Recibe confirmaciones y recordatorios de tus reservas</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="config-option">
+                        <div class="config-info">
+                            <h3>Promociones y Ofertas</h3>
+                            <p>Entérate de descuentos exclusivos y ofertas especiales</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <h2 class="seccion-titulo">Zona de Peligro</h2>
+                <div class="info-card danger-zone">
+                    <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar Sesión</button>
+                    <button class="btn-eliminar-cuenta">Eliminar Cuenta</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2025 Prestige Barbers. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="../js/auth-modal.js"></script>
+    <script>
+        // SCRIPT SIMPLIFICADO PARA CARGAR DATOS DEL USUARIO
+        console.log('🔵 Script inline cargado');
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🔵 DOM Cargado');
+            
+            // Verificar sesión
+            const token = localStorage.getItem('auth_token');
+            const userData = localStorage.getItem('user_data');
+            
+            console.log('Token:', token ? 'Existe ✅' : 'No existe ❌');
+            console.log('UserData:', userData ? 'Existe ✅' : 'No existe ❌');
+            
+            if (!token || !userData) {
+                alert('No has iniciado sesión. Redirigiendo al inicio...');
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1000);
+                return;
+            }
+            
+            try {
+                const user = JSON.parse(userData);
+                console.log('Usuario:', user);
+                
+                // Actualizar UI
+                document.getElementById('avatarInitial').textContent = user.nombre_completo.charAt(0).toUpperCase();
+                document.getElementById('nombreUsuario').textContent = user.nombre_completo;
+                document.getElementById('emailUsuario').textContent = user.email;
+                document.getElementById('editNombre').value = user.nombre_completo;
+                document.getElementById('editEmail').value = user.email;
+                
+                // Formatear fecha
+                console.log('Fecha registro en user:', user.fecha_registro);
+                if (user.fecha_registro) {
+                    const fecha = new Date(user.fecha_registro);
+                    const fechaFormateada = fecha.toLocaleDateString('es-ES', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    console.log('Fecha formateada:', fechaFormateada);
+                    document.getElementById('fechaRegistro').value = fechaFormateada;
+                } else {
+                    // Si no hay fecha, mostrar la fecha actual como placeholder
+                    const hoy = new Date();
+                    const fechaHoy = hoy.toLocaleDateString('es-ES', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    document.getElementById('fechaRegistro').value = fechaHoy;
+                    console.log('⚠️ No hay fecha_registro, usando fecha actual:', fechaHoy);
+                }
+                
+                // Agregar badge en header
+                const userIconBtn = document.querySelector('.head-icons-cont .icon-link:nth-child(3)');
+                if (userIconBtn && !userIconBtn.querySelector('.user-badge')) {
+                    const badge = document.createElement('span');
+                    badge.className = 'user-badge';
+                    badge.textContent = user.nombre_completo.charAt(0).toUpperCase();
+                    badge.style.cssText = `
+                        position: absolute;
+                        top: -5px;
+                        right: -5px;
+                        background: #1b1b1b;
+                        color: white;
+                        width: 18px;
+                        height: 18px;
+                        border-radius: 50%;
+                        font-size: 10px;
+                        font-weight: bold;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border: 2px solid white;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                    `;
+                    userIconBtn.style.position = 'relative';
+                    userIconBtn.appendChild(badge);
+                }
+                
+                console.log('✅ Datos cargados correctamente');
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                customModal.showAlert('Error al cargar datos: ' + error.message, 'Error');
+            }
+        });
+        
+        // Tabs
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    const tabName = btn.getAttribute('data-tab');
+                    document.getElementById(`tab-${tabName}`).classList.add('active');
+                });
+            });
+            
+            // ==================== FUNCIONALIDAD DE EDICIÓN ====================
+            const btnEditarInfo = document.getElementById('btnEditarInfo');
+            const btnGuardarInfo = document.getElementById('btnGuardarInfo');
+            const btnCancelarInfo = document.getElementById('btnCancelarInfo');
+            const editNombre = document.getElementById('editNombre');
+            const editEmail = document.getElementById('editEmail');
+            
+            let datosOriginales = {
+                nombre: '',
+                email: ''
+            };
+            
+            // Botón Editar
+            if (btnEditarInfo) {
+                btnEditarInfo.addEventListener('click', () => {
+                    // Guardar datos originales
+                    datosOriginales.nombre = editNombre.value;
+                    datosOriginales.email = editEmail.value;
+                    
+                    // Habilitar campos
+                    editNombre.removeAttribute('readonly');
+                    editEmail.removeAttribute('readonly');
+                    
+                    // Cambiar botones
+                    btnEditarInfo.style.display = 'none';
+                    btnGuardarInfo.style.display = 'inline-block';
+                    btnCancelarInfo.style.display = 'inline-block';
+                });
+            }
+            
+            // Botón Guardar
+            if (btnGuardarInfo) {
+                btnGuardarInfo.addEventListener('click', () => {
+                    const nuevoNombre = editNombre.value.trim();
+                    const nuevoEmail = editEmail.value.trim();
+                    
+                    if (!nuevoNombre || !nuevoEmail) {
+                        customModal.showAlert('Por favor completa todos los campos', 'Campos incompletos');
+                        return;
+                    }
+                    
+                    // Actualizar localStorage
+                    const userData = JSON.parse(localStorage.getItem('user_data'));
+                    userData.nombre_completo = nuevoNombre;
+                    userData.email = nuevoEmail;
+                    localStorage.setItem('user_data', JSON.stringify(userData));
+                    
+                    // Actualizar UI
+                    document.getElementById('nombreUsuario').textContent = nuevoNombre;
+                    document.getElementById('emailUsuario').textContent = nuevoEmail;
+                    document.getElementById('avatarInitial').textContent = nuevoNombre.charAt(0).toUpperCase();
+                    
+                    // Actualizar badge
+                    const badge = document.querySelector('.user-badge');
+                    if (badge) {
+                        badge.textContent = nuevoNombre.charAt(0).toUpperCase();
+                    }
+                    
+                    // Deshabilitar campos
+                    editNombre.setAttribute('readonly', true);
+                    editEmail.setAttribute('readonly', true);
+                    
+                    // Cambiar botones
+                    btnEditarInfo.style.display = 'inline-block';
+                    btnGuardarInfo.style.display = 'none';
+                    btnCancelarInfo.style.display = 'none';
+                    
+                    customModal.showAlert('Información actualizada correctamente', 'Éxito');
+                });
+            }
+            
+            // Botón Cancelar
+            if (btnCancelarInfo) {
+                btnCancelarInfo.addEventListener('click', () => {
+                    // Restaurar datos originales
+                    editNombre.value = datosOriginales.nombre;
+                    editEmail.value = datosOriginales.email;
+                    
+                    // Deshabilitar campos
+                    editNombre.setAttribute('readonly', true);
+                    editEmail.setAttribute('readonly', true);
+                    
+                    // Cambiar botones
+                    btnEditarInfo.style.display = 'inline-block';
+                    btnGuardarInfo.style.display = 'none';
+                    btnCancelarInfo.style.display = 'none';
+                });
+            }
+            
+            // ==================== CAMBIAR CONTRASEÑA ====================
+            const btnCambiarPassword = document.getElementById('btnCambiarPassword');
+            if (btnCambiarPassword) {
+                btnCambiarPassword.addEventListener('click', async () => {
+                    const passwordActual = document.getElementById('passwordActual').value;
+                    const passwordNueva = document.getElementById('passwordNueva').value;
+                    const passwordConfirmar = document.getElementById('passwordConfirmar').value;
+                    
+                    // Validaciones
+                    if (!passwordActual || !passwordNueva || !passwordConfirmar) {
+                        customModal.showAlert('Por favor completa todos los campos de contraseña', 'Campos incompletos');
+                        return;
+                    }
+                    
+                    if (passwordNueva !== passwordConfirmar) {
+                        customModal.showAlert('Las nuevas contraseñas no coinciden', 'Error de validación');
+                        return;
+                    }
+                    
+                    if (passwordNueva.length < 6) {
+                        customModal.showAlert('La nueva contraseña debe tener al menos 6 caracteres', 'Contraseña débil');
+                        return;
+                    }
+                    
+                    // Deshabilitar botón durante la petición
+                    btnCambiarPassword.disabled = true;
+                    btnCambiarPassword.textContent = 'Cambiando...';
+                    
+                    try {
+                        const token = localStorage.getItem('auth_token');
+                        
+                        const response = await fetch('/api/auth/change-password', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                currentPassword: passwordActual,
+                                newPassword: passwordNueva
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            customModal.showAlert(data.message, 'Éxito');
+                            
+                            // Limpiar campos
+                            document.getElementById('passwordActual').value = '';
+                            document.getElementById('passwordNueva').value = '';
+                            document.getElementById('passwordConfirmar').value = '';
+                        } else {
+                            customModal.showAlert(data.message, 'Error');
+                        }
+                        
+                    } catch (error) {
+                        console.error('Error al cambiar contraseña:', error);
+                        customModal.showAlert('Error de conexión. Intenta nuevamente.', 'Error');
+                    } finally {
+                        // Rehabilitar botón
+                        btnCambiarPassword.disabled = false;
+                        btnCambiarPassword.textContent = 'Cambiar Contraseña';
+                    }
+                });
+            }
+            
+            // Botón Eliminar Cuenta
+            const btnEliminarCuenta = document.querySelector('.btn-eliminar-cuenta');
+            if (btnEliminarCuenta) {
+                btnEliminarCuenta.addEventListener('click', async () => {
+                    const confirmar = await customModal.showConfirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.', 'Confirmación de eliminación');
+                    if (!confirmar) return;
+                    
+                    const confirmar2 = await customModal.showConfirm('ÚLTIMA ADVERTENCIA: Se eliminarán todos tus datos, reservas y favoritos permanentemente. ¿Confirmar eliminación?', 'Confirmación final');
+                    if (!confirmar2) return;
+                    
+                    // Solicitar contraseña para confirmar
+                    const password = await customModal.showPrompt('Por favor ingresa tu contraseña para confirmar la eliminación:', 'Verificación de identidad', 'password', 'Contraseña');
+                    if (!password) {
+                        customModal.showAlert('Eliminación cancelada', 'Operación cancelada');
+                        return;
+                    }
+                    
+                    // Deshabilitar botón
+                    btnEliminarCuenta.disabled = true;
+                    btnEliminarCuenta.textContent = 'Eliminando...';
+                    
+                    try {
+                        const token = localStorage.getItem('auth_token');
+                        
+                        const response = await fetch('/api/auth/delete-account', {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                password: password
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            await customModal.showAlert(data.message + '\n\nSerás redirigido al inicio.', 'Cuenta eliminada');
+                            
+                            // Limpiar localStorage
+                            localStorage.removeItem('auth_token');
+                            localStorage.removeItem('user_data');
+                            
+                            // Redirigir al inicio
+                            setTimeout(() => {
+                                window.location.href = '../index.html';
+                            }, 1000);
+                        } else {
+                            customModal.showAlert(data.message, 'Error');
+                            btnEliminarCuenta.disabled = false;
+                            btnEliminarCuenta.textContent = 'Eliminar Cuenta';
+                        }
+                        
+                    } catch (error) {
+                        console.error('Error al eliminar cuenta:', error);
+                        customModal.showAlert('Error de conexión. Intenta nuevamente.', 'Error');
+                        btnEliminarCuenta.disabled = false;
+                        btnEliminarCuenta.textContent = 'Eliminar Cuenta';
+                    }
+                });
+            }
+        });
+        
+        // ==================== FUNCIÓN CERRAR SESIÓN ====================
+        function cerrarSesion() {
+            console.log('🚪 Cerrando sesión...');
+            
+            // Limpiar localStorage
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_data');
+            
+            // Remover badge si existe
+            const badge = document.querySelector('.user-badge');
+            if (badge) {
+                badge.remove();
+            }
+            
+            // Redirigir a inicio (sin mensaje, será más rápido)
+            window.location.href = '../index.html';
+        }
+    </script>
+    
+    <!-- Modal Personalizado -->
+    <script src="../js/custom-modal.js"></script>
+</body>
+</html>

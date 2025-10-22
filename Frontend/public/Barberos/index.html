@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barberos</title>
     <link rel="stylesheet" href="B-Styles/styles.css">
+    <link rel="stylesheet" href="../I-style/auth-modal.css">
+    <link rel="stylesheet" href="../I-style/custom-modal.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
@@ -16,12 +18,22 @@
         <a href="../index.html" style="text-decoration: none; color: inherit;">
             <h1>Prestige Barbers</h1>
         </a>
+        <div class="head-icons-cont">
+            <a href="../index.html" class="icon-link" title="Carrito">
+                <img src="../Icons/cart.svg" alt="Carrito">
+            </a>
+            <a href="../index.html" class="icon-link" title="Buscar">
+                <img src="../Icons/search.svg" alt="Buscar">
+            </a>
+            <a href="../index.html" class="icon-link" title="Usuario">
+                <img src="../Icons/user.svg" alt="Usuario">
+            </a>
+        </div>
     </div>
     <div class="head-lkn-cont">
         <a href="../index.html">Shop</a>
         <a href="../Cortes/index.html">Servicios</a>
-        <a href="../index.html">Barberos</a>
-        <a href="../index.html">Reservas</a>
+        <a href="../Barberos/index.html">Barberos</a>
         <a href="../index.html">Acerca De</a>
     </div>
 </header>
@@ -32,6 +44,48 @@
 </main>
 <script src="../js/sticky-header.js"></script>
 <script src="B-js/barbero.js"></script>
+
+<!-- Modal de autenticación -->
+<div class="auth-modal-overlay" id="authModal">
+    <div class="auth-modal-content">
+        <button class="auth-modal-close" id="closeModalBtn">&times;</button>
+        
+        <!-- Formulario de Login -->
+        <div class="log-cont" id="loginForm">
+            <label for="">Iniciar Sesión</label>
+            <label for="">Correo Electrónico</label>
+            <input type="email" id="login-email" required>
+            <label for="">Contraseña</label>
+            <input type="password" id="login-password" required>
+            <button type="submit">Iniciar Sesión</button>
+            <div class="reg-cont">
+                <label>¿No tienes una cuenta?</label>
+                <button type="button" id="showRegister">Regístrate</button>
+            </div>
+        </div>
+
+        <!-- Formulario de Registro -->
+        <div class="log-cont" id="registerForm" style="display: none;">
+            <label for="">Registro</label>
+            <label for="">Nombre Completo</label>
+            <input type="text" id="register-name" required>
+            <label for="">Correo Electrónico</label>
+            <input type="email" id="register-email" required>
+            <label for="">Contraseña</label>
+            <input type="password" id="register-password" required>
+            <label for="">Confirmar Contraseña</label>
+            <input type="password" id="register-confirm" required>
+            <button type="submit">Registrarse</button>
+            <div class="reg-cont">
+                <label>¿Ya tienes una cuenta?</label>
+                <button type="button" id="showLogin">Iniciar Sesión</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/custom-modal.js"></script>
+<script src="../js/auth-modal.js"></script>
 
 <body>
 

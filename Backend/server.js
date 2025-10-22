@@ -2,9 +2,14 @@ const express = require('express');
 const mysql = require('mysql2');
 const path = require('path');
 const multer = require('multer');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const port = 3000;
+
+// Clave secreta para JWT (en producción, usar variable de entorno)
+const JWT_SECRET = process.env.JWT_SECRET || 'prestige_barbers_secret_key_2025';
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'Frontend', 'public')));
@@ -33,6 +38,383 @@ db.connect(err => {
         return;
     }
     console.log("🟢 Conectado a MySQL");
+});
+
+
+// ==================== ENDPOINTS DE AUTENTICACIÓN ====================
+
+// Middleware para verificar token JWT
+const verificarToken = (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1]; // Bearer TOKEN
+    
+    if (!token) {
+        return res.status(401).json({ message: 'Token no proporcionado' });
+    }
+    
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Token inválido o expirado' });
+        }
+        req.userId = decoded.id;
+        req.userEmail = decoded.email;
+        next();
+    });
+};
+
+// POST /api/auth/register - Registrar nuevo usuario
+app.post('/api/auth/register', async (req, res) => {
+    try {
+        const { nombre_completo, email, password, confirm_password } = req.body;
+        
+        // Validaciones básicas
+        if (!nombre_completo || !email || !password || !confirm_password) {
+            return res.status(400).json({ 
+                success: false,
+                message: 'Todos los campos son obligatorios' 
+            });
+        }
+        
+        // Validar formato de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ 
+                success: false,
+                message: 'Email inválido' 
+            });
+        }
+        
+        // Validar que las contraseñas coincidan
+        if (password !== confirm_password) {
+            return res.status(400).json({ 
+                success: false,
+                message: 'Las contraseñas no coinciden' 
+            });
+        }
+        
+        // Validar longitud mínima de contraseña
+        if (password.length < 6) {
+            return res.status(400).json({ 
+                success: false,
+                message: 'La contraseña debe tener al menos 6 caracteres' 
+            });
+        }
+        
+        // Verificar si el email ya existe
+        db.query('SELECT id FROM usuarios WHERE email = ?', [email], async (err, results) => {
+            if (err) {
+                console.error('Error al verificar email:', err);
+                return res.status(500).json({ 
+                    success: false,
+                    message: 'Error en el servidor' 
+                });
+            }
+            
+            if (results.length > 0) {
+                return res.status(409).json({ 
+                    success: false,
+                    message: 'Este email ya está registrado' 
+                });
+            }
+            
+            // Hash de la contraseña (bcrypt con 10 rounds)
+            const passwordHash = await bcrypt.hash(password, 10);
+            
+            // Insertar nuevo usuario
+            const query = 'INSERT INTO usuarios (nombre_completo, email, password_hash) VALUES (?, ?, ?)';
+            db.query(query, [nombre_completo, email, passwordHash], (err, result) => {
+                if (err) {
+                    console.error('Error al registrar usuario:', err);
+                    return res.status(500).json({ 
+                        success: false,
+                        message: 'Error al registrar usuario' 
+                    });
+                }
+                
+                // Generar token JWT
+                const token = jwt.sign(
+                    { id: result.insertId, email: email },
+                    JWT_SECRET,
+                    { expiresIn: '7d' } // Token válido por 7 días
+                );
+                
+                res.status(201).json({
+                    success: true,
+                    message: 'Usuario registrado exitosamente',
+                    token: token,
+                    user: {
+                        id: result.insertId,
+                        nombre_completo: nombre_completo,
+                        email: email
+                    }
+                });
+            });
+        });
+        
+    } catch (error) {
+        console.error('Error en registro:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Error en el servidor' 
+        });
+    }
+});
+
+// POST /api/auth/login - Iniciar sesión
+app.post('/api/auth/login', (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        // Validaciones básicas
+        if (!email || !password) {
+            return res.status(400).json({ 
+                success: false,
+                message: 'Email y contraseña son obligatorios' 
+            });
+        }
+        
+        // Buscar usuario por email
+        db.query('SELECT * FROM usuarios WHERE email = ? AND activo = TRUE', [email], async (err, results) => {
+            if (err) {
+                console.error('Error al buscar usuario:', err);
+                return res.status(500).json({ 
+                    success: false,
+                    message: 'Error en el servidor' 
+                });
+            }
+            
+            if (results.length === 0) {
+                return res.status(401).json({ 
+                    success: false,
+                    message: 'Email o contraseña incorrectos' 
+                });
+            }
+            
+            const usuario = results[0];
+            
+            // Verificar contraseña
+            const passwordValida = await bcrypt.compare(password, usuario.password_hash);
+            
+            if (!passwordValida) {
+                return res.status(401).json({ 
+                    success: false,
+                    message: 'Email o contraseña incorrectos' 
+                });
+            }
+            
+            // Actualizar último acceso
+            db.query('UPDATE usuarios SET ultimo_acceso = NOW() WHERE id = ?', [usuario.id]);
+            
+            // Generar token JWT
+            const token = jwt.sign(
+                { id: usuario.id, email: usuario.email },
+                JWT_SECRET,
+                { expiresIn: '7d' }
+            );
+            
+            res.json({
+                success: true,
+                message: 'Inicio de sesión exitoso',
+                token: token,
+                user: {
+                    id: usuario.id,
+                    nombre_completo: usuario.nombre_completo,
+                    email: usuario.email
+                }
+            });
+        });
+        
+    } catch (error) {
+        console.error('Error en login:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Error en el servidor' 
+        });
+    }
+});
+
+// GET /api/auth/me - Obtener datos del usuario actual (requiere token)
+app.get('/api/auth/me', verificarToken, (req, res) => {
+    db.query('SELECT id, nombre_completo, email, fecha_registro FROM usuarios WHERE id = ?', 
+        [req.userId], 
+        (err, results) => {
+            if (err) {
+                return res.status(500).json({ 
+                    success: false,
+                    message: 'Error en el servidor' 
+                });
+            }
+            
+            if (results.length === 0) {
+                return res.status(404).json({ 
+                    success: false,
+                    message: 'Usuario no encontrado' 
+                });
+            }
+            
+            res.json({
+                success: true,
+                user: results[0]
+            });
+        }
+    );
+});
+
+// POST /api/auth/change-password - Cambiar contraseña del usuario
+app.post('/api/auth/change-password', verificarToken, async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    
+    // Validaciones
+    if (!currentPassword || !newPassword) {
+        return res.status(400).json({
+            success: false,
+            message: 'Por favor proporciona la contraseña actual y la nueva contraseña'
+        });
+    }
+    
+    if (newPassword.length < 6) {
+        return res.status(400).json({
+            success: false,
+            message: 'La nueva contraseña debe tener al menos 6 caracteres'
+        });
+    }
+    
+    try {
+        // Obtener el usuario con su contraseña actual
+        db.query('SELECT password_hash FROM usuarios WHERE id = ?', 
+            [req.userId], 
+            async (err, results) => {
+                if (err) {
+                    return res.status(500).json({
+                        success: false,
+                        message: 'Error en el servidor'
+                    });
+                }
+                
+                if (results.length === 0) {
+                    return res.status(404).json({
+                        success: false,
+                        message: 'Usuario no encontrado'
+                    });
+                }
+                
+                // Verificar que la contraseña actual sea correcta
+                const passwordMatch = await bcrypt.compare(currentPassword, results[0].password_hash);
+                
+                if (!passwordMatch) {
+                    return res.status(401).json({
+                        success: false,
+                        message: 'La contraseña actual es incorrecta'
+                    });
+                }
+                
+                // Hashear la nueva contraseña
+                const newPasswordHash = await bcrypt.hash(newPassword, 10);
+                
+                // Actualizar la contraseña en la base de datos
+                db.query('UPDATE usuarios SET password_hash = ? WHERE id = ?',
+                    [newPasswordHash, req.userId],
+                    (err) => {
+                        if (err) {
+                            return res.status(500).json({
+                                success: false,
+                                message: 'Error al actualizar la contraseña'
+                            });
+                        }
+                        
+                        res.json({
+                            success: true,
+                            message: 'Contraseña actualizada correctamente'
+                        });
+                    }
+                );
+            }
+        );
+    } catch (error) {
+        console.error('Error al cambiar contraseña:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error en el servidor'
+        });
+    }
+});
+
+// DELETE /api/auth/delete-account - Eliminar cuenta del usuario
+app.delete('/api/auth/delete-account', verificarToken, async (req, res) => {
+    const { password } = req.body;
+    
+    // Validar que se proporcionó la contraseña
+    if (!password) {
+        return res.status(400).json({
+            success: false,
+            message: 'Por favor proporciona tu contraseña para confirmar'
+        });
+    }
+    
+    try {
+        // Obtener el usuario con su contraseña
+        db.query('SELECT password_hash FROM usuarios WHERE id = ?', 
+            [req.userId], 
+            async (err, results) => {
+                if (err) {
+                    return res.status(500).json({
+                        success: false,
+                        message: 'Error en el servidor'
+                    });
+                }
+                
+                if (results.length === 0) {
+                    return res.status(404).json({
+                        success: false,
+                        message: 'Usuario no encontrado'
+                    });
+                }
+                
+                // Verificar que la contraseña sea correcta
+                const passwordMatch = await bcrypt.compare(password, results[0].password_hash);
+                
+                if (!passwordMatch) {
+                    return res.status(401).json({
+                        success: false,
+                        message: 'Contraseña incorrecta'
+                    });
+                }
+                
+                // Eliminar el usuario de la base de datos
+                db.query('DELETE FROM usuarios WHERE id = ?',
+                    [req.userId],
+                    (err) => {
+                        if (err) {
+                            return res.status(500).json({
+                                success: false,
+                                message: 'Error al eliminar la cuenta'
+                            });
+                        }
+                        
+                        res.json({
+                            success: true,
+                            message: 'Cuenta eliminada exitosamente'
+                        });
+                    }
+                );
+            }
+        );
+    } catch (error) {
+        console.error('Error al eliminar cuenta:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error en el servidor'
+        });
+    }
+});
+
+// POST /api/auth/logout - Cerrar sesión (opcional, se puede manejar solo en frontend)
+app.post('/api/auth/logout', (req, res) => {
+    // En un sistema con JWT, el logout se maneja generalmente en el frontend
+    // eliminando el token. Aquí solo confirmamos la acción.
+    res.json({
+        success: true,
+        message: 'Sesión cerrada exitosamente'
+    });
 });
 
 

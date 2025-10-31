@@ -357,6 +357,145 @@ footer p {
     font-size: 0.9rem;
 }
 
+/* ==================== TARJETAS DE RESERVAS ==================== */
+#reservasContainer {
+    display: block;
+}
+
+.reserva-card {
+    border: 1px solid #1b1b1b;
+    background: white;
+    margin-bottom: 30px;
+}
+
+.reserva-card:last-child {
+    margin-bottom: 0;
+}
+
+.reserva-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #1b1b1b;
+}
+
+.reserva-estado {
+    padding: 5px 15px;
+    border: 1px solid #1b1b1b;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.estado-pendiente {
+    background: #e0e0e0;
+    color: #1b1b1b;
+    border-color: #1b1b1b;
+}
+
+.estado-confirmada {
+    background: #1b1b1b;
+    color: white;
+    border-color: #1b1b1b;
+}
+
+.estado-completada {
+    background: white;
+    color: #1b1b1b;
+    border-color: #1b1b1b;
+}
+
+.estado-cancelada {
+    background: #666;
+    color: white;
+    border-color: #666;
+}
+
+.reserva-id {
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.reserva-body {
+    padding: 20px;
+}
+
+.reserva-info-principal {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.reserva-servicio {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #1b1b1b;
+}
+
+.reserva-servicio strong {
+    font-weight: 700;
+}
+
+.reserva-servicio-adicional {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #666;
+    padding-left: 10px;
+    border-left: 3px solid #1b1b1b;
+}
+
+.reserva-barbero {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.reserva-barbero strong {
+    color: #1b1b1b;
+    font-weight: 600;
+}
+
+.reserva-fecha-hora {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.6;
+}
+
+.fecha-icon,
+.hora-icon {
+    margin-right: 5px;
+}
+
+.reserva-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-cancelar-reserva {
+    padding: 10px 20px;
+    background: white;
+    color: #1b1b1b;
+    border: 1px solid #1b1b1b;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancelar-reserva:hover {
+    background: #1b1b1b;
+    color: white;
+}
+
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
     .perfil-header {
@@ -392,6 +531,20 @@ footer p {
     }
 
     .info-actions button {
+        width: 100%;
+    }
+
+    .reserva-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .reserva-footer {
+        padding: 15px;
+    }
+
+    .btn-cancelar-reserva {
         width: 100%;
     }
 }

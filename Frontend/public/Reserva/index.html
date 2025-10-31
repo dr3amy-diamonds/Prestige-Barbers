@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservar - Prestige Barbers</title>
     <link rel="stylesheet" href="R-Styles/styles.css">
+    <link rel="stylesheet" href="R-Styles/modal-reserva.css">
     <link rel="stylesheet" href="../I-style/auth-modal.css">
     <link rel="stylesheet" href="../I-style/custom-modal.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -98,7 +99,11 @@
         <div class="info-cut-cont">
             <label id="serviceType"></label>
             <h2 id="serviceName"></h2>
-            <p id="serviceDescription"></p>
+            <div class="description-container">
+                <p id="serviceDescription" class="collapsed"></p>
+                <div class="description-fade"></div>
+                <button class="ver-mas-btn" id="verMasBtn">Ver más</button>
+            </div>
             <label id="barbersLabel"></label>
             <div class="barb-btn-cont" id="barbersContainer">
                 <!-- Los barberos se cargarán dinámicamente aquí -->
@@ -153,6 +158,7 @@
 <body>
     <script src="../js/custom-modal.js"></script>
     <script src="R-js/Reserva.js"></script>
+    <script src="R-js/modal-reserva.js"></script>
     <script src="../js/sticky-header.js"></script>
     <script src="../js/auth-modal.js"></script>
 </body>

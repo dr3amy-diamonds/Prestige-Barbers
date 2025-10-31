@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -439,7 +439,7 @@
                 }
             }
 
-            new CutsCarousel('cuts-carousel-container');
+            const cutsCarousel = new CutsCarousel('cuts-carousel-container');
 
             const buttons = document.querySelectorAll('.cort-cont-btns button');
             const carouselContainer = document.getElementById('cuts-carousel-container');
@@ -795,6 +795,162 @@
                 button.addEventListener('mouseenter', () => beardContainer.classList.add('carousel-paused'));
                 button.addEventListener('mouseleave', () => beardContainer.classList.remove('carousel-paused'));
             });
+
+            // ===== MANEJO DE SELECCIÓN DE SERVICIO ADICIONAL =====
+            const addingAdditionalService = sessionStorage.getItem('addingAdditionalService');
+            const reservationContext = sessionStorage.getItem('reservationContext');
+
+            console.log('🔍 [CORTES-PAGE] Verificando modo de servicio adicional');
+            console.log('📦 [CORTES-PAGE] sessionStorage:', {
+                addingAdditionalService,
+                reservationContext
+            });
+
+            if (addingAdditionalService === 'true' && reservationContext) {
+                const context = JSON.parse(reservationContext);
+                const targetType = context.additionalServiceType; // 'barba' o 'corte'
+
+                console.log('🔔 [CORTES-PAGE] Modo de selección de servicio adicional ACTIVADO');
+                console.log('📋 [CORTES-PAGE] Contexto:', context);
+                console.log('🎯 [CORTES-PAGE] Tipo de servicio a seleccionar:', targetType);
+
+                // Función para manejar la selección de un servicio adicional
+                function handleAdditionalServiceSelection(serviceId, serviceName, serviceType) {
+                    console.log('👆 [CORTES-PAGE] Servicio seleccionado:', { id: serviceId, nombre: serviceName, tipo: serviceType });
+
+                    // Guardar el servicio adicional seleccionado
+                    const additionalService = {
+                        id: serviceId,
+                        nombre: serviceName,
+                        tipo: serviceType
+                    };
+
+                    sessionStorage.setItem('selectedAdditionalService', JSON.stringify(additionalService));
+                    console.log('💾 [CORTES-PAGE] Servicio adicional guardado en sessionStorage:', additionalService);
+
+                    // Mostrar mensaje de confirmación
+                    if (window.customModal) {
+                        console.log('📢 [CORTES-PAGE] Mostrando modal de confirmación');
+                        window.customModal.showAlert(
+                            `Has seleccionado:<br><strong style="text-transform: uppercase;">${serviceName}</strong><br><br>Regresando a tu reserva...`,
+                            'Servicio Agregado'
+                        ).then(() => {
+                            const returnUrl = `../Reserva/index.html?id=${context.serviceId}&type=${context.serviceType}`;
+                            console.log('🔄 [CORTES-PAGE] Regresando a:', returnUrl);
+                            // Regresar a la página de reserva con el servicio original
+                            window.location.href = returnUrl;
+                        });
+                    } else {
+                        console.log('⚠️ [CORTES-PAGE] customModal no disponible, usando alert nativo');
+                        alert(`Has seleccionado: ${serviceName}\n\nRegresando a tu reserva...`);
+                        window.location.href = `../Reserva/index.html?id=${context.serviceId}&type=${context.serviceType}`;
+                    }
+                }
+
+                // Interceptar clicks en los botones de cortes/barbas según el tipo
+                if (targetType === 'corte') {
+                    // Interceptar clicks en botones de cortes (incluyendo relacionados)
+                    const cutsButtons = document.querySelectorAll('.cort-cont-btns button');
+                    const mainCutLink = document.querySelector('.cort-cont-inf-2 a');
+
+                    cutsButtons.forEach(button => {
+                        const originalOnClick = button.onclick;
+                        button.onclick = function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            // Obtener información del corte del botón
+                            const cutName = button.querySelector('.cort-cont-btns-info h3')?.textContent;
+
+                            // Buscar el ID del corte en los datos cargados
+                            const currentCutIndex = cutsCarousel ? cutsCarousel.currentIndex - 1 : 0;
+                            const relatedCuts = cutsData[currentCutIndex]?.relatedImages || [];
+
+                            // Encontrar el índice del botón clickeado
+                            const buttonIndex = Array.from(cutsButtons).indexOf(button);
+                            const cutData = relatedCuts[buttonIndex];
+
+                            if (cutData && cutData.id && cutName) {
+                                handleAdditionalServiceSelection(cutData.id, cutName, 'corte');
+                            }
+                        };
+                    });
+
+                    // Interceptar el enlace principal de reserva de corte
+                    if (mainCutLink) {
+                        mainCutLink.addEventListener('click', function(e) {
+                            e.preventDefault();
+
+                            // Obtener información del corte principal
+                            const cutName = document.getElementById('cut-name-label')?.textContent;
+                            const currentCutIndex = cutsCarousel ? cutsCarousel.currentIndex - 1 : 0;
+                            const cutData = cutsData[currentCutIndex];
+
+                            if (cutData && cutData.id && cutName) {
+                                handleAdditionalServiceSelection(cutData.id, cutName, 'corte');
+                            }
+                        });
+                    }
+
+                } else if (targetType === 'barba') {
+                    // Interceptar clicks en botones de barbas (incluyendo relacionados)
+                    const beardButtons = document.querySelectorAll('#beard-related button');
+                    const mainBeardLink = document.querySelector('.barb-cont-inf-img a');
+
+                    beardButtons.forEach(button => {
+                        const originalOnClick = button.onclick;
+                        button.onclick = function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            // Obtener información de la barba del botón
+                            const beardName = button.querySelector('.cort-cont-btns-info h3')?.textContent;
+
+                            // Buscar el ID de la barba en los datos cargados
+                            const currentBeardIndex = beardCarousel ? beardCarousel.currentIndex - 1 : 0;
+                            const relatedBeards = beardsData[currentBeardIndex]?.relatedImages || [];
+
+                            // Encontrar el índice del botón clickeado
+                            const buttonIndex = Array.from(beardButtons).indexOf(button);
+                            const beardData = relatedBeards[buttonIndex];
+
+                            if (beardData && beardData.id && beardName) {
+                                handleAdditionalServiceSelection(beardData.id, beardName, 'barba');
+                            }
+                        };
+                    });
+
+                    // Interceptar el enlace principal de reserva de barba
+                    if (mainBeardLink) {
+                        mainBeardLink.addEventListener('click', function(e) {
+                            e.preventDefault();
+
+                            // Obtener información de la barba principal
+                            const beardName = document.querySelector('.barb-cont-inf-img h3')?.textContent;
+                            const currentBeardIndex = beardCarousel ? beardCarousel.currentIndex - 1 : 0;
+                            const beardData = beardsData[currentBeardIndex];
+
+                            if (beardData && beardData.id && beardName) {
+                                handleAdditionalServiceSelection(beardData.id, beardName, 'barba');
+                            }
+                        });
+                    }
+                }
+
+                // Limpiar sessionStorage si el usuario navega a otra página desde el header
+                const headerLinks = document.querySelectorAll('header a');
+                headerLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        // Solo limpiar si no está navegando dentro de la página de cortes
+                        if (!this.href.includes('/Cortes/index.html')) {
+                            sessionStorage.removeItem('addingAdditionalService');
+                            sessionStorage.removeItem('reservationContext');
+                            sessionStorage.removeItem('selectedAdditionalService');
+                            console.log('🧹 Limpiado sessionStorage - navegación cancelada');
+                        }
+                    });
+                });
+            }
         });
     </script>
 
@@ -853,6 +1009,147 @@
                         }
                     }, 200); // 200ms de delay
                 });
+            }
+        })();
+    </script>
+
+    <script>
+        // ==================== MANEJO DE SERVICIO ADICIONAL ====================
+        (function() {
+            console.log('🔍 [ADDITIONAL-SERVICE-HANDLER] Verificando si viene de selección de servicio adicional');
+
+            // Verificar si se está agregando un servicio adicional
+            const addingAdditionalService = sessionStorage.getItem('addingAdditionalService');
+            const reservationContext = sessionStorage.getItem('reservationContext');
+
+            console.log('📦 [ADDITIONAL-SERVICE-HANDLER] addingAdditionalService:', addingAdditionalService);
+            console.log('📦 [ADDITIONAL-SERVICE-HANDLER] reservationContext:', reservationContext);
+
+            if (addingAdditionalService === 'true' && reservationContext) {
+                const context = JSON.parse(reservationContext);
+                const additionalServiceType = context.additionalServiceType; // 'barba' o 'corte'
+
+                console.log('✅ [ADDITIONAL-SERVICE-HANDLER] Usuario está agregando servicio adicional');
+                console.log('📋 [ADDITIONAL-SERVICE-HANDLER] Tipo de servicio adicional:', additionalServiceType);
+
+                // Obtener las tres secciones
+                const seccionCabello = document.getElementById('seccion-cabello');
+                const seccionRostro = document.getElementById('seccion-rostro');
+                const seccionBarba = document.getElementById('seccion-barba');
+
+                console.log('🔍 [ADDITIONAL-SERVICE-HANDLER] Secciones encontradas:', {
+                    cabello: !!seccionCabello,
+                    rostro: !!seccionRostro,
+                    barba: !!seccionBarba
+                });
+
+                // Determinar qué sección mostrar y cuáles ocultar
+                if (additionalServiceType === 'barba') {
+                    // Mostrar solo la sección de barbas
+                    console.log('👁️ [ADDITIONAL-SERVICE-HANDLER] Mostrando solo sección de barbas');
+
+                    if (seccionCabello) {
+                        seccionCabello.style.display = 'none';
+                        console.log('🙈 [ADDITIONAL-SERVICE-HANDLER] Sección cabello ocultada');
+                    }
+                    if (seccionRostro) {
+                        seccionRostro.style.display = 'none';
+                        console.log('🙈 [ADDITIONAL-SERVICE-HANDLER] Sección rostro ocultada');
+                    }
+                    if (seccionBarba) {
+                        seccionBarba.style.display = 'flex';
+                        // Quitar el padding superior para eliminar el espacio/borde visual
+                        seccionBarba.style.paddingTop = '0';
+
+                        // También ajustar el elemento interno que crea el contraste visual
+                        const barberInfo = document.getElementById('beard-info');
+                        if (barberInfo) {
+                            barberInfo.style.marginTop = '0';
+                        }
+
+                        console.log('👁️ [ADDITIONAL-SERVICE-HANDLER] Sección barba mostrada');
+                        console.log('🎨 [ADDITIONAL-SERVICE-HANDLER] Espaciado superior removido');
+                    }
+
+                    // Hacer scroll a la sección de barbas
+                    setTimeout(() => {
+                        window.scrollTo({ top: 0, behavior: 'instant' });
+                        console.log('📜 [ADDITIONAL-SERVICE-HANDLER] Scroll a inicio (barba)');
+                    }, 100);
+
+                } else if (additionalServiceType === 'corte') {
+                    // Mostrar solo la sección de cortes de cabello
+                    console.log('👁️ [ADDITIONAL-SERVICE-HANDLER] Mostrando solo sección de cortes');
+
+                    if (seccionCabello) {
+                        seccionCabello.style.display = 'flex';
+                        // Quitar borde superior para que no se vea feo con el header
+                        seccionCabello.style.borderTop = 'none';
+                        console.log('👁️ [ADDITIONAL-SERVICE-HANDLER] Sección cabello mostrada');
+                        console.log('🎨 [ADDITIONAL-SERVICE-HANDLER] Borde superior removido');
+                    }
+                    if (seccionRostro) {
+                        seccionRostro.style.display = 'none';
+                        console.log('🙈 [ADDITIONAL-SERVICE-HANDLER] Sección rostro ocultada');
+                    }
+                    if (seccionBarba) {
+                        seccionBarba.style.display = 'none';
+                        console.log('🙈 [ADDITIONAL-SERVICE-HANDLER] Sección barba ocultada');
+                    }
+
+                    // Hacer scroll al inicio
+                    setTimeout(() => {
+                        window.scrollTo({ top: 0, behavior: 'instant' });
+                        console.log('📜 [ADDITIONAL-SERVICE-HANDLER] Scroll a inicio (corte)');
+                    }, 100);
+                }
+
+                console.log('✅ [ADDITIONAL-SERVICE-HANDLER] Secciones configuradas correctamente');
+
+                // Agregar un listener para restaurar las secciones cuando se cancele o complete
+                window.addEventListener('beforeunload', function() {
+                    // Si el usuario sale de la página sin haber seleccionado un servicio adicional, limpiar
+                    const stillAdding = sessionStorage.getItem('addingAdditionalService');
+                    const hasSelected = sessionStorage.getItem('selectedAdditionalService');
+
+                    // Solo limpiar si está agregando servicio pero NO ha seleccionado ninguno (canceló)
+                    if (stillAdding === 'true' && !hasSelected) {
+                        console.log('⚠️ [ADDITIONAL-SERVICE-HANDLER] Usuario salió sin completar - limpiando sessionStorage');
+                        sessionStorage.removeItem('addingAdditionalService');
+                        sessionStorage.removeItem('reservationContext');
+                    } else if (stillAdding === 'true' && hasSelected) {
+                        console.log('✅ [ADDITIONAL-SERVICE-HANDLER] Usuario completó selección - manteniendo sessionStorage');
+                        // NO limpiar - el usuario seleccionó un servicio y va a regresar a Reserva
+                    }
+                });
+
+                // Agregar función para restaurar secciones (se puede llamar desde otros scripts)
+                window.restaurarSecciones = function() {
+                    console.log('🔄 [ADDITIONAL-SERVICE-HANDLER] Restaurando todas las secciones');
+
+                    if (seccionCabello) {
+                        seccionCabello.style.display = 'flex';
+                        seccionCabello.style.borderTop = ''; // Restaurar borde original
+                    }
+                    if (seccionRostro) {
+                        seccionRostro.style.display = 'flex';
+                    }
+                    if (seccionBarba) {
+                        seccionBarba.style.display = 'flex';
+                        seccionBarba.style.paddingTop = ''; // Restaurar padding original
+
+                        // Restaurar el margen del elemento interno
+                        const barberInfo = document.getElementById('beard-info');
+                        if (barberInfo) {
+                            barberInfo.style.marginTop = '';
+                        }
+                    }
+
+                    console.log('✅ [ADDITIONAL-SERVICE-HANDLER] Todas las secciones restauradas con bordes originales');
+                };
+
+            } else {
+                console.log('ℹ️ [ADDITIONAL-SERVICE-HANDLER] No se está agregando servicio adicional - mostrando todas las secciones normalmente');
             }
         })();
     </script>

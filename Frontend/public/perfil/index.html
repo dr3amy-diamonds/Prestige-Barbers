@@ -107,10 +107,11 @@
             <div class="tab-content" id="tab-reservas">
                 <h2 class="seccion-titulo">Mis Reservas</h2>
                 <div class="reservas-list">
-                    <div class="empty-state">
+                    <div class="empty-state" id="emptyState">
                         <p>No tienes reservas próximas</p>
-                        <a href="../Reserva/index.html" class="btn-primary">Hacer una Reserva</a>
+                        <a href="../Cortes/index.html" class="btn-primary">Hacer una Reserva</a>
                     </div>
+                    <div id="reservasContainer" style="display: none;"></div>
                 </div>
             </div>
 
@@ -486,20 +487,213 @@
         // ==================== FUNCIÓN CERRAR SESIÓN ====================
         function cerrarSesion() {
             console.log('🚪 Cerrando sesión...');
-            
+
             // Limpiar localStorage
             localStorage.removeItem('auth_token');
             localStorage.removeItem('user_data');
-            
+
             // Remover badge si existe
             const badge = document.querySelector('.user-badge');
             if (badge) {
                 badge.remove();
             }
-            
+
             // Redirigir a inicio (sin mensaje, será más rápido)
             window.location.href = '../index.html';
         }
+
+        // ==================== CARGAR RESERVAS DEL USUARIO ====================
+        async function cargarReservas() {
+            console.log('📅 Cargando reservas del usuario...');
+
+            try {
+                const token = localStorage.getItem('auth_token');
+                const userData = JSON.parse(localStorage.getItem('user_data'));
+
+                if (!token || !userData || !userData.id) {
+                    console.error('❌ No hay datos de usuario');
+                    return;
+                }
+
+                const response = await fetch(`http://localhost:3000/api/reservas/usuario/${userData.id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('✅ Reservas recibidas:', data);
+
+                if (data.success && data.reservas && data.reservas.length > 0) {
+                    mostrarReservas(data.reservas);
+                } else {
+                    mostrarEstadoVacio();
+                }
+
+            } catch (error) {
+                console.error('❌ Error al cargar reservas:', error);
+                mostrarEstadoVacio();
+            }
+        }
+
+        function mostrarReservas(reservas) {
+            const emptyState = document.getElementById('emptyState');
+            const reservasContainer = document.getElementById('reservasContainer');
+
+            // Ocultar estado vacío y mostrar contenedor
+            emptyState.style.display = 'none';
+            reservasContainer.style.display = 'block';
+
+            // Limpiar contenedor
+            reservasContainer.innerHTML = '';
+
+            // Crear tarjetas de reservas
+            reservas.forEach(reserva => {
+                const card = crearTarjetaReserva(reserva);
+                reservasContainer.appendChild(card);
+            });
+
+            console.log(`✅ Se mostraron ${reservas.length} reservas`);
+        }
+
+        function mostrarEstadoVacio() {
+            const emptyState = document.getElementById('emptyState');
+            const reservasContainer = document.getElementById('reservasContainer');
+
+            emptyState.style.display = 'block';
+            reservasContainer.style.display = 'none';
+            reservasContainer.innerHTML = '';
+        }
+
+        function crearTarjetaReserva(reserva) {
+            const card = document.createElement('div');
+            card.className = 'reserva-card';
+            card.dataset.reservaId = reserva.id;
+
+            // Formatear fecha
+            const fecha = new Date(reserva.fecha);
+            const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Formatear hora (HH:MM)
+            const hora = reserva.hora.substring(0, 5);
+
+            // Determinar clase de estado
+            let estadoClass = '';
+            let estadoTexto = '';
+            switch(reserva.estado) {
+                case 'pendiente':
+                    estadoClass = 'estado-pendiente';
+                    estadoTexto = 'Pendiente';
+                    break;
+                case 'confirmada':
+                    estadoClass = 'estado-confirmada';
+                    estadoTexto = 'Confirmada';
+                    break;
+                case 'completada':
+                    estadoClass = 'estado-completada';
+                    estadoTexto = 'Completada';
+                    break;
+                case 'cancelada':
+                    estadoClass = 'estado-cancelada';
+                    estadoTexto = 'Cancelada';
+                    break;
+                default:
+                    estadoClass = 'estado-pendiente';
+                    estadoTexto = reserva.estado;
+            }
+
+            // Crear HTML de la tarjeta
+            let servicioHTML = `<p class="reserva-servicio"><strong>${reserva.servicio_nombre}</strong> (${reserva.servicio_tipo})</p>`;
+
+            // Agregar servicio adicional si existe
+            if (reserva.servicio_adicional && reserva.servicio_adicional_nombre) {
+                servicioHTML += `<p class="reserva-servicio-adicional">+ ${reserva.servicio_adicional_nombre} (${reserva.servicio_adicional_tipo})</p>`;
+            }
+
+            card.innerHTML = `
+                <div class="reserva-header">
+                    <div class="reserva-estado ${estadoClass}">${estadoTexto}</div>
+                    <div class="reserva-id">#${reserva.id}</div>
+                </div>
+                <div class="reserva-body">
+                    <div class="reserva-info-principal">
+                        ${servicioHTML}
+                        <p class="reserva-barbero">Profesional: <strong>${reserva.barbero_nombre}</strong></p>
+                        <p class="reserva-fecha-hora">
+                            <span class="fecha-icon">📅</span> ${fechaFormateada}
+                            <br>
+                            <span class="hora-icon">🕐</span> ${hora}
+                        </p>
+                    </div>
+                </div>
+                <div class="reserva-footer">
+                    ${reserva.estado === 'pendiente' || reserva.estado === 'confirmada' ?
+                        `<button class="btn-cancelar-reserva" onclick="cancelarReserva(${reserva.id})">Cancelar Reserva</button>` :
+                        ''}
+                </div>
+            `;
+
+            return card;
+        }
+
+        async function cancelarReserva(reservaId) {
+            console.log(`🚫 Solicitando cancelación de reserva #${reservaId}...`);
+
+            const confirmar = await customModal.showConfirm(
+                '¿Estás seguro de que deseas cancelar esta reserva?',
+                'Confirmar Cancelación'
+            );
+
+            if (!confirmar) {
+                console.log('ℹ️ Cancelación abortada por el usuario');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('auth_token');
+
+                const response = await fetch(`http://localhost:3000/api/reservas/${reservaId}/cancelar`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        motivo_cancelacion: 'Cancelada por el usuario'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    await customModal.showAlert('Tu reserva ha sido cancelada exitosamente', 'Reserva Cancelada');
+                    // Recargar reservas
+                    cargarReservas();
+                } else {
+                    await customModal.showAlert(data.message || 'No se pudo cancelar la reserva', 'Error');
+                }
+
+            } catch (error) {
+                console.error('❌ Error al cancelar reserva:', error);
+                await customModal.showAlert('Error de conexión. Por favor intenta nuevamente.', 'Error');
+            }
+        }
+
+        // Cargar reservas cuando se carga la página
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarReservas();
+        });
     </script>
     
     <!-- Modal Personalizado -->

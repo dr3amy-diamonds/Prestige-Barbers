@@ -1314,6 +1314,335 @@ app.delete('/api/barberos/:id', (req, res) => {
     });
 });
 
+// ==================== ENDPOINTS DE RESERVAS ====================
+
+// POST /api/reservas - Crear una nueva reserva (requiere autenticación)
+app.post('/api/reservas', verificarToken, (req, res) => {
+    const {
+        usuario_id,
+        barbero_id,
+        servicio_nombre,
+        servicio_tipo,
+        servicio_adicional,
+        servicio_adicional_id,
+        servicio_adicional_nombre,
+        servicio_adicional_tipo,
+        fecha,
+        hora,
+        cliente_nombre,
+        cliente_telefono,
+        estado
+    } = req.body;
+
+    // Validar que el usuario autenticado coincida con el usuario_id
+    if (req.userId !== usuario_id) {
+        return res.status(403).json({
+            success: false,
+            error: 'No tienes permiso para crear reservas para otro usuario'
+        });
+    }
+
+    // Validaciones básicas
+    if (!barbero_id || !servicio_nombre || !servicio_tipo || !fecha || !hora || !cliente_nombre || !cliente_telefono) {
+        return res.status(400).json({
+            success: false,
+            error: 'Todos los campos obligatorios deben estar completos'
+        });
+    }
+
+    // Validar que la fecha no sea en el pasado
+    const fechaReserva = new Date(fecha);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    if (fechaReserva < hoy) {
+        return res.status(400).json({
+            success: false,
+            error: 'No se pueden hacer reservas en fechas pasadas'
+        });
+    }
+
+    // Verificar disponibilidad del barbero en esa fecha y hora
+    const queryDisponibilidad = `
+        SELECT id FROM reservas
+        WHERE barbero_id = ?
+        AND fecha = ?
+        AND hora = ?
+        AND estado IN ('pendiente', 'confirmada')
+    `;
+
+    db.query(queryDisponibilidad, [barbero_id, fecha, hora], (err, results) => {
+        if (err) {
+            console.error('Error al verificar disponibilidad:', err);
+            return res.status(500).json({
+                success: false,
+                error: 'Error al verificar disponibilidad'
+            });
+        }
+
+        if (results.length > 0) {
+            return res.status(409).json({
+                success: false,
+                error: 'El barbero no está disponible en ese horario. Por favor selecciona otra hora.'
+            });
+        }
+
+        // Insertar la reserva
+        const queryInsert = `
+            INSERT INTO reservas (
+                usuario_id,
+                barbero_id,
+                servicio_nombre,
+                servicio_tipo,
+                servicio_adicional,
+                servicio_adicional_id,
+                servicio_adicional_nombre,
+                servicio_adicional_tipo,
+                fecha,
+                hora,
+                cliente_nombre,
+                cliente_telefono,
+                estado
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const values = [
+            usuario_id,
+            barbero_id,
+            servicio_nombre,
+            servicio_tipo,
+            servicio_adicional || false,
+            servicio_adicional_id || null,
+            servicio_adicional_nombre || null,
+            servicio_adicional_tipo || null,
+            fecha,
+            hora,
+            cliente_nombre,
+            cliente_telefono,
+            estado || 'pendiente'
+        ];
+
+        db.query(queryInsert, values, (err, result) => {
+            if (err) {
+                console.error('Error al crear reserva:', err);
+                return res.status(500).json({
+                    success: false,
+                    error: 'Error al crear la reserva'
+                });
+            }
+
+            res.status(201).json({
+                success: true,
+                message: 'Reserva creada exitosamente',
+                reserva_id: result.insertId
+            });
+
+            console.log(`✅ Reserva creada - ID: ${result.insertId} | Usuario: ${usuario_id} | Barbero: ${barbero_id}`);
+        });
+    });
+});
+
+// GET /api/reservas/usuario/:id - Obtener todas las reservas de un usuario (requiere autenticación)
+app.get('/api/reservas/usuario/:id', verificarToken, (req, res) => {
+    const { id } = req.params;
+
+    // Validar que el usuario autenticado coincida con el ID solicitado
+    if (req.userId !== parseInt(id)) {
+        return res.status(403).json({
+            success: false,
+            error: 'No tienes permiso para ver las reservas de otro usuario'
+        });
+    }
+
+    const query = `
+        SELECT
+            r.*,
+            b.nombre AS barbero_nombre,
+            b.imagen AS barbero_imagen
+        FROM reservas r
+        LEFT JOIN barberos b ON r.barbero_id = b.id
+        WHERE r.usuario_id = ?
+        ORDER BY r.id ASC
+    `;
+
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener reservas:', err);
+            return res.status(500).json({
+                success: false,
+                error: 'Error al obtener las reservas'
+            });
+        }
+
+        res.json({
+            success: true,
+            reservas: results
+        });
+    });
+});
+
+// GET /api/reservas/:id - Obtener una reserva específica (requiere autenticación)
+app.get('/api/reservas/:id', verificarToken, (req, res) => {
+    const { id } = req.params;
+
+    const query = `
+        SELECT
+            r.*,
+            b.nombre AS barbero_nombre,
+            b.imagen AS barbero_imagen,
+            u.nombre_completo AS usuario_nombre,
+            u.email AS usuario_email
+        FROM reservas r
+        LEFT JOIN barberos b ON r.barbero_id = b.id
+        LEFT JOIN usuarios u ON r.usuario_id = u.id
+        WHERE r.id = ?
+    `;
+
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener reserva:', err);
+            return res.status(500).json({
+                success: false,
+                error: 'Error al obtener la reserva'
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'Reserva no encontrada'
+            });
+        }
+
+        // Verificar que el usuario autenticado sea el dueño de la reserva
+        if (req.userId !== results[0].usuario_id) {
+            return res.status(403).json({
+                success: false,
+                error: 'No tienes permiso para ver esta reserva'
+            });
+        }
+
+        res.json({
+            success: true,
+            reserva: results[0]
+        });
+    });
+});
+
+// PUT /api/reservas/:id/cancelar - Cancelar una reserva (requiere autenticación)
+app.put('/api/reservas/:id/cancelar', verificarToken, (req, res) => {
+    const { id } = req.params;
+    const { motivo_cancelacion } = req.body;
+
+    // Primero verificar que la reserva exista y pertenezca al usuario
+    db.query('SELECT * FROM reservas WHERE id = ?', [id], (err, results) => {
+        if (err) {
+            console.error('Error al buscar reserva:', err);
+            return res.status(500).json({
+                success: false,
+                error: 'Error al buscar la reserva'
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'Reserva no encontrada'
+            });
+        }
+
+        const reserva = results[0];
+
+        // Verificar que el usuario autenticado sea el dueño
+        if (req.userId !== reserva.usuario_id) {
+            return res.status(403).json({
+                success: false,
+                error: 'No tienes permiso para cancelar esta reserva'
+            });
+        }
+
+        // Verificar que la reserva no esté ya cancelada o completada
+        if (reserva.estado === 'cancelada') {
+            return res.status(400).json({
+                success: false,
+                error: 'Esta reserva ya está cancelada'
+            });
+        }
+
+        if (reserva.estado === 'completada') {
+            return res.status(400).json({
+                success: false,
+                error: 'No se puede cancelar una reserva completada'
+            });
+        }
+
+        // Cancelar la reserva
+        const query = `
+            UPDATE reservas
+            SET estado = 'cancelada',
+                motivo_cancelacion = ?
+            WHERE id = ?
+        `;
+
+        db.query(query, [motivo_cancelacion || 'Cancelada por el usuario', id], (err) => {
+            if (err) {
+                console.error('Error al cancelar reserva:', err);
+                return res.status(500).json({
+                    success: false,
+                    error: 'Error al cancelar la reserva'
+                });
+            }
+
+            res.json({
+                success: true,
+                message: 'Reserva cancelada exitosamente'
+            });
+
+            console.log(`❌ Reserva cancelada - ID: ${id} | Usuario: ${req.userId}`);
+        });
+    });
+});
+
+// GET /api/reservas/barbero/:id - Obtener reservas de un barbero (sin autenticación para admins)
+app.get('/api/reservas/barbero/:id', (req, res) => {
+    const { id } = req.params;
+    const { fecha } = req.query; // Opcional: filtrar por fecha
+
+    let query = `
+        SELECT
+            r.*,
+            u.nombre_completo AS usuario_nombre,
+            u.email AS usuario_email
+        FROM reservas r
+        LEFT JOIN usuarios u ON r.usuario_id = u.id
+        WHERE r.barbero_id = ?
+    `;
+
+    const params = [id];
+
+    if (fecha) {
+        query += ' AND r.fecha = ?';
+        params.push(fecha);
+    }
+
+    query += ' ORDER BY r.fecha ASC, r.hora ASC';
+
+    db.query(query, params, (err, results) => {
+        if (err) {
+            console.error('Error al obtener reservas del barbero:', err);
+            return res.status(500).json({
+                success: false,
+                error: 'Error al obtener las reservas'
+            });
+        }
+
+        res.json({
+            success: true,
+            reservas: results
+        });
+    });
+});
+
 app.listen(port, () => {
     console.log(`🚀 Servidor escuchando en http://localhost:${port}`);
 });

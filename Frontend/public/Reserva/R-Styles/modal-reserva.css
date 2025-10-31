@@ -1,0 +1,617 @@
+/* ==================== MODAL DE RESERVAS - PRESTIGE BARBERS ==================== */
+
+/* Scrollbar personalizada para el modal */
+.modal-inf-cont::-webkit-scrollbar,
+.modal-cale-hrs-frm-cont::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-inf-cont::-webkit-scrollbar-track,
+.modal-cale-hrs-frm-cont::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.modal-inf-cont::-webkit-scrollbar-thumb,
+.modal-cale-hrs-frm-cont::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.modal-inf-cont::-webkit-scrollbar-thumb:hover,
+.modal-cale-hrs-frm-cont::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Overlay del modal (fondo oscuro) */
+.reserva-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    padding: 20px;
+}
+
+/* Cuando el modal está activo */
+.reserva-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Contenedor del modal */
+.reserva-modal-content {
+    background: white;
+    border: 5px solid #1b1b1b;
+    width: clamp(320px, 90vw, 1100px);
+    max-width: 98%;
+    height: auto;
+    max-height: 92vh;
+    overflow: hidden;
+    padding: clamp(30px, 4vw, 50px);
+    position: relative;
+    transform: scale(0.8);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Animación de entrada del modal */
+.reserva-modal-overlay.active .reserva-modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Botón de cerrar */
+.reserva-modal-close {
+    position: absolute;
+    top: clamp(10px, 1.5vw, 18px);
+    right: clamp(10px, 1.5vw, 18px);
+    background: #1b1b1b;
+    color: white;
+    border: none;
+    width: clamp(32px, 5vw, 40px);
+    height: clamp(32px, 5vw, 40px);
+    font-size: clamp(20px, 3vw, 28px);
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+    font-weight: 300;
+    border-radius: 0;
+}
+
+.reserva-modal-close:hover {
+    background: #333;
+    transform: rotate(90deg);
+}
+
+/* Contenedor principal del modal (flexbox de 2 columnas) */
+.modal-res-cont {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(15px, 2.5vw, 30px);
+    width: 100%;
+    flex: 1;
+    overflow: visible;
+    min-height: 0;
+    max-height: 100%;
+}
+
+/* Columna izquierda - Información del servicio */
+.modal-inf-cont {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 400px;
+    min-width: min(100%, 350px);
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Permitir scroll cuando el contenido crece dinámicamente */
+    max-height: 100%;
+    padding-right: 5px;
+}
+
+.modal-labs-cont {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.modal-labs-cont label:first-child {
+    font-size: clamp(0.85em, 1.5vw, 1em);
+    text-transform: uppercase;
+    background: #1b1b1b;
+    font-weight: 600;
+    color: white;
+    padding: 5px 10px;
+}
+
+.modal-labs-cont label:last-child {
+    font-size: clamp(0.85em, 1.5vw, 1em);
+    text-transform: capitalize;
+    font-weight: 500;
+    color: #1b1b1b;
+    display: flex;
+    align-items: center;
+}
+
+.modal-inf-cont h2 {
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
+    margin: clamp(5px, 1vw, 10px) 0;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.1;
+}
+
+/* Pregunta de servicio adicional */
+.modal-add-svc-cont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: clamp(8px, 1.5vw, 15px) 0;
+}
+
+.modal-add-svc-cont > label {
+    font-size: clamp(0.8em, 1.3vw, 0.95em);
+    margin-bottom: clamp(5px, 1vw, 10px);
+    text-align: center;
+}
+
+.modal-add-svc-cont-btn {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-add-svc-cont-btn button {
+    background-color: #fff;
+    color: #1b1b1b;
+    text-transform: capitalize;
+    font-family: "Montserrat", sans-serif;
+    border: 3px solid #1b1b1b;
+    padding: clamp(3px, 0.8vw, 5px);
+    width: clamp(80px, 12vw, 100px);
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-add-svc-cont-btn button:hover {
+    background-color: #f0f0f0;
+}
+
+.modal-add-svc-cont-btn button.selected {
+    background-color: #1b1b1b;
+    color: white;
+}
+
+/* Barbero seleccionado */
+.modal-slc-barb-cont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: clamp(8px, 1.5vw, 15px);
+    gap: clamp(5px, 1vw, 10px);
+    /* Permitir que crezca con el contenido */
+    flex-shrink: 0;
+}
+
+.modal-slc-barb-cont label {
+    font-size: clamp(0.85em, 1.5vw, 1em);
+    font-weight: 600;
+    text-transform: uppercase;
+    background: #1b1b1b;
+    color: white;
+    padding: 5px 10px;
+}
+
+.modal-slc-barb-cont img {
+    width: clamp(60px, 10vw, 90px);
+    height: clamp(60px, 10vw, 90px);
+    border-radius: 50%;
+    border: solid 3px #1b1b1b;
+    object-fit: cover;
+}
+
+/* Descripción */
+.modal-inf-cont p {
+    font-size: clamp(0.75rem, 1.3vw, 0.9rem);
+    padding: 0px clamp(5px, 2vw, 30px);
+    text-align: justify;
+    margin-top: clamp(5px, 1vw, 10px);
+    line-height: 1.4;
+}
+
+/* Información de barrio, calle y precio */
+.modal-bar-ca-pri {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(5px, 1vw, 10px);
+    margin-top: clamp(8px, 1.5vw, 15px);
+    /* Asegurar que siempre sea visible al final */
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.modal-bar-ca-pri label {
+    font-size: clamp(0.85em, 1.5vw, 1em);
+    text-transform: uppercase;
+}
+
+.modal-bar-ca-pri span {
+    font-weight: 700;
+}
+
+/* Columna derecha - Calendario, horas y formulario */
+.modal-cale-hrs-frm-cont {
+    display: flex;
+    flex: 1 1 400px;
+    min-width: min(100%, 350px);
+    flex-direction: column;
+    gap: clamp(10px, 1.5vw, 15px);
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Permitir scroll cuando el contenido crece dinámicamente */
+    max-height: 100%;
+    padding-right: 5px;
+}
+
+/* Calendario de días */
+.modal-cale-cont {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: clamp(5px, 1vw, 10px);
+}
+
+.modal-cale-cont > label:first-child {
+    font-size: clamp(0.85em, 1.5vw, 1em);
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* Slider de días con flechas */
+.modal-days-slider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-slider-arrow {
+    background: transparent;
+    border: none;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-weight: bold;
+    color: #1b1b1b;
+    cursor: pointer;
+    padding: 5px clamp(5px, 1.5vw, 10px);
+    transition: opacity 0.3s ease;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.modal-slider-arrow:hover:not(:disabled) {
+    opacity: 0.7;
+}
+
+.modal-slider-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.modal-days {
+    display: flex;
+    gap: clamp(5px, 1.5vw, 10px);
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animación de entrada de días */
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.modal-days.slide-right {
+    animation: slideInFromRight 0.4s ease-out;
+}
+
+.modal-days.slide-left {
+    animation: slideInFromLeft 0.4s ease-out;
+}
+
+/* Botones de días */
+.modal-day-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: 2px solid transparent;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    width: clamp(45px, 8vw, 60px);
+    height: clamp(60px, 10vw, 75px);
+    padding: clamp(5px, 1vw, 8px) clamp(3px, 0.8vw, 5px);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: #1b1b1b;
+    flex-shrink: 0;
+}
+
+.modal-day-btn .day-name {
+    font-size: clamp(0.65em, 1.2vw, 0.85em);
+    line-height: 1.2;
+    margin-bottom: clamp(8px, 2vw, 15px);
+    letter-spacing: 0.15em;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+}
+
+.modal-day-btn .day-number {
+    font-size: clamp(1em, 1.8vw, 1.3em);
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-family: "Montserrat", sans-serif;
+}
+
+.modal-day-btn:hover:not(.selected) {
+    background-color: #f0f0f0;
+}
+
+.modal-day-btn.selected {
+    background-color: #1b1b1b;
+    color: white;
+}
+
+/* Días deshabilitados (completamente ocupados) */
+.modal-day-btn:disabled,
+.modal-day-btn.fully-booked {
+    background-color: #f5f5f5;
+    color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.5;
+    border-color: #e0e0e0;
+}
+
+.modal-day-btn:disabled:hover,
+.modal-day-btn.fully-booked:hover {
+    background-color: #f5f5f5;
+}
+
+/* Horas disponibles */
+.modal-hours-cont {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(5px, 1vw, 10px);
+}
+
+.modal-hours-cont > label {
+    font-size: clamp(0.85em, 1.5vw, 1em);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.modal-btn-hor-cont {
+    display: flex;
+    gap: clamp(5px, 1.5vw, 10px);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.modal-btn-hor-cont button {
+    background-color: #fff;
+    color: #1b1b1b;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-family: "Montserrat", sans-serif;
+    border: 3px solid #1b1b1b;
+    padding: clamp(3px, 0.8vw, 5px);
+    width: clamp(80px, 12vw, 100px);
+    font-size: clamp(0.85rem, 1.5vw, 1rem);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-btn-hor-cont button:hover:not(.selected) {
+    background-color: #f0f0f0;
+}
+
+.modal-btn-hor-cont button.selected {
+    background-color: #1b1b1b;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+}
+
+/* Botones de hora deshabilitados (ocupados) */
+.modal-btn-hor-cont button:disabled,
+.modal-btn-hor-cont button.occupied {
+    background-color: #e0e0e0;
+    color: #999;
+    border-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none !important;
+}
+
+.modal-btn-hor-cont button:disabled:hover,
+.modal-btn-hor-cont button.occupied:hover {
+    background-color: #e0e0e0;
+    transform: none !important;
+}
+
+/* Formulario de registro */
+.modal-reg-inps {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1.2vw, 10px);
+    margin-bottom: 0;
+}
+
+.modal-reg-inps label {
+    font-size: clamp(0.85em, 1.5vw, 1em);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.modal-reg-inps input {
+    padding: clamp(8px, 1.5vw, 10px);
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    border: 3px solid #1b1b1b;
+    font-family: "Montserrat", sans-serif;
+}
+
+.modal-reg-inps input:focus {
+    outline: none;
+    border-color: #333;
+}
+
+.modal-reg-inps button {
+    background-color: #1b1b1b;
+    color: white;
+    padding: clamp(10px, 1.5vw, 13px) clamp(25px, 4vw, 45px);
+    margin: clamp(8px, 1.2vw, 10px) auto 0;
+    width: fit-content;
+    font-size: clamp(0.85rem, 1.3vw, 0.95rem);
+    border: none;
+    font-family: "Montserrat", sans-serif;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.modal-reg-inps button:hover {
+    background-color: #333;
+}
+
+.modal-reg-inps button:active {
+    background-color: #000;
+}
+
+/* Ajustes para pantallas medianas (tablets y laptops pequeñas) */
+@media (max-width: 1024px) and (min-height: 600px) {
+    .reserva-modal-content {
+        padding: clamp(8px, 2vw, 25px);
+        max-height: 92vh;
+    }
+
+    .modal-inf-cont h2 {
+        font-size: clamp(1.2rem, 3.5vw, 2rem);
+    }
+
+    .modal-slc-barb-cont img {
+        width: clamp(55px, 9vw, 75px);
+        height: clamp(55px, 9vw, 75px);
+    }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+    .reserva-modal-content {
+        max-height: 96vh;
+        border-width: 3px;
+        padding: clamp(8px, 3vw, 20px);
+    }
+
+    .modal-res-cont {
+        flex-direction: column;
+        gap: clamp(12px, 3vw, 20px);
+    }
+
+    .modal-inf-cont,
+    .modal-cale-hrs-frm-cont {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+
+    .reserva-modal-close {
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+        top: 5px;
+        right: 5px;
+    }
+
+    .modal-inf-cont h2 {
+        font-size: clamp(1.3rem, 5vw, 1.8rem);
+        margin: 5px 0;
+    }
+
+    .modal-inf-cont p {
+        font-size: 0.85rem;
+        padding: 0px 10px;
+    }
+
+    .modal-add-svc-cont {
+        margin: 10px 0;
+    }
+
+    .modal-slc-barb-cont {
+        margin-top: 10px;
+    }
+}
+
+/* Pantallas muy pequeñas (móviles en modo retrato) */
+@media (max-width: 480px) {
+    .reserva-modal-overlay {
+        padding: 10px;
+    }
+
+    .reserva-modal-content {
+        border-width: 3px;
+        max-height: 98vh;
+    }
+
+    .modal-inf-cont h2 {
+        font-size: 1.4rem;
+    }
+
+    .modal-day-btn {
+        width: 40px;
+        height: 55px;
+    }
+
+    .modal-btn-hor-cont button {
+        width: 75px;
+        font-size: 0.8rem;
+    }
+}

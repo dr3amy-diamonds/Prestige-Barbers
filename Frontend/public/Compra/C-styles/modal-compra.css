@@ -1,0 +1,120 @@
+/* Modal de compra realizada */
+.compra-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.compra-modal-overlay.active {
+    display: flex;
+}
+
+.compra-modal-content {
+    background: #fff;
+    border-radius: 0;
+    padding: 50px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.4s ease;
+}
+
+.compra-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #1b1b1b;
+    line-height: 1;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.compra-modal-close:hover {
+    transform: scale(1.1);
+    opacity: 0.7;
+}
+
+.compra-success {
+    text-align: center;
+    padding: 20px;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: #1b1b1b;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    margin: 0 auto 30px;
+    font-weight: 300;
+}
+
+.compra-success h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin: 0 0 15px;
+    color: #1b1b1b;
+}
+
+.compra-success p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0 0 30px;
+    line-height: 1.6;
+}
+
+.continue-btn {
+    background: #1b1b1b;
+    color: #fff;
+    border: none;
+    padding: 15px 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.continue-btn:hover {
+    background: #333;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

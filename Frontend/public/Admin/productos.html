@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos - Prestige Barbers</title>
+    <link rel="stylesheet" href="productos-styles.css">
+</head>
+
+<body>
+    <header class="page-header">
+        <h1>Gestión de Productos</h1>
+        <a href="index.html" class="back-link">Volver al Panel Admin</a>
+    </header>
+
+    <main class="productos-main">
+        <!-- Sección de Registro de Nuevo Producto -->
+        <section class="card form-card">
+            <div class="card-header">
+                <h2>Registrar Nuevo Producto</h2>
+                <p>Agrega un nuevo producto al catálogo de la tienda</p>
+            </div>
+            <div class="card-body">
+                <form id="productoForm" class="producto-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="producto-marca">Marca *</label>
+                            <input type="text" id="producto-marca" name="marca" required
+                                placeholder="Ej: SKALA, Natura, Milagros">
+                        </div>
+                        <div class="form-group">
+                            <label for="producto-categoria">Categoría *</label>
+                            <select id="producto-categoria" name="categoria" required>
+                                <option value="">Seleccione categoría</option>
+                                <option value="Cuidado Capilar">Cuidado Capilar</option>
+                                <option value="Skincare">Skincare</option>
+                                <option value="Barba">Barba</option>
+                                <option value="Accesorios">Accesorios</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="producto-nombre">Nombre del Producto *</label>
+                            <input type="text" id="producto-nombre" name="nombre" required
+                                placeholder="Ej: Crema Skala Expert">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="producto-descripcion">Descripción *</label>
+                            <textarea id="producto-descripcion" name="descripcion" rows="4" required
+                                placeholder="Descripción detallada del producto..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="producto-tipo">Tipo *</label>
+                            <input type="text" id="producto-tipo" name="tipo" required
+                                placeholder="Ej: Crema de Tratamiento">
+                        </div>
+                        <div class="form-group">
+                            <label for="producto-tamano">Tamaño *</label>
+                            <input type="text" id="producto-tamano" name="tamano" required
+                                placeholder="Ej: 1000g, 500ml">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="producto-precio">Precio (COP) *</label>
+                            <input type="number" id="producto-precio" name="precio" required min="0" step="100"
+                                placeholder="38800">
+                        </div>
+                        <div class="form-group">
+                            <label for="producto-stock">Stock Disponible *</label>
+                            <input type="number" id="producto-stock" name="stock" required min="0"
+                                placeholder="100">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="producto-imagen">Imagen del Producto *</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="producto-imagen" name="imagen" accept="image/*" required>
+                                <div class="image-preview-container" id="imagePreviewContainer" style="display: none;">
+                                    <img id="imagePreview" src="" alt="Vista previa">
+                                    <button type="button" class="remove-image" id="removeImageBtn">✕</button>
+                                </div>
+                            </div>
+                            <small>Formatos aceptados: JPG, PNG, WEBP (máx. 5MB)</small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span id="btnText">Registrar Producto</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Sección de Lista de Productos -->
+        <section class="card list-card">
+            <div class="card-header">
+                <h2>Productos Registrados</h2>
+                <p>Lista de todos los productos en el catálogo</p>
+            </div>
+            <div class="card-body">
+                <!-- Filtros -->
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="filter-categoria">Filtrar por categoría:</label>
+                        <select id="filter-categoria">
+                            <option value="">Todas las categorías</option>
+                            <option value="Cuidado Capilar">Cuidado Capilar</option>
+                            <option value="Skincare">Skincare</option>
+                            <option value="Barba">Barba</option>
+                            <option value="Accesorios">Accesorios</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-search">Buscar:</label>
+                        <input type="text" id="filter-search" placeholder="Buscar por nombre o marca...">
+                    </div>
+                </div>
+
+                <!-- Tabla de Productos -->
+                <div class="table-container">
+                    <table class="productos-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Imagen</th>
+                                <th>Marca</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productosTableBody">
+                            <!-- Los productos se cargarán dinámicamente aquí -->
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 40px; color: #666;">
+                                    Cargando productos...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content">
+            <h3>Confirmar Eliminación</h3>
+            <p>¿Estás seguro de que deseas eliminar este producto?</p>
+            <p><strong id="deleteProductName"></strong></p>
+            <div class="modal-actions">
+                <button class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+                <button class="btn btn-secondary" id="cancelDeleteBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="productos.js"></script>
+</body>
+
+</html>

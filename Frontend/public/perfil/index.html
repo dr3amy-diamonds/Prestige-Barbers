@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="head-lkn-cont">
-            <a href="../index.html">Shop</a>
+            <a href="../Tienda/index.html">Shop</a>
             <a href="../Cortes/index.html">Servicios</a>
             <a href="../Barberos/index.html">Barberos</a>
             <a href="">Acerca De</a>
@@ -141,6 +141,22 @@
                     </div>
                 </div>
 
+                <!-- Panel de Administración (solo para admins) -->
+                <div id="admin-panel-section" style="display: none;">
+                    <h2 class="seccion-titulo">Administración</h2>
+                    <div class="info-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                        <div class="config-option" style="border: none; padding: 20px;">
+                            <div class="config-info">
+                                <h3 style="color: white; font-size: 18px;">Panel de Administración</h3>
+                                <p style="color: rgba(255,255,255,0.9);">Accede al panel administrativo para gestionar productos, barberos y reservas</p>
+                            </div>
+                            <button class="btn-admin-panel" onclick="window.location.href='../Admin/index.html'" style="background: white; color: #667eea; padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                                Ir al Panel Admin
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <h2 class="seccion-titulo">Zona de Peligro</h2>
                 <div class="info-card danger-zone">
                     <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar Sesión</button>
@@ -182,6 +198,15 @@
             try {
                 const user = JSON.parse(userData);
                 console.log('Usuario:', user);
+                
+                // Mostrar panel de admin si el usuario es admin
+                if (user.rol === 'admin') {
+                    const adminPanelSection = document.getElementById('admin-panel-section');
+                    if (adminPanelSection) {
+                        adminPanelSection.style.display = 'block';
+                        console.log('✅ Panel de admin visible');
+                    }
+                }
                 
                 // Actualizar UI
                 document.getElementById('avatarInitial').textContent = user.nombre_completo.charAt(0).toUpperCase();

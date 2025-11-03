@@ -234,12 +234,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const data = await response.json();
                     
+                    console.log('📥 Respuesta del servidor:', data);
+                    console.log('🔍 Rol del usuario:', data.user?.rol);
+                    
                     if (data.success) {
                         // Guardar token en localStorage
                         localStorage.setItem('auth_token', data.token);
                         localStorage.setItem('user_data', JSON.stringify(data.user));
                         
-                        // Mostrar mensaje de éxito
+                        // Verificar si es admin y redirigir
+                        if (data.user.rol === 'admin') {
+                            console.log('✅ Usuario es admin, redirigiendo...');
+                            window.location.href = '/Admin/index.html';
+                            return;
+                        }
+                        
+                        console.log('ℹ️ Usuario normal, mostrando mensaje de bienvenida');
+                        
+                        // Mostrar mensaje de éxito para usuarios normales
                         mostrarMensaje('¡Bienvenido de nuevo, ' + data.user.nombre_completo + '!', 'success-login');
                         
                         // Actualizar UI

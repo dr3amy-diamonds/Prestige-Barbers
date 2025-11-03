@@ -191,6 +191,14 @@ app.post('/api/auth/login', (req, res) => {
             
             const usuario = results[0];
             
+            console.log('🔍 Usuario encontrado:', {
+                id: usuario.id,
+                email: usuario.email,
+                nombre: usuario.nombre_completo,
+                rol: usuario.rol,
+                tiene_rol: usuario.hasOwnProperty('rol')
+            });
+            
             // Verificar contraseña
             const passwordValida = await bcrypt.compare(password, usuario.password_hash);
             
@@ -218,7 +226,8 @@ app.post('/api/auth/login', (req, res) => {
                 user: {
                     id: usuario.id,
                     nombre_completo: usuario.nombre_completo,
-                    email: usuario.email
+                    email: usuario.email,
+                    rol: usuario.rol
                 }
             });
         });
@@ -1639,6 +1648,186 @@ app.get('/api/reservas/barbero/:id', (req, res) => {
         res.json({
             success: true,
             reservas: results
+        });
+    });
+});
+
+// ==================== ENDPOINTS DE PRODUCTOS ====================
+
+// GET /api/productos - Obtener todos los productos
+app.get('/api/productos', (req, res) => {
+    const query = 'SELECT * FROM productos ORDER BY id DESC';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error al obtener productos:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Error al obtener los productos'
+            });
+        }
+
+        res.json({
+            success: true,
+            productos: results
+        });
+    });
+});
+
+// GET /api/productos/:id - Obtener un producto específico
+app.get('/api/productos/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'SELECT * FROM productos WHERE id = ?';
+
+    db.query(query, [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener producto:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Error al obtener el producto'
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Producto no encontrado'
+            });
+        }
+
+        res.json({
+            success: true,
+            producto: results[0]
+        });
+    });
+});
+
+// POST /api/productos - Crear nuevo producto
+app.post('/api/productos', upload.single('imagen'), (req, res) => {
+    const { marca, nombre, descripcion, categoria, tipo, tamano, precio, stock } = req.body;
+
+    // Validaciones
+    if (!marca || !nombre || !descripcion || !categoria || !tipo || !tamano || !precio || !stock) {
+        return res.status(400).json({
+            success: false,
+            message: 'Todos los campos son obligatorios'
+        });
+    }
+
+    if (!req.file) {
+        return res.status(400).json({
+            success: false,
+            message: 'Debes subir una imagen del producto'
+        });
+    }
+
+    const imagenPath = '/uploads/' + req.file.filename;
+
+    const query = `
+        INSERT INTO productos (marca, nombre, descripcion, categoria, tipo, tamano, precio, stock, imagen)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [marca, nombre, descripcion, categoria, tipo, tamano, precio, stock, imagenPath];
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.error('Error al crear producto:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Error al registrar el producto'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Producto registrado exitosamente',
+            producto_id: result.insertId
+        });
+    });
+});
+
+// PUT /api/productos/:id - Actualizar producto
+app.put('/api/productos/:id', upload.single('imagen'), (req, res) => {
+    const { id } = req.params;
+    const { marca, nombre, descripcion, categoria, tipo, tamano, precio, stock } = req.body;
+
+    // Validaciones
+    if (!marca || !nombre || !descripcion || !categoria || !tipo || !tamano || !precio || !stock) {
+        return res.status(400).json({
+            success: false,
+            message: 'Todos los campos son obligatorios'
+        });
+    }
+
+    let query, values;
+
+    if (req.file) {
+        // Si hay nueva imagen
+        const imagenPath = '/uploads/' + req.file.filename;
+        query = `
+            UPDATE productos
+            SET marca = ?, nombre = ?, descripcion = ?, categoria = ?, tipo = ?, tamano = ?, precio = ?, stock = ?, imagen = ?
+            WHERE id = ?
+        `;
+        values = [marca, nombre, descripcion, categoria, tipo, tamano, precio, stock, imagenPath, id];
+    } else {
+        // Sin nueva imagen
+        query = `
+            UPDATE productos
+            SET marca = ?, nombre = ?, descripcion = ?, categoria = ?, tipo = ?, tamano = ?, precio = ?, stock = ?
+            WHERE id = ?
+        `;
+        values = [marca, nombre, descripcion, categoria, tipo, tamano, precio, stock, id];
+    }
+
+    db.query(query, values, (err, result) => {
+        if (err) {
+            console.error('Error al actualizar producto:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Error al actualizar el producto'
+            });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Producto no encontrado'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Producto actualizado exitosamente'
+        });
+    });
+});
+
+// DELETE /api/productos/:id - Eliminar producto
+app.delete('/api/productos/:id', (req, res) => {
+    const { id } = req.params;
+    const query = 'DELETE FROM productos WHERE id = ?';
+
+    db.query(query, [id], (err, result) => {
+        if (err) {
+            console.error('Error al eliminar producto:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'Error al eliminar el producto'
+            });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Producto no encontrado'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Producto eliminado exitosamente'
         });
     });
 });

@@ -1,0 +1,311 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat", sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header{
+    background: #333;
+    color: #fff;
+    text-align: center;
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.head-logo-cont {
+    display: flex;
+    text-transform: uppercase;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+    background: #1b1b1b;
+    position: relative;
+}
+
+.head-logo-cont h1 {
+    font-weight: 550;
+    font-size: 1.3rem;
+}
+
+.head-lkn-cont {
+    padding: 15px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    gap: 40px;
+    border-bottom: 10px solid #1b1b1b;
+    transition: border-color 0.3s ease-in-out;
+    position: relative;
+}
+
+header:stuck .head-lkn-cont {
+    border-color: #1b1b1b;
+}
+
+.head-lkn-cont a {
+    text-decoration: none;
+    color: #000;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Estilos para los iconos del header */
+.head-icons-cont {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.head-icons-cont .icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.head-icons-cont .icon-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+/* Ajuste espec�fico para el icono del carrito */
+.head-icons-cont .icon-link:first-child img {
+    width: 20px;
+    height: 20px;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.compra-cont{
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+}
+
+.img-prod-cont{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.img-prod-cont img{
+    max-width: 65%;
+    height: auto;
+    object-fit: contain;
+    position: fixed;
+    top: 50%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+}
+
+.info-prod-cont{
+    width: 50%;
+    color: #1b1b1b;
+    padding: 5% 10%;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.info-prod-cont label{
+    font-weight: 600;
+    text-transform: uppercase;
+    background: #1b1b1b;
+    color: #fff;
+    padding: 5px 10px;
+    margin: 0
+}
+
+.info-prod-cont h2{
+    font-size: 3rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin: 0;
+    margin-top: 10px
+}
+
+/* Contenedor de descripci�n con efecto fade (estilo Louis Vuitton) */
+.description-container {
+    position: relative;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.info-prod-cont p{
+    font-size: 1em;
+    line-height: 1.6;
+    margin: 0;
+    text-align: justify;
+    color: #333;
+    max-height: 4.8em; /* 3 l�neas aproximadamente */
+    overflow: hidden;
+    transition: max-height 0.5s ease, margin-bottom 0.5s ease;
+}
+
+.info-prod-cont p.collapsed {
+    max-height: 4.8em;
+}
+
+.info-prod-cont p.expanded {
+    max-height: 1000px; /* Suficientemente alto para cualquier texto */
+    margin-bottom: 15px;
+}
+
+/* Efecto de desvanecimiento gradual (gradient fade) */
+.description-fade {
+    position: absolute;
+    bottom: 45px; /* Justo encima del bot�n */
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.description-fade.hidden {
+    opacity: 0;
+}
+
+/* Bot�n "Ver m�s" estilo elegante */
+.ver-mas-btn {
+    display: block;
+    margin: 10px auto 0;
+    background: transparent;
+    border: none;
+    color: #1b1b1b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 8px 0;
+    transition: opacity 0.3s ease;
+}
+
+.ver-mas-btn:hover {
+    opacity: 0.7;
+}
+
+.ver-mas-btn.hidden {
+    display: none;
+}
+
+/* Detalles del producto */
+.product-details {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.detail-label {
+    font-weight: 600;
+    text-transform: uppercase;
+    background: transparent !important;
+    color: #1b1b1b !important;
+    padding: 0 !important;
+    font-size: 0.9em;
+}
+
+.detail-value {
+    color: #666;
+    font-size: 0.95em;
+}
+
+/* Contenedor de precio */
+.price-container {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.price-label {
+    font-weight: 600;
+    text-transform: uppercase;
+    background: transparent !important;
+    color: #1b1b1b !important;
+    padding: 0 !important;
+    font-size: 0.9em;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.price-value {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1b1b1b;
+    margin: 0;
+}
+
+.lkns-compra-cont{
+    margin-top: 20px;
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 10px
+}
+
+.lkns-compra-cont a:first-child{
+    font-weight: 600;
+    font-size: 1.2em;
+    text-decoration: none;
+    color: #1b1b1b;
+    border: #1b1b1b 2px solid;
+    padding: 20px 50px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+.lkns-compra-cont a:first-child:hover{
+    background-color: #1b1b1b;
+    color: #fff;
+}
+
+.lkns-compra-cont a:last-child{
+    font-weight: 600;
+    font-size: 1em;
+    color: #1b1b1b;
+    padding: 20px 50px;
+}

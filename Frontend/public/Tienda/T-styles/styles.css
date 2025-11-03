@@ -1,0 +1,193 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat", sans-serif;
+}
+
+header {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    position: -webkit-sticky;
+    /* For Safari */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+.head-logo-cont {
+    display: flex;
+    text-transform: uppercase;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+    background: #1b1b1b;
+    position: relative;
+}
+
+.head-logo-cont h1 {
+    font-weight: 550;
+    font-size: 1.3rem;
+}
+
+.head-lkn-cont {
+    padding: 15px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    gap: 40px;
+    border-bottom: 10px solid #1b1b1b;
+    transition: border-color 0.3s ease-in-out;
+    position: relative;
+}
+
+header:stuck .head-lkn-cont {
+    border-color: #1b1b1b;
+}
+
+.head-lkn-cont a {
+    text-decoration: none;
+    color: #000;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Estilos para los iconos del header */
+.head-icons-cont {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.head-icons-cont .icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.head-icons-cont .icon-link img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+.head-icons-cont .icon-link:first-child img {
+    width: 20px;
+    height: 20px;
+}
+
+.tienda-container {
+    display: flex;
+}
+
+.sidebar{
+    width: 20%;
+    padding: 40px 20px;
+    border-right: 3px solid #1b1b1b;
+    height: calc(100vh - 118px);
+    position: sticky;
+    top: 118px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.sidebar-cont{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: fit-content;
+    gap: 10px;
+}
+
+
+
+.sidebar-section h3{
+    margin: 0;
+    padding: 5px 0;
+}
+
+.sidebar-list {
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: fit-content;
+}
+
+.productos-container{
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 35px 0px;
+}
+
+.prod-cont-cont{
+    width: 96%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+
+}
+
+.prod-crd{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: auto;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.prod-img{
+    width: 280px;
+    height: 280px;
+}
+
+.prod-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.prod-inf{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 5px;
+}
+
+.prod-inf label:first-child{
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.prod-inf label:last-child{
+    color: #5A5454;
+}

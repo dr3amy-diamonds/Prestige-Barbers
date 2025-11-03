@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservar - Prestige Barbers</title>
-    <link rel="stylesheet" href="R-Styles/styles.css">
-    <link rel="stylesheet" href="R-Styles/modal-reserva.css">
+    <title>Comprar - Prestige Barbers</title>
+    <link rel="stylesheet" href="C-Styles/styles.css">
+    <link rel="stylesheet" href="C-Styles/modal-compra.css">
     <link rel="stylesheet" href="../I-style/auth-modal.css">
     <link rel="stylesheet" href="../I-style/custom-modal.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,11 +15,11 @@
         rel="stylesheet">
     <style>
         /* Prevenir parpadeo inicial - Ocultar contenido hasta que cargue */
-        .res-cont {
+        .compra-cont {
             opacity: 0;
             transition: opacity 0.3s ease-in;
         }
-        .res-cont.loaded {
+        .compra-cont.loaded {
             opacity: 1;
         }
         /* Loader centrado */
@@ -72,7 +72,7 @@
             <a href="../index.html" class="icon-link" title="Buscar">
                 <img src="../Icons/search.svg" alt="Buscar">
             </a>
-            <a href="../index.html" class="icon-link" title="Usuario">
+            <a href="javascript:void(0)" class="icon-link" id="userIcon" title="Usuario">
                 <img src="../Icons/user.svg" alt="Usuario">
             </a>
         </div>
@@ -88,28 +88,47 @@
     <!-- Loader mientras carga (centrado en pantalla completa) -->
     <div class="loader" id="pageLoader">
         <div class="loader-spinner"></div>
-        <p>Cargando información...</p>
+        <p>Cargando producto...</p>
     </div>
 
     <!-- Contenedor principal (oculto inicialmente) -->
-    <div class="res-cont" id="mainContent">
-        <div class="img-cut-cont">
-            <img id="serviceImage" src="" alt="" style="display: none;">
+    <div class="compra-cont" id="mainContent">
+        <div class="img-prod-cont">
+            <img id="productImage" src="" alt="" style="display: none;">
         </div>
-        <div class="info-cut-cont">
-            <label id="serviceType"></label>
-            <h2 id="serviceName"></h2>
+        <div class="info-prod-cont">
+            <label id="productBrand"></label>
+            <h2 id="productName"></h2>
             <div class="description-container">
-                <p id="serviceDescription" class="collapsed"></p>
+                <p id="productDescription" class="collapsed"></p>
                 <div class="description-fade"></div>
                 <button class="ver-mas-btn" id="verMasBtn">Ver más</button>
             </div>
-            <label id="barbersLabel"></label>
-            <div class="barb-btn-cont" id="barbersContainer">
-                <!-- Los barberos se cargarán dinámicamente aquí -->
+
+            <!-- Detalles del producto -->
+            <div class="product-details">
+                <div class="detail-item">
+                    <label class="detail-label">Tamaño</label>
+                    <span class="detail-value" id="productSize"></span>
+                </div>
+                <div class="detail-item">
+                    <label class="detail-label">Categoría</label>
+                    <span class="detail-value" id="productCategory"></span>
+                </div>
+                <div class="detail-item">
+                    <label class="detail-label">Tipo</label>
+                    <span class="detail-value" id="productType"></span>
+                </div>
             </div>
-            <div class="lkns-res-con">
-                <a href="#" id="reserveButton">Reservar</a>
+
+            <!-- Precio -->
+            <div class="price-container">
+                <label class="price-label">Precio</label>
+                <h3 class="price-value" id="productPrice"></h3>
+            </div>
+
+            <div class="lkns-compra-cont">
+                <a href="#" id="buyButton">Comprar</a>
                 <a href="../index.html#contacto">Contáctenos</a>
             </div>
         </div>
@@ -120,7 +139,7 @@
 <div class="auth-modal-overlay" id="authModal">
     <div class="auth-modal-content">
         <button class="auth-modal-close" id="closeModalBtn">&times;</button>
-        
+
         <!-- Formulario de Login -->
         <div class="log-cont" id="loginForm">
             <label for="">Iniciar Sesión</label>
@@ -155,10 +174,22 @@
     </div>
 </div>
 
+<!-- Modal de compra realizada -->
+<div class="compra-modal-overlay" id="compraModal">
+    <div class="compra-modal-content">
+        <button class="compra-modal-close" id="closeCompraModalBtn">&times;</button>
+        <div class="compra-success">
+            <div class="success-icon"><svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 25L20 35L40 15" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h2>Compra Realizada</h2>
+            <p>Tu compra ha sido procesada exitosamente.</p>
+            <button class="continue-btn" id="continueBtn">Continuar</button>
+        </div>
+    </div>
+</div>
+
 <body>
     <script src="../js/custom-modal.js"></script>
-    <script src="R-js/Reserva.js"></script>
-    <script src="R-js/modal-reserva.js"></script>
+    <script src="C-Js/Compra.js"></script>
     <script src="../js/sticky-header.js"></script>
     <script src="../js/auth-modal.js"></script>
 </body>

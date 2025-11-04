@@ -11,6 +11,20 @@ const port = 3000;
 // Clave secreta para JWT (en producción, usar variable de entorno)
 const JWT_SECRET = process.env.JWT_SECRET || 'prestige_barbers_secret_key_2025';
 
+// ==================== CONFIGURACIÓN CORS ====================
+// Permitir peticiones desde cualquier origen (para testing de seguridad)
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // En producción, especifica el dominio
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    
+    // Manejar preflight requests
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'Frontend', 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -1947,6 +1961,7 @@ app.get('/api/search', (req, res) => {
     });
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`🚀 Servidor escuchando en http://localhost:${port}`);
+    console.log(`🌐 Accesible desde la red en http://0.0.0.0:${port}`);
 });

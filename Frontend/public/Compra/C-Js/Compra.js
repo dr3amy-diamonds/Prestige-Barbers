@@ -1,5 +1,6 @@
 // ==================== PÁGINA DE DETALLE DE PRODUCTO DINÁMICA ====================
-const API_URL = 'http://localhost:3000/api';
+// Usar URL relativa para que funcione tanto en localhost como en red
+const API_URL = '/api';
 
 // Obtener ID del producto desde la URL
 const urlParams = new URLSearchParams(window.location.search);

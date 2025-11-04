@@ -247,7 +247,7 @@ class ReservaModalController {
         try {
             console.log('🔍 [GET-OCCUPIED] Consultando horas ocupadas - Barbero:', barberoId, 'Fecha:', fecha);
 
-            const response = await fetch(`http://localhost:3000/api/reservas/barbero/${barberoId}?fecha=${fecha}`);
+            const response = await fetch(`/api/reservas/barbero/${barberoId}?fecha=${fecha}`);
 
             if (!response.ok) {
                 console.error('❌ [GET-OCCUPIED] Error al consultar reservas');
@@ -1434,7 +1434,7 @@ class ReservaModalController {
             console.log('🔑 [SEND-RESERVATION] Token obtenido:', token ? 'Sí' : 'No');
 
             console.log('📡 [SEND-RESERVATION] Enviando POST a /api/reservas');
-            const response = await fetch('http://localhost:3000/api/reservas', {
+            const response = await fetch('/api/reservas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

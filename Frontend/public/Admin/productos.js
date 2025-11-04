@@ -1,5 +1,5 @@
-// URL base del backend
-const API_URL = 'http://localhost:3000/api';
+// URL base del backend - Usar URL relativa para que funcione en cualquier entorno
+const API_URL = '/api';
 
 // Estado global
 let productos = [];

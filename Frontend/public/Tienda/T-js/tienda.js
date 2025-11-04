@@ -1,7 +1,8 @@
 // ==================== TIENDA DINÁMICA - PRESTIGE BARBERS ====================
 // Este script carga todos los productos desde la base de datos y permite filtrarlos
 
-const API_URL = 'http://localhost:3000/api';
+// Usar URL relativa para que funcione tanto en localhost como en red
+const API_URL = '/api';
 
 // Variables globales
 let todosLosProductos = [];

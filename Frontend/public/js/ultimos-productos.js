@@ -2,7 +2,8 @@
 // Este script carga dinámicamente los últimos 4 productos agregados al sistema
 // y actualiza la sección "Shop" del index.html
 
-const API_URL = 'http://localhost:3000/api';
+// Usar URL relativa para que funcione tanto en localhost como en red
+const API_URL = '/api';
 
 // Ejecutar cuando cargue la página
 document.addEventListener('DOMContentLoaded', () => {

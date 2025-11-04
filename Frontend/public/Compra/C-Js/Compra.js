@@ -1,15 +1,9 @@
-// Datos estáticos del producto Crema Skala
-const productoSkala = {
-    id: 1,
-    marca: "SKALA",
-    nombre: "Crema Skala Expert",
-    descripcion: "La Crema Skala Expert es un tratamiento capilar de alta calidad diseñado para nutrir, hidratar y restaurar el cabello dañado. Con una fórmula enriquecida con ingredientes naturales, esta crema proporciona una hidratación profunda, dejando el cabello suave, brillante y manejable. Ideal para todo tipo de cabello, especialmente para cabello seco, maltratado o con frizz. Su textura cremosa se absorbe rápidamente sin dejar residuos grasos, aportando vitalidad y fuerza desde la raíz hasta las puntas.",
-    tamano: "1000g",
-    categoria: "Cuidado Capilar",
-    tipo: "Crema de Tratamiento",
-    precio: "38.800$",
-    imagen: "../I-img/Skala.png"
-};
+// ==================== PÁGINA DE DETALLE DE PRODUCTO DINÁMICA ====================
+const API_URL = 'http://localhost:3000/api';
+
+// Obtener ID del producto desde la URL
+const urlParams = new URLSearchParams(window.location.search);
+const productoId = urlParams.get('id');
 
 // Elementos del DOM
 const pageLoader = document.getElementById('pageLoader');
@@ -31,37 +25,85 @@ const continueBtn = document.getElementById('continueBtn');
 
 // Cargar información del producto al cargar la página
 document.addEventListener('DOMContentLoaded', () => {
-    cargarProducto();
+    console.log('🛍️ Inicializando página de producto...');
+    console.log('📦 ID del producto:', productoId);
+    
+    if (!productoId) {
+        mostrarError('No se especificó un producto válido');
+        return;
+    }
+    
+    cargarProducto(productoId);
     configurarEventos();
 });
 
-// Función para cargar el producto
-function cargarProducto() {
+// ==================== CARGAR PRODUCTO DESDE LA API ====================
+async function cargarProducto(id) {
     try {
-        // Simular carga
-        setTimeout(() => {
-            // Configurar imagen
-            productImage.src = productoSkala.imagen;
-            productImage.alt = productoSkala.nombre;
-            productImage.style.display = 'block';
-
-            // Configurar información del producto
-            productBrand.textContent = productoSkala.marca;
-            productName.textContent = productoSkala.nombre;
-            productDescription.textContent = productoSkala.descripcion;
-            productSize.textContent = productoSkala.tamano;
-            productCategory.textContent = productoSkala.categoria;
-            productType.textContent = productoSkala.tipo;
-            productPrice.textContent = productoSkala.precio;
-
-            // Ocultar loader y mostrar contenido
-            pageLoader.classList.add('hidden');
-            mainContent.classList.add('loaded');
-        }, 800);
+        console.log('📡 Consultando API:', `${API_URL}/productos/${id}`);
+        
+        const response = await fetch(`${API_URL}/productos/${id}`);
+        const data = await response.json();
+        
+        console.log('📥 Respuesta recibida:', data);
+        
+        if (data.success && data.producto) {
+            console.log('✅ Producto cargado:', data.producto);
+            mostrarProducto(data.producto);
+        } else {
+            console.error('❌ Producto no encontrado');
+            mostrarError('Producto no encontrado');
+        }
+        
     } catch (error) {
-        console.error('Error al cargar el producto:', error);
-        pageLoader.innerHTML = '<p>Error al cargar el producto. Por favor, intenta nuevamente.</p>';
+        console.error('❌ Error al cargar producto:', error);
+        mostrarError('Error al cargar el producto. Verifica tu conexión.');
     }
+}
+
+// ==================== MOSTRAR PRODUCTO EN LA PÁGINA ====================
+function mostrarProducto(producto) {
+    // Configurar imagen
+    productImage.src = producto.imagen;
+    productImage.alt = producto.nombre;
+    productImage.style.display = 'block';
+    
+    // Configurar información del producto
+    productBrand.textContent = producto.marca;
+    productName.textContent = producto.nombre;
+    productDescription.textContent = producto.descripcion;
+    productSize.textContent = producto.tamano;
+    productCategory.textContent = producto.categoria;
+    productType.textContent = producto.tipo;
+    
+    // Formatear precio
+    const precioFormateado = formatearPrecio(producto.precio);
+    productPrice.textContent = precioFormateado;
+    
+    // Ocultar loader y mostrar contenido
+    pageLoader.classList.add('hidden');
+    mainContent.classList.add('loaded');
+    
+    console.log('✅ Producto mostrado en la página');
+}
+
+// ==================== MOSTRAR ERROR ====================
+function mostrarError(mensaje) {
+    pageLoader.innerHTML = `
+        <div style="text-align: center;">
+            <div style="font-size: 3em; margin-bottom: 20px;">❌</div>
+            <p style="font-size: 1.2em; color: #dc3545; margin-bottom: 20px;">${mensaje}</p>
+            <a href="../Tienda/index.html" style="display: inline-block; padding: 12px 24px; background: #1b1b1b; color: white; text-decoration: none; border-radius: 4px;">
+                Volver a la Tienda
+            </a>
+        </div>
+    `;
+}
+
+// ==================== FORMATEAR PRECIO ====================
+function formatearPrecio(precio) {
+    const precioNum = parseInt(precio);
+    return `$${precioNum.toLocaleString('es-CO')}`;
 }
 
 // Configurar todos los eventos

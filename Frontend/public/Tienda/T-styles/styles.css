@@ -151,7 +151,12 @@ header:stuck .head-lkn-cont {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
 
+.prod-cont-cont.fade-out {
+    opacity: 0;
 }
 
 .prod-crd{
@@ -163,7 +168,32 @@ header:stuck .head-lkn-cont {
     height: auto;
     gap: 20px;
     cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease forwards;
 }
+
+/* Animación de aparición suave desde abajo */
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Delay escalonado para cada producto */
+.prod-crd:nth-child(1) { animation-delay: 0.1s; }
+.prod-crd:nth-child(2) { animation-delay: 0.15s; }
+.prod-crd:nth-child(3) { animation-delay: 0.2s; }
+.prod-crd:nth-child(4) { animation-delay: 0.25s; }
+.prod-crd:nth-child(5) { animation-delay: 0.3s; }
+.prod-crd:nth-child(6) { animation-delay: 0.35s; }
+.prod-crd:nth-child(7) { animation-delay: 0.4s; }
+.prod-crd:nth-child(8) { animation-delay: 0.45s; }
+.prod-crd:nth-child(9) { animation-delay: 0.5s; }
+.prod-crd:nth-child(10) { animation-delay: 0.55s; }
+.prod-crd:nth-child(11) { animation-delay: 0.6s; }
+.prod-crd:nth-child(12) { animation-delay: 0.65s; }
 
 .prod-img{
     width: 280px;

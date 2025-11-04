@@ -19,6 +19,7 @@ const productPrice = document.getElementById('productPrice');
 const verMasBtn = document.getElementById('verMasBtn');
 const descriptionFade = document.querySelector('.description-fade');
 const buyButton = document.getElementById('buyButton');
+const addToCartButton = document.getElementById('addToCartButton');
 const compraModal = document.getElementById('compraModal');
 const closeCompraModalBtn = document.getElementById('closeCompraModalBtn');
 const continueBtn = document.getElementById('continueBtn');
@@ -63,6 +64,9 @@ async function cargarProducto(id) {
 
 // ==================== MOSTRAR PRODUCTO EN LA PÁGINA ====================
 function mostrarProducto(producto) {
+    // Guardar producto en variable global para usarlo en el carrito
+    window.productoActual = producto;
+    
     // Configurar imagen
     productImage.src = producto.imagen;
     productImage.alt = producto.nombre;
@@ -113,11 +117,19 @@ function configurarEventos() {
         verMasBtn.addEventListener('click', toggleDescription);
     }
 
-    // Botón de compra
+    // Botón "Agregar al Carrito"
+    if (addToCartButton) {
+        addToCartButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            agregarAlCarrito();
+        });
+    }
+
+    // Botón "Comprar Ahora"
     if (buyButton) {
         buyButton.addEventListener('click', (e) => {
             e.preventDefault();
-            mostrarModalCompra();
+            comprarAhora();
         });
     }
 
@@ -183,6 +195,73 @@ function cerrarModalCompra() {
         compraModal.classList.remove('active');
         document.body.style.overflow = ''; // Restaurar scroll del body
     }
+}
+
+// ==================== FUNCIÓN PARA AGREGAR AL CARRITO ====================
+function agregarAlCarrito() {
+    // Verificar que el carrito esté inicializado
+    if (!window.carritoManager) {
+        console.error('❌ Carrito no inicializado');
+        alert('Error: Sistema de carrito no disponible');
+        return;
+    }
+
+    // Verificar que tengamos el producto actual
+    if (!window.productoActual) {
+        console.error('❌ Producto no cargado');
+        alert('Error: Producto no disponible');
+        return;
+    }
+
+    // Agregar producto al carrito
+    const producto = window.productoActual;
+    const agregado = window.carritoManager.agregarProducto(producto);
+
+    if (agregado) {
+        console.log('✅ Producto agregado al carrito:', producto.nombre);
+    }
+}
+
+// ==================== FUNCIÓN PARA COMPRAR AHORA ====================
+function comprarAhora() {
+    // Verificar si el usuario está autenticado
+    const token = localStorage.getItem('auth_token');
+    const userData = localStorage.getItem('user_data');
+
+    if (!token || !userData) {
+        // No está autenticado, mostrar modal de login
+        console.log('⚠️ Usuario no autenticado, mostrando modal de login');
+        
+        // Abrir modal de autenticación
+        const authModal = document.getElementById('authModal');
+        if (authModal) {
+            authModal.classList.add('active');
+        }
+        
+        // Mostrar mensaje con customModal
+        if (window.customModal) {
+            window.customModal.showAlert('Debes iniciar sesión para poder comprar', 'Autenticación Requerida');
+        }
+        
+        return;
+    }
+
+    // Usuario autenticado, proceder con la compra
+    console.log('✅ Usuario autenticado, procesando compra...');
+    mostrarModalCompra();
+}
+
+// ==================== VERIFICAR AUTENTICACIÓN PARA EL CARRITO ====================
+function verificarAutenticacionCarrito() {
+    const token = localStorage.getItem('auth_token');
+    const userData = localStorage.getItem('user_data');
+
+    if (!token || !userData) {
+        console.log('⚠️ Usuario no autenticado');
+        return false;
+    }
+
+    return true;
 }
 
 // Log para debugging

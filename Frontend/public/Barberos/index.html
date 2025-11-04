@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="B-Styles/styles.css">
     <link rel="stylesheet" href="../I-style/auth-modal.css">
     <link rel="stylesheet" href="../I-style/custom-modal.css">
+    <link rel="stylesheet" href="../I-style/carrito-global.css">
+    <link rel="stylesheet" href="../I-style/search-modal.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
@@ -19,13 +21,14 @@
             <h1>Prestige Barbers</h1>
         </a>
         <div class="head-icons-cont">
-            <a href="../index.html" class="icon-link" title="Carrito">
+            <a href="javascript:void(0)" class="icon-link" id="carritoIcon" title="Carrito" style="position: relative;">
                 <img src="../Icons/cart.svg" alt="Carrito">
+                <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
             </a>
-            <a href="../index.html" class="icon-link" title="Buscar">
+            <a href="javascript:void(0)" class="icon-link" id="searchIcon" title="Buscar">
                 <img src="../Icons/search.svg" alt="Buscar">
             </a>
-            <a href="../index.html" class="icon-link" title="Usuario">
+            <a href="javascript:void(0)" class="icon-link" id="userIcon" title="Usuario">
                 <img src="../Icons/user.svg" alt="Usuario">
             </a>
         </div>
@@ -35,7 +38,28 @@
         <a href="../Cortes/index.html">Servicios</a>
         <a href="../Barberos/index.html">Barberos</a>
         <a href="../index.html">Acerca De</a>
+        
+        <!-- Contenedor de búsqueda elegante -->
+        <div class="search-container">
+            <input 
+                type="search" 
+                class="search-input" 
+                placeholder="¿Qué buscas?" 
+                autocomplete="new-password"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                name="search-query-prestige"
+                role="searchbox"
+                aria-label="Búsqueda de productos y servicios"
+                data-form-type="other"
+                disabled>
+            <button class="search-close">&times;</button>
+        </div>
     </div>
+    
+    <!-- Resultados de búsqueda -->
+    <div class="search-results"></div>
 </header>
 <main>
     <div class="barb-cont" id="barberos-container">
@@ -84,8 +108,89 @@
     </div>
 </div>
 
+<!-- Modal del Carrito -->
+<div class="carrito-modal-overlay" id="carritoModal">
+    <div class="carrito-modal-content">
+        <div class="carrito-modal-header">
+            <h2>Tu Carrito</h2>
+            <p class="carrito-count"><span id="carritoCount">0</span> productos</p>
+            <button class="carrito-modal-close" id="closeCarritoBtn">&times;</button>
+        </div>
+
+            <div class="carrito-items-list" id="carritoItemsList">
+                <!-- Los items se cargarán dinámicamente aquí -->
+                <div class="carrito-empty" id="carritoEmpty">
+                <div class="carrito-empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="9" cy="21" r="1"/>
+                        <circle cx="20" cy="21" r="1"/>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
+                </div>
+                <p>Tu carrito está vacío</p>
+            </div>
+            </div>        <div class="carrito-modal-footer" id="carritoFooter" style="display: none;">
+            <div class="carrito-total-section">
+                <span class="carrito-total-label">Total:</span>
+                <span class="carrito-total-precio" id="carritoTotal">$0</span>
+            </div>
+            <button class="carrito-btn-comprar" id="carritoComprarBtn">Comprar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de compra exitosa -->
+<div class="compra-modal-overlay" id="compraModal" style="display: none;">
+    <div class="compra-modal-content" style="background: white; padding: 40px; border-radius: 8px; text-align: center; border: 5px solid #1b1b1b;">
+        <button class="compra-modal-close" id="closeCompraModalBtn" style="position: absolute; top: 10px; right: 10px; background: transparent; border: none; font-size: 2em; cursor: pointer;">&times;</button>
+        <div class="compra-success">
+            <div class="success-icon" style="width: 80px; height: 80px; background: #1b1b1b; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
+                <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 25L20 35L40 15" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h2 style="font-size: 2em; margin: 10px 0;">Compra Realizada</h2>
+            <p style="font-size: 1.1em; color: #666; margin: 20px 0;">Tu compra ha sido procesada exitosamente.</p>
+            <button class="continue-btn" id="continueBtn" style="background: #1b1b1b; color: white; border: none; padding: 15px 40px; font-size: 1em; font-weight: 600; cursor: pointer; margin-top: 20px; font-family: 'Montserrat', sans-serif;">Continuar</button>
+        </div>
+    </div>
+</div>
+
 <script src="../js/custom-modal.js"></script>
+<script src="../js/carrito.js"></script>
 <script src="../js/auth-modal.js"></script>
+<script>
+    // Configurar el modal de compra exitosa
+    document.addEventListener('DOMContentLoaded', () => {
+        const compraModal = document.getElementById('compraModal');
+        const closeCompraModalBtn = document.getElementById('closeCompraModalBtn');
+        const continueBtn = document.getElementById('continueBtn');
+
+        if (closeCompraModalBtn) {
+            closeCompraModalBtn.addEventListener('click', () => {
+                if (compraModal) {
+                    compraModal.style.display = 'none';
+                }
+            });
+        }
+
+        if (continueBtn) {
+            continueBtn.addEventListener('click', () => {
+                if (compraModal) {
+                    compraModal.style.display = 'none';
+                }
+            });
+        }
+
+        // Cerrar al hacer clic fuera
+        if (compraModal) {
+            compraModal.addEventListener('click', (e) => {
+                if (e.target === compraModal) {
+                    compraModal.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+<script src="../js/search-modal.js"></script>
 
 <body>
 

@@ -1832,6 +1832,121 @@ app.delete('/api/productos/:id', (req, res) => {
     });
 });
 
+// ==================== ENDPOINT DE BÚSQUEDA UNIVERSAL ====================
+
+// GET /api/search - Buscar en TODAS las tablas (productos, cortes, barbas)
+app.get('/api/search', (req, res) => {
+    const { q } = req.query; // query string: ?q=fade
+    
+    if (!q || q.trim().length < 2) {
+        return res.json({
+            success: true,
+            results: []
+        });
+    }
+
+    const searchTerm = `%${q.toLowerCase()}%`;
+    
+    // Buscar en productos (todos, sin filtro de stock)
+    const queryProductos = `
+        SELECT 
+            id,
+            'producto' as type,
+            CONCAT(marca, ' - ', nombre) as name,
+            CONCAT(categoria, ' • ', tamano) as category,
+            precio as price,
+            imagen as image
+        FROM productos
+        WHERE LOWER(nombre) LIKE ? 
+           OR LOWER(marca) LIKE ?
+           OR LOWER(categoria) LIKE ?
+           OR LOWER(tipo) LIKE ?
+        ORDER BY id DESC
+    `;
+    
+    // Buscar en cortes (TODOS, sin importar rol, destacado, o si es principal)
+    const queryCortes = `
+        SELECT 
+            id,
+            'corte' as type,
+            nombre as name,
+            'Corte de Cabello' as category,
+            precio as price,
+            imagen as image
+        FROM cortes
+        WHERE LOWER(nombre) LIKE ?
+           OR LOWER(descripcion) LIKE ?
+        ORDER BY id DESC
+    `;
+    
+    // Buscar en barbas (TODAS, sin importar rol, destacado, o si es principal)
+    const queryBarbas = `
+        SELECT 
+            id,
+            'barba' as type,
+            nombre as name,
+            'Arreglo de Barba' as category,
+            precio as price,
+            imagen as image
+        FROM barbas
+        WHERE LOWER(nombre) LIKE ?
+           OR LOWER(descripcion) LIKE ?
+        ORDER BY id DESC
+    `;
+
+    // Ejecutar las 3 queries en paralelo
+    Promise.all([
+        new Promise((resolve, reject) => {
+            db.query(queryProductos, [searchTerm, searchTerm, searchTerm, searchTerm], (err, results) => {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        }),
+        new Promise((resolve, reject) => {
+            db.query(queryCortes, [searchTerm, searchTerm], (err, results) => {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        }),
+        new Promise((resolve, reject) => {
+            db.query(queryBarbas, [searchTerm, searchTerm], (err, results) => {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        })
+    ])
+    .then(([productos, cortes, barbas]) => {
+        // Combinar todos los resultados
+        const allResults = [
+            ...productos.map(p => ({
+                ...p,
+                url: `/Compra/index.html?id=${p.id}`
+            })),
+            ...cortes.map(c => ({
+                ...c,
+                url: `/Reserva/index.html?id=${c.id}&type=corte`
+            })),
+            ...barbas.map(b => ({
+                ...b,
+                url: `/Reserva/index.html?id=${b.id}&type=barba`
+            }))
+        ];
+
+        res.json({
+            success: true,
+            results: allResults,
+            count: allResults.length
+        });
+    })
+    .catch(error => {
+        console.error('Error en búsqueda universal:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error al realizar la búsqueda'
+        });
+    });
+});
+
 app.listen(port, () => {
     console.log(`🚀 Servidor escuchando en http://localhost:${port}`);
 });

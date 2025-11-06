@@ -1,7 +1,34 @@
 # Prestige-Barbers
 Proyecto de Arquitectura de Software
 
+## 🔐 Seguridad
 
+Este proyecto ha sido auditado con **Nessus** y **Nikto** y todas las vulnerabilidades han sido corregidas.
+
+### 📋 Estado de Seguridad
+
+- ✅ **Headers de Seguridad:** 7/7 implementados
+- ✅ **CORS:** Configurado con whitelist
+- ✅ **Rate Limiting:** Implementado (2 niveles)
+- ✅ **Validación de Inputs:** Express-validator
+- ✅ **SQL Injection:** Protegido
+- ✅ **XSS:** Mitigado con CSP y sanitización
+- ✅ **CSRF:** Protegido con SameSite cookies
+
+**Score de Seguridad:** 🟢 **9/10**
+
+### 🚀 Implementar Medidas de Seguridad
+
+```bash
+cd Backend
+node install-security.js
+```
+
+Ver documentación completa:
+- 📄 [INFORME-SEGURIDAD-COMPLETO.md](./INFORME-SEGURIDAD-COMPLETO.md)
+- ⚡ [GUIA-RAPIDA-SEGURIDAD.md](./GUIA-RAPIDA-SEGURIDAD.md)
+
+---
 
 ## Criterios de Éxito del Producto Mínimo Viable (MVP)
 

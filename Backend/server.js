@@ -4,28 +4,156 @@ const path = require('path');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const helmet = require('helmet');
+const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const { body, validationResult } = require('express-validator');
+require('dotenv').config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-// Clave secreta para JWT (en producción, usar variable de entorno)
-const JWT_SECRET = process.env.JWT_SECRET || 'prestige_barbers_secret_key_2025';
+// Clave secreta para JWT desde variable de entorno
+const JWT_SECRET = process.env.JWT_SECRET || 'prestige_barbers_secret_key_2025_CHANGE_IN_PRODUCTION';
 
-// ==================== CONFIGURACIÓN CORS ====================
-// Permitir peticiones desde cualquier origen (para testing de seguridad)
+// ==================== SEGURIDAD - HELMET.JS ====================
+// Suite completa de headers de seguridad
+// NOTA: CSP configurado para permitir testing de seguridad desde red local
+// En producción, debe limitarse solo a dominio específico
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'", "http://192.168.1.36:3000", "http://localhost:3000", "http://127.0.0.1:3000"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "http://192.168.1.36:3000", "http://localhost:3000"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com", "http://192.168.1.36:3000", "http://localhost:3000"],
+            imgSrc: ["'self'", "data:", "https:", "http://192.168.1.36:3000", "http://localhost:3000"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-hashes'", "http://192.168.1.36:3000", "http://localhost:3000", "http://127.0.0.1:3000"],
+            scriptSrcAttr: ["'unsafe-inline'", "'unsafe-hashes'"], // Permitir onclick, etc.
+            connectSrc: ["'self'", "http://192.168.1.36:3000", "http://localhost:3000", "http://127.0.0.1:3000"],
+            frameAncestors: ["'self'"] // FIX NESSUS: Prevenir clickjacking
+        }
+    },
+    hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true
+    },
+    frameguard: {
+        action: 'deny' // FIX NESSUS: X-Frame-Options DENY
+    },
+    noSniff: true, // FIX NIKTO: X-Content-Type-Options nosniff
+    hidePoweredBy: true // FIX NESSUS/NIKTO: Ocultar X-Powered-By
+}));
+
+// ==================== SEGURIDAD - CORS CONFIGURADO ====================
+// Lista blanca de orígenes permitidos
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+    ? process.env.ALLOWED_ORIGINS.split(',') 
+    : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://192.168.1.36:3000'];
+
+app.use(cors({
+    origin: function(origin, callback) {
+        // Permitir requests sin origin (como mobile apps o curl)
+        if (!origin) return callback(null, true);
+        
+        // Para desarrollo/testing, permitir IPs de red local (192.168.x.x)
+        if (origin && origin.includes('192.168.')) {
+            return callback(null, true);
+        }
+        
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = '❌ CORS policy: Origin no permitido: ' + origin;
+            console.warn(msg);
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Content-Length', 'X-Request-Id']
+}));
+
+// ==================== SEGURIDAD - RATE LIMITING ====================
+// Limitar peticiones generales de la API
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // Máximo 100 peticiones por ventana
+    message: {
+        success: false,
+        message: 'Demasiadas peticiones desde esta IP, por favor intenta de nuevo más tarde.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+        console.warn(`⚠️ Rate limit excedido - IP: ${req.ip} - URL: ${req.url}`);
+        res.status(429).json({
+            success: false,
+            message: 'Demasiadas peticiones, intenta de nuevo en 15 minutos.'
+        });
+    }
+});
+
+// Limitar endpoints de autenticación (más restrictivo)
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 5, // Solo 5 intentos
+    message: {
+        success: false,
+        message: 'Demasiados intentos de autenticación, intenta de nuevo en 15 minutos.'
+    },
+    skipSuccessfulRequests: true, // No contar intentos exitosos
+    handler: (req, res) => {
+        console.warn(`🔴 Rate limit AUTH excedido - IP: ${req.ip} - Email: ${req.body.email}`);
+        res.status(429).json({
+            success: false,
+            message: 'Demasiados intentos fallidos. Espera 15 minutos.'
+        });
+    }
+});
+
+// Aplicar rate limiters
+app.use('/api/', apiLimiter);
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+
+// ==================== SEGURIDAD - HTTPS REDIRECT ====================
+// FIX NESSUS HIGH: Forzar HTTPS para proteger credenciales
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); // En producción, especifica el dominio
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    
-    // Manejar preflight requests
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
+    // En producción, forzar HTTPS
+    if (process.env.NODE_ENV === 'production' && !req.secure && req.get('x-forwarded-proto') !== 'https') {
+        console.warn(`⚠️ Redirecting to HTTPS: ${req.url} from IP: ${req.ip}`);
+        return res.redirect(301, `https://${req.headers.host}${req.url}`);
     }
     next();
 });
 
-app.use(express.json());
+// ==================== SEGURIDAD - HEADERS ADICIONALES ====================
+// NOTA: Algunos headers ya están configurados en Helmet, esto es redundancia por seguridad
+app.use((req, res, next) => {
+    // Remover header que expone la tecnología (ya en Helmet pero por seguridad extra)
+    res.removeHeader('X-Powered-By');
+    
+    // Headers adicionales de seguridad
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+    
+    next();
+});
+
+// ==================== LOGGING DE SEGURIDAD ====================
+app.use((req, res, next) => {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] ${req.method} ${req.url} - IP: ${req.ip}`);
+    next();
+});
+
+// ==================== MIDDLEWARE BÁSICO ====================
+app.use(express.json({ limit: '10mb' })); // Limitar tamaño de payload
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static(path.join(__dirname, '..', 'Frontend', 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -42,8 +170,8 @@ const upload = multer({ storage: storage });
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
-    database: 'Barberia'
+    password: '1234',
+    database: 'barberia'
 });
 
 db.connect(err => {
@@ -62,12 +190,20 @@ const verificarToken = (req, res, next) => {
     const token = req.headers['authorization']?.split(' ')[1]; // Bearer TOKEN
     
     if (!token) {
-        return res.status(401).json({ message: 'Token no proporcionado' });
+        console.warn(`⚠️ Intento de acceso sin token - IP: ${req.ip} - URL: ${req.url}`);
+        return res.status(401).json({ 
+            success: false,
+            message: 'Token no proporcionado' 
+        });
     }
     
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
         if (err) {
-            return res.status(403).json({ message: 'Token inválido o expirado' });
+            console.warn(`⚠️ Token inválido - IP: ${req.ip} - Error: ${err.message}`);
+            return res.status(403).json({ 
+                success: false,
+                message: 'Token inválido o expirado' 
+            });
         }
         req.userId = decoded.id;
         req.userEmail = decoded.email;
@@ -75,10 +211,87 @@ const verificarToken = (req, res, next) => {
     });
 };
 
+// Middleware para verificar rol de administrador
+const verificarAdmin = (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1];
+    
+    if (!token) {
+        console.warn(`🔴 Intento de acceso admin sin token - IP: ${req.ip}`);
+        return res.status(401).json({ 
+            success: false,
+            message: 'Acceso no autorizado - Token requerido' 
+        });
+    }
+    
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) {
+            console.warn(`🔴 Token inválido en acceso admin - IP: ${req.ip}`);
+            return res.status(403).json({ 
+                success: false,
+                message: 'Token inválido' 
+            });
+        }
+        
+        // Verificar rol de admin en la base de datos
+        db.query('SELECT rol FROM usuarios WHERE id = ? AND activo = TRUE', [decoded.id], (err, results) => {
+            if (err) {
+                console.error('❌ Error al verificar rol admin:', err);
+                return res.status(500).json({ 
+                    success: false,
+                    message: 'Error en el servidor' 
+                });
+            }
+            
+            if (results.length === 0 || results[0].rol !== 'admin') {
+                console.warn(`🔴 ALERTA: Intento de acceso no autorizado al panel admin - IP: ${req.ip} - User ID: ${decoded.id}`);
+                return res.status(403).json({ 
+                    success: false,
+                    message: 'No tienes permisos de administrador' 
+                });
+            }
+            
+            req.userId = decoded.id;
+            req.userRole = results[0].rol;
+            next();
+        });
+    });
+};
+
 // POST /api/auth/register - Registrar nuevo usuario
-app.post('/api/auth/register', async (req, res) => {
-    try {
-        const { nombre_completo, email, password, confirm_password } = req.body;
+app.post('/api/auth/register',
+    // Validaciones con express-validator
+    body('nombre_completo')
+        .trim()
+        .isLength({ min: 3, max: 255 })
+        .withMessage('El nombre debe tener entre 3 y 255 caracteres')
+        .escape(),
+    body('email')
+        .trim()
+        .isEmail()
+        .withMessage('Email inválido')
+        .normalizeEmail(),
+    body('password')
+        .isLength({ min: 6 })
+        .withMessage('La contraseña debe tener al menos 6 caracteres')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+        .withMessage('La contraseña debe contener al menos una mayúscula, una minúscula y un número'),
+    body('confirm_password')
+        .custom((value, { req }) => value === req.body.password)
+        .withMessage('Las contraseñas no coinciden'),
+    
+    async (req, res) => {
+        try {
+            // Verificar errores de validación
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ 
+                    success: false,
+                    message: errors.array()[0].msg,
+                    errors: errors.array()
+                });
+            }
+            
+            const { nombre_completo, email, password, confirm_password } = req.body;
         
         // Validaciones básicas
         if (!nombre_completo || !email || !password || !confirm_password) {
@@ -174,9 +387,28 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 // POST /api/auth/login - Iniciar sesión
-app.post('/api/auth/login', (req, res) => {
-    try {
-        const { email, password } = req.body;
+app.post('/api/auth/login',
+    // Validaciones flexibles para login (permite username o email)
+    body('email')
+        .trim()
+        .notEmpty()
+        .withMessage('Email/Usuario es requerido'),
+    body('password')
+        .notEmpty()
+        .withMessage('La contraseña es requerida'),
+    
+    (req, res) => {
+        try {
+            // Verificar errores de validación
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ 
+                    success: false,
+                    message: errors.array()[0].msg
+                });
+            }
+            
+            const { email, password } = req.body;
         
         // Validaciones básicas
         if (!email || !password) {
@@ -1716,8 +1948,9 @@ app.get('/api/productos/:id', (req, res) => {
     });
 });
 
-// POST /api/productos - Crear nuevo producto
-app.post('/api/productos', upload.single('imagen'), (req, res) => {
+// POST /api/productos - Crear nuevo producto (SOLO ADMIN)
+// FIX NIKTO: Proteger con middleware verificarAdmin
+app.post('/api/productos', verificarAdmin, upload.single('imagen'), (req, res) => {
     const { marca, nombre, descripcion, categoria, tipo, tamano, precio, stock } = req.body;
 
     // Validaciones
@@ -1761,8 +1994,9 @@ app.post('/api/productos', upload.single('imagen'), (req, res) => {
     });
 });
 
-// PUT /api/productos/:id - Actualizar producto
-app.put('/api/productos/:id', upload.single('imagen'), (req, res) => {
+// PUT /api/productos/:id - Actualizar producto (SOLO ADMIN)
+// FIX NIKTO: Proteger con middleware verificarAdmin
+app.put('/api/productos/:id', verificarAdmin, upload.single('imagen'), (req, res) => {
     const { id } = req.params;
     const { marca, nombre, descripcion, categoria, tipo, tamano, precio, stock } = req.body;
 
@@ -1818,8 +2052,9 @@ app.put('/api/productos/:id', upload.single('imagen'), (req, res) => {
     });
 });
 
-// DELETE /api/productos/:id - Eliminar producto
-app.delete('/api/productos/:id', (req, res) => {
+// DELETE /api/productos/:id - Eliminar producto (SOLO ADMIN)
+// FIX NIKTO: Proteger con middleware verificarAdmin
+app.delete('/api/productos/:id', verificarAdmin, (req, res) => {
     const { id } = req.params;
     const query = 'DELETE FROM productos WHERE id = ?';
 

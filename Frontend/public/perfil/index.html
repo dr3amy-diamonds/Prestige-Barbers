@@ -175,7 +175,7 @@
                                 <h3 style="color: white; font-size: 18px;">Panel de Administración</h3>
                                 <p style="color: rgba(255,255,255,0.9);">Accede al panel administrativo para gestionar productos, barberos y reservas</p>
                             </div>
-                            <button class="btn-admin-panel" onclick="window.location.href='../Admin/index.html'" style="background: white; color: #667eea; padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                            <button class="btn-admin-panel" id="btnPanelAdmin" style="background: white; color: #667eea; padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                                 Ir al Panel Admin
                             </button>
                         </div>
@@ -184,8 +184,8 @@
 
                 <h2 class="seccion-titulo">Zona de Peligro</h2>
                 <div class="info-card danger-zone">
-                    <button class="btn-cerrar-sesion" onclick="cerrarSesion()">Cerrar Sesión</button>
-                    <button class="btn-eliminar-cuenta">Eliminar Cuenta</button>
+                    <button class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</button>
+                    <button class="btn-eliminar-cuenta" id="btnEliminarCuenta">Eliminar Cuenta</button>
                 </div>
             </div>
         </section>
@@ -469,69 +469,6 @@
                     }
                 });
             }
-            
-            // Botón Eliminar Cuenta
-            const btnEliminarCuenta = document.querySelector('.btn-eliminar-cuenta');
-            if (btnEliminarCuenta) {
-                btnEliminarCuenta.addEventListener('click', async () => {
-                    const confirmar = await customModal.showConfirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.', 'Confirmación de eliminación');
-                    if (!confirmar) return;
-                    
-                    const confirmar2 = await customModal.showConfirm('ÚLTIMA ADVERTENCIA: Se eliminarán todos tus datos, reservas y favoritos permanentemente. ¿Confirmar eliminación?', 'Confirmación final');
-                    if (!confirmar2) return;
-                    
-                    // Solicitar contraseña para confirmar
-                    const password = await customModal.showPrompt('Por favor ingresa tu contraseña para confirmar la eliminación:', 'Verificación de identidad', 'password', 'Contraseña');
-                    if (!password) {
-                        customModal.showAlert('Eliminación cancelada', 'Operación cancelada');
-                        return;
-                    }
-                    
-                    // Deshabilitar botón
-                    btnEliminarCuenta.disabled = true;
-                    btnEliminarCuenta.textContent = 'Eliminando...';
-                    
-                    try {
-                        const token = localStorage.getItem('auth_token');
-                        
-                        const response = await fetch('/api/auth/delete-account', {
-                            method: 'DELETE',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                password: password
-                            })
-                        });
-                        
-                        const data = await response.json();
-                        
-                        if (data.success) {
-                            await customModal.showAlert(data.message + '\n\nSerás redirigido al inicio.', 'Cuenta eliminada');
-                            
-                            // Limpiar localStorage
-                            localStorage.removeItem('auth_token');
-                            localStorage.removeItem('user_data');
-                            
-                            // Redirigir al inicio
-                            setTimeout(() => {
-                                window.location.href = '../index.html';
-                            }, 1000);
-                        } else {
-                            customModal.showAlert(data.message, 'Error');
-                            btnEliminarCuenta.disabled = false;
-                            btnEliminarCuenta.textContent = 'Eliminar Cuenta';
-                        }
-                        
-                    } catch (error) {
-                        console.error('Error al eliminar cuenta:', error);
-                        customModal.showAlert('Error de conexión. Intenta nuevamente.', 'Error');
-                        btnEliminarCuenta.disabled = false;
-                        btnEliminarCuenta.textContent = 'Eliminar Cuenta';
-                    }
-                });
-            }
         });
         
         // ==================== FUNCIÓN CERRAR SESIÓN ====================
@@ -551,6 +488,23 @@
             // Redirigir a inicio (sin mensaje, será más rápido)
             window.location.href = '../index.html';
         }
+
+        // ==================== EVENT LISTENERS PARA BOTONES ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Botón cerrar sesión
+            const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+            if (btnCerrarSesion) {
+                btnCerrarSesion.addEventListener('click', cerrarSesion);
+            }
+
+            // Botón panel admin
+            const btnPanelAdmin = document.getElementById('btnPanelAdmin');
+            if (btnPanelAdmin) {
+                btnPanelAdmin.addEventListener('click', () => {
+                    window.location.href = '../Admin/index.html';
+                });
+            }
+        });
 
         // ==================== CARGAR RESERVAS DEL USUARIO ====================
         async function cargarReservas() {

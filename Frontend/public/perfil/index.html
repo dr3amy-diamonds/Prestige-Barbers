@@ -197,7 +197,6 @@
     </footer>
 
     <!-- SCRIPTS -->
-    <script src="../js/auth-modal.js"></script>
     <script>
         // SCRIPT SIMPLIFICADO PARA CARGAR DATOS DEL USUARIO
         console.log('🔵 Script inline cargado');
@@ -502,6 +501,89 @@
             if (btnPanelAdmin) {
                 btnPanelAdmin.addEventListener('click', () => {
                     window.location.href = '../Admin/index.html';
+                });
+            }
+
+            // Botón eliminar cuenta
+            const btnEliminarCuenta = document.getElementById('btnEliminarCuenta');
+            if (btnEliminarCuenta) {
+                btnEliminarCuenta.addEventListener('click', async () => {
+                    console.log('🗑️ Solicitando eliminación de cuenta...');
+
+                    // Pedir contraseña al usuario
+                    const password = await customModal.showPrompt(
+                        'Por favor ingresa tu contraseña para confirmar la eliminación de tu cuenta. Esta acción no se puede deshacer.',
+                        'Confirmar Contraseña',
+                        'password'
+                    );
+
+                    if (!password) {
+                        console.log('ℹ️ Eliminación de cuenta cancelada - no se proporcionó contraseña');
+                        return;
+                    }
+
+                    // Segunda confirmación
+                    const confirmarFinal = await customModal.showConfirm(
+                        '¿Realmente deseas eliminar tu cuenta permanentemente? Perderás todos tus datos, reservas e historial.',
+                        'Última Confirmación'
+                    );
+
+                    if (!confirmarFinal) {
+                        console.log('ℹ️ Eliminación de cuenta cancelada en confirmación final');
+                        return;
+                    }
+
+                    // Deshabilitar botón durante la petición
+                    btnEliminarCuenta.disabled = true;
+                    btnEliminarCuenta.textContent = 'Eliminando...';
+
+                    try {
+                        const token = localStorage.getItem('auth_token');
+
+                        if (!token) {
+                            throw new Error('No hay sesión activa');
+                        }
+
+                        const response = await fetch('/api/auth/delete-account', {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                password: password
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            await customModal.showAlert('Tu cuenta ha sido eliminada exitosamente. Serás redirigido al inicio.', 'Cuenta Eliminada');
+
+                            // Limpiar localStorage
+                            localStorage.removeItem('auth_token');
+                            localStorage.removeItem('user_data');
+
+                            // Redirigir al inicio después de 2 segundos
+                            setTimeout(() => {
+                                window.location.href = '../index.html';
+                            }, 2000);
+                        } else {
+                            await customModal.showAlert(data.message || 'No se pudo eliminar la cuenta', 'Error');
+
+                            // Rehabilitar botón
+                            btnEliminarCuenta.disabled = false;
+                            btnEliminarCuenta.textContent = 'Eliminar Cuenta';
+                        }
+
+                    } catch (error) {
+                        console.error('❌ Error al eliminar cuenta:', error);
+                        await customModal.showAlert('Error de conexión. Por favor intenta nuevamente.', 'Error');
+
+                        // Rehabilitar botón
+                        btnEliminarCuenta.disabled = false;
+                        btnEliminarCuenta.textContent = 'Eliminar Cuenta';
+                    }
                 });
             }
         });

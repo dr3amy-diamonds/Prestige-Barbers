@@ -1,4 +1,4 @@
-# Auditoría de Seguridad - Prestige Barbers
+-+# Auditoría de Seguridad - Prestige Barbers
 
 **Proyecto:** Prestige Barbers  
 **Fecha de Auditoría:** Noviembre 2025  

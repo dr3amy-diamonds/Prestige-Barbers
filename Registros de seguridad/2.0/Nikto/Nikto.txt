@@ -1,0 +1,26 @@
+┌──(root㉿kali)-[~]
+└─# nikto -h http://192.168.1.36:3000          
+- Nikto v2.5.0
+---------------------------------------------------------------------------
++ Target IP:          192.168.1.36
++ Target Hostname:    192.168.1.36
++ Target Port:        3000
++ Start Time:         2025-11-06 01:00:58 (GMT-5)
+---------------------------------------------------------------------------
++ Server: No banner retrieved
++ /: Uncommon header 'origin-agent-cluster' found, with contents: ?1.
++ No CGI Directories found (use '-C all' to force check all possible dirs)
++ .: The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type. See: https://www.netsparker.com/web-vulnerability-scanner/vulnerabilities/missing-content-type-header/
++ /admin/: This might be interesting.
++ /compra/: This might be interesting.
++ /Admin/: This might be interesting.
++ /admin/index.html: Admin login page/section found.
++ /api/soap/?wsdl=1: Uncommon header 'ratelimit-policy' found, with contents: 100;w=900.
++ /api/soap/?wsdl=1: Uncommon header 'ratelimit-limit' found, with contents: 100.
++ /api/soap/?wsdl=1: Uncommon header 'ratelimit-reset' found, with contents: 900.
++ /api/soap/?wsdl=1: Uncommon header 'ratelimit-remaining' found, with contents: 99.
++ /#wp-config.php#: #wp-config.php# file found. This file contains the credentials.
++ 8102 requests: 0 error(s) and 11 item(s) reported on remote host
++ End Time:           2025-11-06 01:01:25 (GMT-5) (27 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested

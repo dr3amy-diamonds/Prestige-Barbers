@@ -29,26 +29,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         determinarTipo(cut, index) {
-            // Si ya tiene el marcador _tipo, usarlo
             if (cut._tipo) {
                 return cut._tipo;
             }
-            // Fallback: asumir que los primeros son cortes
             return 'corte';
         }
 
         fetchCuts() {
-            // Cargar tanto cortes como barbas destacadas
             Promise.all([
                 fetch('/api/cortes').then(res => res.json()),
                 fetch('/api/barbas/destacadas').then(res => res.json())
             ])
                 .then(([cortes, barbas]) => {
-                    // Marcar el tipo en cada elemento para identificarlo después
                     const cortesConTipo = cortes.map(c => ({ ...c, _tipo: 'corte' }));
                     const barbasConTipo = barbas.map(b => ({ ...b, _tipo: 'barba' }));
-                    
-                    // Combinar cortes y barbas destacadas
+
                     this.cuts = [...cortesConTipo, ...barbasConTipo];
                     this.slideCount = this.cuts.length;
                     if (this.slideCount === 0) return;
@@ -67,16 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         this.isInitialLoad = false;
                     }
                 })
-                .catch(error => console.error('Error fetching cuts and beards:', error));
+                .catch(error => console.error('Error fetching data:', error));
         }
 
         createSlides() {
             const slideElements = this.cuts.map((cut, index) => {
                 const slide = document.createElement('div');
                 slide.className = 'slide';
-                
-                // Determinar si es corte o barba basándose en si viene de /api/cortes o /api/barbas/destacadas
-                // Los cortes tienen estructura de la tabla 'cortes', las barbas de la tabla 'barbas'
+
                 const tipo = this.determinarTipo(cut, index);
                 
                 slide.innerHTML = `
@@ -201,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
             this.carouselContainer.addEventListener('mousedown', (e) => this.dragStart(e));
             this.carouselContainer.addEventListener('touchstart', (e) => this.dragStart(e));
 
-            // Bind methods to this instance to maintain context
             this.dragMove = this.dragMove.bind(this);
             this.dragEnd = this.dragEnd.bind(this);
         }
@@ -235,16 +227,15 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelAnimationFrame(this.animationID);
             this.carouselContainer.classList.remove('grabbing');
 
-            // Remove global listeners
             window.removeEventListener('mousemove', this.dragMove);
             window.removeEventListener('touchmove', this.dragMove);
             window.removeEventListener('mouseup', this.dragEnd);
             window.removeEventListener('touchend', this.dragEnd);
 
             const movedBy = this.currentTranslate - this.prevTranslate;
-            if (movedBy < -100) { // Increased threshold for better user experience
+            if (movedBy < -100) {
                 this.goToSlide(this.currentIndex + 1);
-            } else if (movedBy > 100) { // Increased threshold for better user experience
+            } else if (movedBy > 100) {
                 this.goToSlide(this.currentIndex - 1);
             } else {
                 this.goToSlide(this.currentIndex);

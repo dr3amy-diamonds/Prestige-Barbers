@@ -74,7 +74,10 @@ function handleImageChange(e) {
             return;
         }
 
-        // Mostrar vista previa
+        // Mostrar nombre y vista previa
+        const fileNameDisplay = document.getElementById('productoImageFileName');
+        if (fileNameDisplay) fileNameDisplay.textContent = file.name;
+
         const reader = new FileReader();
         reader.onload = (event) => {
             imagePreview.src = event.target.result;
@@ -91,6 +94,8 @@ function removeImage() {
     imagePreviewContainer.style.display = 'none';
     imagePreview.src = '';
     imagenSeleccionada = null;
+    const fileNameDisplay = document.getElementById('productoImageFileName');
+    if (fileNameDisplay) fileNameDisplay.textContent = 'Sin archivo seleccionado';
 }
 
 // Cargar productos desde el backend

@@ -47,8 +47,15 @@
                 <label for="itemPrice">Precio:</label>
                 <input type="number" id="itemPrice" step="1" required>
 
-                <label for="itemImage">Imagen (opcional si editas):</label>
-                <input type="file" id="itemImage" accept="image/*">
+                <label>Imagen:</label>
+                <div class="file-btn-wrapper">
+                    <label class="file-btn-label" for="itemImage">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Seleccionar Imagen
+                    </label>
+                    <span class="file-name-display" id="itemImageFileName">Sin archivo seleccionado</span>
+                    <input type="file" id="itemImage" accept="image/*">
+                </div>
 
                 <div class="preview-container" id="previewWrapper" style="display:none;">
                     <p>Vista previa:</p>
@@ -170,7 +177,9 @@
         imageInput.addEventListener('change', () => {
             const file = imageInput.files[0];
             const wrapper = document.getElementById('previewWrapper');
+            const fileNameDisplay = document.getElementById('itemImageFileName');
             if (file) {
+                fileNameDisplay.textContent = file.name;
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     imagePreview.src = e.target.result;
@@ -178,6 +187,7 @@
                 }
                 reader.readAsDataURL(file);
             } else {
+                fileNameDisplay.textContent = 'Sin archivo seleccionado';
                 imagePreview.src = '#';
                 wrapper.style.display = 'none';
             }

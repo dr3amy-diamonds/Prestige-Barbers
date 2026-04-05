@@ -43,8 +43,20 @@
                 <label for="descripcion">Descripción:</label>
                 <textarea id="descripcion" rows="4" required></textarea>
 
-                <label for="imagen">Imagen del Barbero:</label>
-                <input type="file" id="imagen" accept="image/*">
+                <label>Imagen del Barbero:</label>
+                <div class="file-btn-wrapper">
+                    <label class="file-btn-label" for="imagen">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Seleccionar Imagen
+                    </label>
+                    <span class="file-name-display" id="imagenFileName">Sin archivo seleccionado</span>
+                    <small style="color:#666; font-size:0.72rem; margin-top:2px;">PNG sin fondo recomendado</small>
+                    <input type="file" id="imagen" accept="image/*">
+                </div>
+                <div class="preview-container" id="barberoPreviewWrapper" style="display:none;">
+                    <p>Vista previa:</p>
+                    <img id="barberoImagePreview" src="#" alt="Previsualización" style="width:100%; max-height:140px; object-fit:contain; border:1px solid #ddd; background:#f5f5f5;">
+                </div>
 
                 <div class="cortes-section" id="cortesSection">
                     <h3>Cortes Realizados</h3>
@@ -156,6 +168,26 @@
             
             // Escuchar cambios en el selector de tipo
             document.getElementById('tipo').addEventListener('change', updateSectionsVisibility);
+
+            // Mostrar nombre y preview de imagen del barbero
+            document.getElementById('imagen').addEventListener('change', function() {
+                const display = document.getElementById('imagenFileName');
+                const wrapper = document.getElementById('barberoPreviewWrapper');
+                const preview = document.getElementById('barberoImagePreview');
+                const file = this.files[0];
+                if (file) {
+                    display.textContent = file.name;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        preview.src = e.target.result;
+                        wrapper.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    display.textContent = 'Sin archivo seleccionado';
+                    wrapper.style.display = 'none';
+                }
+            });
         });
 
         // Actualizar visibilidad de secciones según el tipo

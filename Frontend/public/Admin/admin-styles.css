@@ -254,7 +254,7 @@ textarea:focus {
 }
 
 textarea {
-    resize: vertical;
+    resize: none;
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -833,11 +833,17 @@ tbody img {
 }
 
 .cortes-container,
-.barbas-container,
+.barbas-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
 .horarios-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+    align-items: end;
 }
 
 .cortes-container label,
@@ -848,11 +854,17 @@ tbody img {
 }
 
 .cortes-container select,
-.barbas-container select,
-.horarios-container input {
+.barbas-container select {
     margin-bottom: 0;
     padding: 6px 8px;
     font-size: 0.8rem;
+}
+
+.horarios-container input {
+    margin-bottom: 12px;
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    width: 100%;
 }
 
 /* ==================== GESTIÓN.HTML - RELACIONES ====================*/

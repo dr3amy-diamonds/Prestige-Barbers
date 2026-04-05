@@ -12,5 +12,4 @@ Registros de seguridad/
 .editorconfig
 .eslintrc
 .prettierrc
-Frontend/
 *.log

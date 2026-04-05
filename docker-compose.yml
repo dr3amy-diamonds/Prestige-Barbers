@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   # Servicio de MariaDB
   mariadb:
-    image: mariadb:11.4-alpine
+    image: mariadb:latest
     container_name: prestige-barbers-db
     restart: unless-stopped
     environment:

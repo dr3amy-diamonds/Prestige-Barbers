@@ -3,11 +3,11 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copiar package.json y package-lock.json
+# Copiar package.json
 COPY Backend/package*.json ./
 
 # Instalar dependencias
-RUN npm ci --only=production
+RUN npm install --production
 
 # Stage 2: Runtime
 FROM node:18-alpine
@@ -17,13 +17,16 @@ RUN apk add --no-cache dumb-init
 
 WORKDIR /app
 
-# Copiar node_modules del stage anterior
+# Copiar Backend directamente a /app
+COPY Backend/ ./
+
+# Copiar Frontend (para servir archivos estáticos)
+COPY Frontend/ /Frontend/
+
+# Copiar node_modules instalados
 COPY --from=builder /app/node_modules ./node_modules
 
-# Copiar aplicación
-COPY Backend/ .
-
-# Crear directorio para uploads
+# Crear directorios para uploads y logs
 RUN mkdir -p uploads logs
 
 # Exponer puerto

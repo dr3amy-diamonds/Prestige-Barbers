@@ -127,6 +127,71 @@
         <p>&copy; 2025 Prestige Barbers. Todos los derechos reservados.</p>
     </footer>
 
+    <!-- Modal de autenticación -->
+    <div class="auth-modal-overlay" id="authModal">
+        <div class="auth-modal-content">
+            <button class="auth-modal-close" id="closeModalBtn">&times;</button>
+            <div class="log-cont" id="loginForm">
+                <label>Iniciar Sesión</label>
+                <label>Correo Electrónico</label>
+                <input type="email" id="login-email" required>
+                <label>Contraseña</label>
+                <input type="password" id="login-password" required>
+                <button type="submit">Iniciar Sesión</button>
+                <div class="reg-cont">
+                    <label>¿No tienes una cuenta?</label>
+                    <button type="button" id="showRegister">Regístrate</button>
+                </div>
+            </div>
+            <div class="log-cont" id="registerForm" style="display:none;">
+                <label>Registro</label>
+                <label>Nombre Completo</label>
+                <input type="text" id="register-name" required>
+                <label>Correo Electrónico</label>
+                <input type="email" id="register-email" required>
+                <label>Contraseña</label>
+                <input type="password" id="register-password" required>
+                <label>Confirmar Contraseña</label>
+                <input type="password" id="register-confirm" required>
+                <button type="submit">Registrarse</button>
+                <div class="reg-cont">
+                    <label>¿Ya tienes una cuenta?</label>
+                    <button type="button" id="showLogin">Iniciar Sesión</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal del Carrito -->
+    <div class="carrito-modal-overlay" id="carritoModal">
+        <div class="carrito-modal-content">
+            <div class="carrito-modal-header">
+                <h2>Tu Carrito</h2>
+                <p class="carrito-count"><span id="carritoCount">0</span> productos</p>
+                <button class="carrito-modal-close" id="closeCarritoBtn">&times;</button>
+            </div>
+            <div class="carrito-items-list" id="carritoItemsList">
+                <div class="carrito-empty" id="carritoEmpty">
+                    <div class="carrito-empty-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="9" cy="21" r="1"/>
+                            <circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                    </div>
+                    <p>Tu carrito está vacío</p>
+                </div>
+            </div>
+            <div class="carrito-modal-footer" id="carritoFooter" style="display:none;">
+                <div class="carrito-total-section">
+                    <span class="carrito-total-label">Total:</span>
+                    <span class="carrito-total-precio" id="carritoTotal">$0</span>
+                </div>
+                <button class="carrito-btn-comprar" id="carritoComprarBtn">Comprar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../js/auth-modal.js"></script>
     <script src="../js/carrito.js"></script>
     <script src="../js/custom-modal.js"></script>

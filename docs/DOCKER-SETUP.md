@@ -83,6 +83,12 @@ Deberías ver:
 - URL: `http://localhost:3000`
 - Endpoints: http://localhost:3000/api/*
 
+### Panel de Administración
+- URL: `http://localhost:3000/Admin/`
+- Email: `admin`
+- Contraseña: `admin`
+- Acceso a: Gestión de barberos, productos, reservas y más
+
 ### Base de Datos (Adminer Web)
 - URL: `http://localhost:8080`
 - Servidor: `mariadb`

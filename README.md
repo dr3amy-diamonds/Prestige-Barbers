@@ -105,6 +105,17 @@ Contraseña: prestige_password123
 Base de datos: barberia
 ```
 
+### Panel de Administración
+
+**URL:** http://localhost:3000/Admin/
+
+```
+Email: admin
+Contraseña: admin
+```
+
+> 🔒 Acceso completo a gestión de barberos, productos, reservas y más.
+
 Para más detalles, ver [Guía Docker](docs/DOCKER-SETUP.md)
 
 

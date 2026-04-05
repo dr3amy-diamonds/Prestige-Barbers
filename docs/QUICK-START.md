@@ -53,7 +53,9 @@ docker-compose up -d
 
 | Servicio | URL | Credenciales |
 |----------|-----|--------------|
-| **API Backend** | http://localhost:3000 | Test: `GET /api/auth/me` |
+| **Frontend** | http://localhost:3000 | Acceso público |
+| **Panel Admin** | http://localhost:3000/Admin/ | Email: `admin` / Pass: `admin` |
+| **API Backend** | http://localhost:3000/api/* | Test: `GET /api/auth/me` |
 | **Gestor BD (Web)** | http://localhost:8080 | Usuario: `prestige_user` / Pass: `prestige_password123` |
 | **BD Directamente** | localhost:3306 | Usuario: `prestige_user` |
 
@@ -140,17 +142,21 @@ docker-compose restart backend
 
 ## Próximos Pasos
 
-1. **Administrar BD:** Ir a http://localhost:8080
+1. **Panel de Administración:** http://localhost:3000/Admin/
+   - Email: `admin`
+   - Pass: `admin`
+
+2. **Administrar BD:** Ir a http://localhost:8080
    - Host: `mariadb`
    - Usuario: `prestige_user`
    - Pass: `prestige_password123`
    - BD: `barberia`
 
-2. **Probar API:** Usar Postman o similar en http://localhost:3000/api
+3. **Probar API:** Usar Postman o similar en http://localhost:3000/api
 
-3. **Ver documentación completa:** [DOCKER-SETUP.md](DOCKER-SETUP.md)
+4. **Ver documentación completa:** [DOCKER-SETUP.md](DOCKER-SETUP.md)
 
-4. **Entrar en desarrollo:** Edita archivos en `Backend/` y verás cambios automáticos
+5. **Entrar en desarrollo:** Edita archivos en `Backend/` y verás cambios automáticos
 
 ---
 

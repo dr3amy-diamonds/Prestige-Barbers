@@ -10,14 +10,23 @@
          DEBE EJECUTARSE PRIMERO para proteger el acceso al panel -->
     <script src="auth-check.js"></script>
     
-    <link rel="stylesheet" href="productos-styles.css">
+    <!-- ==================== ESTILOS MINIMALISTAS ====================
+         Diseño cuadrado blanco y negro consistente con Prestige Barbers -->
+    <link rel="stylesheet" href="admin-styles.css">
 </head>
 
 <body>
-    <header class="page-header">
-        <h1>Gestión de Productos</h1>
-        <a href="index.html" class="back-link">Volver al Panel Admin</a>
+    <header>
+        <h1>PANEL DE ADMINISTRACIÓN</h1>
     </header>
+
+    <nav class="nav-buttons">
+        <a href="../index.html">← Inicio</a>
+        <a href="index.html">Registrar Items</a>
+        <a href="gestion.html">Gestionar Relaciones</a>
+        <a href="barberos.html">Gestionar Barberos</a>
+        <a href="productos.html" class="active">Gestionar Productos</a>
+    </nav>
 
     <main class="productos-main">
         <!-- Sección de Registro de Nuevo Producto -->

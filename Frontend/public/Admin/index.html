@@ -10,117 +10,23 @@
          DEBE EJECUTARSE PRIMERO para proteger el acceso al panel -->
     <script src="auth-check.js"></script>
     
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        h1, h2 {
-            text-align: center;
-        }
-        .main-container {
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
-        }
-        .form-container {
-            flex: 1;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .tables-container {
-            flex: 2;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .filter-container {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-        }
-        .table-wrapper {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: left;
-            vertical-align: middle;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .preview-container img {
-            max-width: 100px;
-            max-height: 100px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            display: none;
-        }
-        .action-buttons button {
-            margin-right: 5px;
-            padding: 5px 10px;
-        }
-        .action-buttons .edit-btn { background-color: #007bff; }
-        .action-buttons .delete-btn { background-color: #dc3545; }
-        .action-buttons .config-btn { background-color: #ffc107; }
-
-        /* Modal Styles */
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
-        .modal-content { background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 8px; }
-        .close-button { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
-        .close-button:hover, .close-button:focus { color: black; text-decoration: none; cursor: pointer; }
-        .hidden { display: none; }
-    </style>
+    <!-- ==================== ESTILOS MINIMALISTAS ====================
+         Diseño cuadrado blanco y negro consistente con Prestige Barbers -->
+    <link rel="stylesheet" href="admin-styles.css">
 </head>
 <body>
 
-    <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
-        <h1>Panel de Administración</h1>
-        <a href="../index.html" style="text-decoration: none; background-color: #1b1b1b; color: white; padding: 10px 15px; border-radius: 4px; font-size: 16px;">🏠 Inicio</a>
-        <a href="gestion.html" style="text-decoration: none; background-color: #007bff; color: white; padding: 10px 15px; border-radius: 4px; font-size: 16px;">Gestionar Relaciones</a>
-        <a href="barberos.html" style="text-decoration: none; background-color: #6f42c1; color: white; padding: 10px 15px; border-radius: 4px; font-size: 16px;">Gestionar Barberos</a>
-        <a href="productos.html" style="text-decoration: none; background-color: #28a745; color: white; padding: 10px 15px; border-radius: 4px; font-size: 16px;">Gestionar Productos</a>
-    </div>
+    <header>
+        <h1>PANEL DE ADMINISTRACIÓN</h1>
+    </header>
+
+    <nav class="nav-buttons">
+        <a href="../index.html">← Inicio</a>
+        <a href="index.html" class="active">Registrar Items</a>
+        <a href="gestion.html">Gestionar Relaciones</a>
+        <a href="barberos.html">Gestionar Barberos</a>
+        <a href="productos.html">Gestionar Productos</a>
+    </nav>
 
     <div class="main-container">
         <div class="form-container">
@@ -144,8 +50,8 @@
                 <label for="itemImage">Imagen (opcional si editas):</label>
                 <input type="file" id="itemImage" accept="image/*">
 
-                <div class="preview-container">
-                    <p>Previsualización de la imagen:</p>
+                <div class="preview-container" id="previewWrapper" style="display:none;">
+                    <p>Vista previa:</p>
                     <img id="imagePreview" src="#" alt="Previsualización">
                 </div>
 
@@ -263,16 +169,17 @@
 
         imageInput.addEventListener('change', () => {
             const file = imageInput.files[0];
+            const wrapper = document.getElementById('previewWrapper');
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block';
+                    wrapper.style.display = 'block';
                 }
                 reader.readAsDataURL(file);
             } else {
                 imagePreview.src = '#';
-                imagePreview.style.display = 'none';
+                wrapper.style.display = 'none';
             }
         });
 
@@ -316,7 +223,7 @@
                             <button class="edit-btn" onclick="editItem(${corte.id})">Editar</button>
                             <button class="delete-btn" onclick="deleteItem(${corte.id})">Eliminar</button>
                             <button class="config-btn" onclick="openConfigModal(${corte.id})">Configurar</button>
-                            <button style="background-color: #17a2b8; color: white;" onclick="moverABarbas(${corte.id})">Mover a Barbas</button>
+                            <button class="secondary" onclick="moverABarbas(${corte.id})">Mover a Barbas</button>
                         </td>
                     `;
                     cortesTableBody.appendChild(tr);
@@ -357,7 +264,7 @@
                             <button class="edit-btn" onclick="editBarba(${barba.id})">Editar</button>
                             <button class="delete-btn" onclick="deleteBarba(${barba.id})">Eliminar</button>
                             <button class="config-btn" onclick="openConfigModalBarba(${barba.id})">Configurar</button>
-                            <button style="background-color: #17a2b8; color: white;" onclick="moverACortes(${barba.id})">Mover a Cortes</button>
+                            <button class="secondary" onclick="moverACortes(${barba.id})">Mover a Cortes</button>
                         </td>
                     `;
                     barbasTableBody.appendChild(tr);

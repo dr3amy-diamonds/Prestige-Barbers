@@ -493,7 +493,7 @@ app.post('/api/auth/login',
 
 // GET /api/auth/me - Obtener datos del usuario actual (requiere token)
 app.get('/api/auth/me', verificarToken, (req, res) => {
-    db.query('SELECT id, nombre_completo, email, fecha_registro FROM usuarios WHERE id = ?', 
+    db.query('SELECT id, nombre_completo, email, fecha_registro, rol FROM usuarios WHERE id = ?', 
         [req.userId], 
         (err, results) => {
             if (err) {

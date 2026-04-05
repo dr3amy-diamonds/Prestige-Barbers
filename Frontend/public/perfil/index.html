@@ -10,6 +10,13 @@
     <link rel="stylesheet" href="../I-style/carrito-global.css">
     <link rel="stylesheet" href="../I-style/search-modal.css">
     <link rel="stylesheet" href="perfil-styles.css">
+    <style>
+        /* Estilo hover para el botón del panel admin */
+        .btn-admin-panel:hover {
+            background: #fff !important;
+            color: #1B1B1B !important;
+        }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -169,13 +176,13 @@
                 <!-- Panel de Administración (solo para admins) -->
                 <div id="admin-panel-section" style="display: none;">
                     <h2 class="seccion-titulo">Administración</h2>
-                    <div class="info-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
-                        <div class="config-option" style="border: none; padding: 20px;">
+                    <div class="info-card" style="background: #fff; border: 1px solid #1B1B1B;">
+                        <div class="config-option" style="border: none; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
                             <div class="config-info">
-                                <h3 style="color: white; font-size: 18px;">Panel de Administración</h3>
-                                <p style="color: rgba(255,255,255,0.9);">Accede al panel administrativo para gestionar productos, barberos y reservas</p>
+                                <h3 style="color: #1B1B1B; font-size: 1.1rem; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 0.5px;">Panel de Administración</h3>
+                                <p style="color: #666; margin: 0; font-size: 0.9rem;">Gestiona productos, barberos y reservas</p>
                             </div>
-                            <button class="btn-admin-panel" id="btnPanelAdmin" style="background: white; color: #667eea; padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                            <button class="btn-admin-panel" id="btnPanelAdmin" style="background: #1B1B1B; color: #fff; padding: 12px 24px; border: 1px solid #1B1B1B; font-weight: 600; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; font-family: 'Montserrat', sans-serif;">
                                 Ir al Panel Admin
                             </button>
                         </div>
@@ -204,6 +211,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log('🔵 DOM Cargado');
             
+            // Verificar si viene de intento de acceso al panel admin sin sesión
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('redirectToAdmin') === 'true') {
+                // Esperar a que el modal esté cargado
+                setTimeout(() => {
+                    const authModal = document.getElementById('authModal');
+                    if (authModal) {
+                        authModal.style.display = 'flex';
+                        console.log('📋 Abriendo modal de login para acceso a admin...');
+                    }
+                }, 500);
+            }
+            
             // Verificar sesión
             const token = localStorage.getItem('auth_token');
             const userData = localStorage.getItem('user_data');
@@ -212,10 +232,13 @@
             console.log('UserData:', userData ? 'Existe ✅' : 'No existe ❌');
             
             if (!token || !userData) {
-                alert('No has iniciado sesión. Redirigiendo al inicio...');
-                setTimeout(() => {
-                    window.location.href = '../index.html';
-                }, 1000);
+                // Solo redirigir si NO viene del panel admin
+                if (!params.get('redirectToAdmin')) {
+                    alert('No has iniciado sesión. Redirigiendo al inicio...');
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 1000);
+                }
                 return;
             }
             
@@ -499,8 +522,27 @@
             // Botón panel admin
             const btnPanelAdmin = document.getElementById('btnPanelAdmin');
             if (btnPanelAdmin) {
-                btnPanelAdmin.addEventListener('click', () => {
-                    window.location.href = '../Admin/index.html';
+                btnPanelAdmin.addEventListener('click', async () => {
+                    // Verificar que el usuario sea admin antes de ir al panel
+                    const token = localStorage.getItem('auth_token');
+                    const userData = localStorage.getItem('user_data');
+                    
+                    if (!token || !userData) {
+                        alert('⚠️ Debes iniciar sesión como administrador para acceder al panel.');
+                        return;
+                    }
+
+                    try {
+                        const user = JSON.parse(userData);
+                        if (user.rol === 'admin') {
+                            window.location.href = '/Admin/index.html';
+                        } else {
+                            alert('❌ Solo administradores pueden acceder al panel.');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('❌ Error al verificar permisos.');
+                    }
                 });
             }
 

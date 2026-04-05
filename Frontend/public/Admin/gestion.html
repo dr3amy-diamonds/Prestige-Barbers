@@ -10,14 +10,23 @@
          DEBE EJECUTARSE PRIMERO para proteger el acceso al panel -->
     <script src="auth-check.js"></script>
     
-    <link rel="stylesheet" href="gestion-styles.css">
+    <!-- ==================== ESTILOS MINIMALISTAS ====================
+         Diseño cuadrado blanco y negro consistente con Prestige Barbers -->
+    <link rel="stylesheet" href="admin-styles.css">
 </head>
 <body>
 
-    <header class="page-header">
-        <h1>Panel de Gestión</h1>
-        <a href="index.html" class="back-link">Volver al Inicio</a>
+    <header>
+        <h1>PANEL DE ADMINISTRACIÓN</h1>
     </header>
+
+    <nav class="nav-buttons">
+        <a href="../index.html">← Inicio</a>
+        <a href="index.html">Registrar Items</a>
+        <a href="gestion.html" class="active">Gestionar Relaciones</a>
+        <a href="barberos.html">Gestionar Barberos</a>
+        <a href="productos.html">Gestionar Productos</a>
+    </nav>
 
     <main class="management-grid">
         <!-- Card para Cortes de Pelo -->
@@ -167,7 +176,7 @@
             
             div.innerHTML = `
                 <h4>Corte Principal: ${principal.nombre}</h4>
-                <img src="${principal.imagen}" alt="${principal.nombre}" style="max-width: 150px; border-radius: 8px;">
+                <img src="${principal.imagen}" alt="${principal.nombre}" style="max-width: 150px;">
                 <p style="font-size: 14px; color: #666; margin: 10px 0;">${principal.descripcion_principal || 'Sin descripción principal'}</p>
                 <form class="relations-form" data-principal-id="${principal.id}">
                     <div class="selectors-container">
@@ -334,7 +343,7 @@
             
             div.innerHTML = `
                 <h4>Barba Principal: ${principal.nombre}</h4>
-                <img src="${principal.imagen}" alt="${principal.nombre}" style="max-width: 150px; border-radius: 8px;">
+                <img src="${principal.imagen}" alt="${principal.nombre}" style="max-width: 150px;">
                 <p style="font-size: 14px; color: #666; margin: 10px 0;">${principal.descripcion_principal || 'Sin descripción principal'}</p>
                 <form class="relations-form" data-principal-id="${principal.id}">
                     <div class="selectors-container">

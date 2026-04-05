@@ -4,43 +4,54 @@
  * Verifica si el usuario tiene sesión activa y es administrador
  * Si no, redirige al login o a la página principal
  */
-async function checkAdminAuthentication() {
+function checkAdminAuthentication() {
     try {
-        // Obtener token JWT del localStorage
-        const token = localStorage.getItem('authToken');
+        console.log('🔐 Verificando autenticación de admin...');
+        
+        // 1. Obtener token JWT del localStorage
+        const token = localStorage.getItem('auth_token');
+        console.log('Token encontrado:', token ? '✅' : '❌');
         
         if (!token) {
-            console.warn('⚠️  No hay sesión activa. Redirigiendo al login...');
+            console.warn('⚠️  No hay sesión activa. Redirigiendo a login...');
             redirectToLogin();
             return false;
         }
 
-        // Verificar autenticación con la API
-        const response = await fetch('/api/auth/me', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (!response.ok) {
-            console.warn('⚠️  Token inválido o expirado. Redirigiendo al login...');
-            localStorage.removeItem('authToken');
+        // 2. Obtener datos del usuario del localStorage
+        const userData = localStorage.getItem('user_data');
+        console.log('User data encontrado:', userData ? '✅' : '❌');
+        
+        if (!userData) {
+            console.warn('⚠️  No hay datos de usuario. Redirigiendo a login...');
             redirectToLogin();
             return false;
         }
-
-        const user = await response.json();
-
-        // Verificar si el usuario es administrador
-        if (user.rol !== 'admin') {
+        
+        let userObj;
+        try {
+            userObj = JSON.parse(userData);
+        } catch (e) {
+            console.error('❌ Error al parsear user_data:', e);
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_data');
+            redirectToLogin();
+            return false;
+        }
+        
+        console.log('Usuario:', userObj.nombre_completo);
+        console.log('Rol:', userObj.rol);
+        
+        // 3. Verificar si el usuario es administrador
+        if (userObj.rol !== 'admin') {
             console.error('❌ Acceso denegado. Solo administradores pueden acceder a esta página.');
+            console.error('   Rol del usuario:', userObj.rol);
             redirectToHome();
             return false;
         }
 
-        console.log('✅ Acceso permitido. Bienvenido,', user.nombre_completo);
+        console.log('✅ Acceso permitido. Bienvenido,', userObj.nombre_completo);
+        addLogoutButton();
         return true;
 
     } catch (error) {
@@ -51,10 +62,11 @@ async function checkAdminAuthentication() {
 }
 
 /**
- * Redirige a la página de login
+ * Redirige a la página de perfil (donde pueden iniciar sesión como admin)
  */
 function redirectToLogin() {
-    showAuthModal();
+    // Redirigir a la página de perfil para que inicie sesión
+    window.location.href = '/perfil/?redirectToAdmin=true';
 }
 
 /**
@@ -79,41 +91,31 @@ function showAuthModal() {
 }
 
 /**
- * Añade un botón de logout a la página
+ * Añade un enlace de logout al nav
  */
 function addLogoutButton() {
-    const header = document.querySelector('header') || document.querySelector('body');
-    
-    if (!document.getElementById('logoutBtn')) {
-        const logoutBtn = document.createElement('button');
-        logoutBtn.id = 'logoutBtn';
-        logoutBtn.textContent = '🚪 Cerrar Sesión';
-        logoutBtn.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            z-index: 9999;
-            font-weight: bold;
-        `;
-        
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('authToken');
+    if (document.getElementById('logoutBtn')) return;
+
+    const nav = document.querySelector('.nav-buttons');
+    if (nav) {
+        const link = document.createElement('a');
+        link.id = 'logoutBtn';
+        link.href = '#';
+        link.textContent = 'Cerrar Sesión';
+        link.style.cssText = 'border-left: 1px solid #1B1B1B;';
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_data');
             window.location.href = '/';
         });
-        
-        document.body.appendChild(logoutBtn);
+        nav.appendChild(link);
     }
 }
 
 // Ejecutar verificación cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', async () => {
-    const isAuthenticated = await checkAdminAuthentication();
+document.addEventListener('DOMContentLoaded', () => {
+    const isAuthenticated = checkAdminAuthentication();
     
     if (isAuthenticated) {
         addLogoutButton();

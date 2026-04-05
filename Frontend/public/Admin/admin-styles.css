@@ -1,0 +1,975 @@
+/* ==================== PANEL DE ADMINISTRACIÓN - ESTÉTICA MINIMALISTA ====================
+   Diseño cuadrado, blanco y negro, sin gradientes ni border-radius
+   Consistente con la estética general de Prestige Barbers */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #fff;
+    color: #1B1B1B;
+    overflow-x: hidden;
+}
+
+/* ==================== HEADER ====================*/
+header {
+    background: #1B1B1B;
+    color: #fff;
+    padding: 16px 20px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.page-header {
+    background: #1B1B1B;
+    color: #fff;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    margin-bottom: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* ==================== NAVIGATION ====================*/
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid #1B1B1B;
+    border-left: 1px solid #1B1B1B;
+    border-right: 1px solid #1B1B1B;
+}
+
+.nav-buttons a {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    color: #1B1B1B;
+    background: #fff;
+    border-right: 1px solid #1B1B1B;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: background 0.2s ease;
+}
+
+.nav-buttons a:last-child {
+    border-right: none;
+}
+
+.nav-buttons a:hover,
+.nav-buttons a.active {
+    background: #1B1B1B;
+    color: #fff;
+}
+
+/* ==================== CONTENEDORES PRINCIPALES ====================*/
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.main-container {
+    display: flex;
+    gap: 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.form-container {
+    flex: 0 0 280px;
+    background: #fff;
+    border: 1px solid #1B1B1B;
+    padding: 16px;
+    align-self: flex-start;
+}
+
+.form-container h2 {
+    margin-top: 0;
+    margin-bottom: 14px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.tables-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.table-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.table-container h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #1B1B1B;
+    padding-bottom: 8px;
+}
+
+/* ==================== CARDS (PARA GESTION.HTML) ====================*/
+.management-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 16px;
+    max-width: 1200px;
+    margin: 16px auto;
+    padding: 0 16px;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #1B1B1B;
+    padding: 0;
+}
+
+.card-header {
+    background: #1B1B1B;
+    color: #fff;
+    padding: 12px 16px;
+    border-bottom: 1px solid #333;
+}
+
+.card-header h2 {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card-header p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #ccc;
+}
+
+.card-body {
+    padding: 16px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #fff;
+    padding: 6px 12px;
+    border: 1px solid #fff;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.back-link:hover {
+    background: #fff;
+    color: #1B1B1B;
+}
+
+/* ==================== IMAGES ====================*/
+.image-preview {
+    max-width: 80px;
+    max-height: 80px;
+    display: inline-block;
+    margin: 8px 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ==================== FORMS ====================*/
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #1B1B1B;
+}
+
+input,
+select,
+textarea {
+    margin-bottom: 10px;
+    padding: 8px 10px;
+    border: 1px solid #1B1B1B;
+    background: #fff;
+    color: #1B1B1B;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    width: 100%;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border: 1px solid #1B1B1B;
+    box-shadow: 0 0 0 2px rgba(27, 27, 27, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Input file — oculto, reemplazado por botón personalizado */
+input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Botón personalizado para elegir imagen */
+.file-btn-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.file-btn-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: #fff;
+    border: 1px solid #1B1B1B;
+    color: #1B1B1B;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    width: fit-content;
+}
+
+.file-btn-label:hover {
+    background: #1B1B1B;
+    color: #fff;
+}
+
+.file-btn-label svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.file-name-display {
+    font-size: 0.75rem;
+    color: #666;
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+}
+
+/* ==================== PREVIEW DE IMAGEN EN FORMULARIO ====================*/
+.preview-container {
+    margin-bottom: 10px;
+}
+
+.preview-container p {
+    margin: 0 0 4px 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+}
+
+#imagePreview {
+    width: 100%;
+    height: 140px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    object-fit: contain;
+}
+
+#imagePreview[src="#"],
+#imagePreview:not([src]) {
+    display: none;
+}
+
+/* ==================== BUTTONS ====================*/
+button {
+    padding: 8px 14px;
+    border: 1px solid #1B1B1B;
+    background: #1B1B1B;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    white-space: nowrap;
+}
+
+button:hover {
+    background: #fff;
+    color: #1B1B1B;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button.danger {
+    border-color: #d32f2f;
+    background: #d32f2f;
+    color: #fff;
+}
+
+button.danger:hover {
+    background: #fff;
+    color: #d32f2f;
+}
+
+button.secondary {
+    border-color: #666;
+    background: #fff;
+    color: #666;
+}
+
+button.secondary:hover {
+    background: #666;
+    color: #fff;
+}
+
+/* Botones en tablas - compactos */
+.action-buttons button,
+.actions button {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+    margin: 2px 1px;
+    letter-spacing: 0.3px;
+}
+
+/* ==================== FILTROS ====================*/
+.filter-container {
+    background: #fff;
+    border: 1px solid #1B1B1B;
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.filter-container label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    gap: 8px;
+    font-size: 0.85rem;
+}
+
+.filter-container input[type="radio"],
+.filter-container input[type="checkbox"] {
+    margin-bottom: 0;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+}
+
+/* ==================== TABLAS ====================*/
+.table-wrapper {
+    background: #fff;
+    border: 1px solid #1B1B1B;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.table-wrapper h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #1B1B1B;
+    padding-bottom: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #1B1B1B;
+}
+
+th {
+    background: #1B1B1B;
+    color: #fff;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.5px;
+    border: 1px solid #1B1B1B;
+}
+
+td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 0.85rem;
+    vertical-align: middle;
+}
+
+tbody tr {
+    transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+    background: #f5f5f5;
+}
+
+tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+tbody tr:nth-child(even):hover {
+    background: #f0f0f0;
+}
+
+tbody img {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    display: block;
+}
+
+/* ==================== MODAL ====================*/
+.modal,
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show,
+.modal-overlay.show,
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: #fff;
+    border: 2px solid #1B1B1B;
+    padding: 24px;
+    max-width: 480px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #1B1B1B;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.modal-actions button {
+    flex: 1;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #1B1B1B;
+    padding: 0;
+    margin: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    transform: scale(1.2);
+}
+
+/* ==================== ALERTAS Y MENSAJES ====================*/
+.alert {
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #1B1B1B;
+    background: #fff;
+    font-size: 0.85rem;
+}
+
+.alert.success {
+    border-left: 4px solid #28a745;
+    background: #f0f8f0;
+    color: #1B1B1B;
+}
+
+.alert.error {
+    border-left: 4px solid #d32f2f;
+    background: #f8f0f0;
+    color: #1B1B1B;
+}
+
+.alert.warning {
+    border-left: 4px solid #ffc107;
+    background: #f8f7f0;
+    color: #1B1B1B;
+}
+
+/* ==================== PRODUCTOS - LAYOUT HORIZONTAL ====================*/
+.productos-main {
+    display: flex;
+    gap: 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px;
+    align-items: flex-start;
+}
+
+.form-card {
+    flex: 0 0 380px;
+}
+
+.list-card {
+    flex: 1;
+    min-width: 0;
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 0;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    flex: 1 1 100%;
+}
+
+.form-group label {
+    margin-bottom: 4px;
+    font-size: 0.78rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    margin-bottom: 8px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.form-actions button {
+    flex: 1;
+}
+
+/* File input para productos */
+.file-input-wrapper {
+    position: relative;
+}
+
+.file-input-wrapper input[type="file"] {
+    width: 100%;
+}
+
+.image-preview-container {
+    margin-top: 8px;
+    position: relative;
+    display: inline-block;
+}
+
+.image-preview-container img {
+    max-width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+    border: 1px solid #ddd;
+    display: block;
+}
+
+.remove-image {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #1B1B1B;
+    color: #fff;
+    border: none;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Filtros de productos */
+.filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 140px;
+}
+
+.filter-group label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.filter-group input,
+.filter-group select {
+    margin-bottom: 0;
+    padding: 6px 8px;
+    font-size: 0.8rem;
+}
+
+/* Botones dentro de productos table */
+.productos-table td button {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    margin: 1px;
+}
+
+/* ==================== CLASES PARA BOTONES ====================*/
+.btn {
+    display: inline-block;
+    padding: 8px 14px;
+    border: 1px solid #1B1B1B;
+    background: #1B1B1B;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    background: #fff;
+    color: #1B1B1B;
+}
+
+.btn-primary {
+    background: #1B1B1B;
+    color: #fff;
+    border-color: #1B1B1B;
+}
+
+.btn-primary:hover {
+    background: #fff;
+    color: #1B1B1B;
+}
+
+.btn-secondary {
+    background: #fff;
+    color: #555;
+    border-color: #999;
+    border: 1px solid #999;
+}
+
+.btn-secondary:hover {
+    background: #555;
+    color: #fff;
+}
+
+.btn-danger {
+    background: #d32f2f;
+    color: #fff;
+    border-color: #d32f2f;
+}
+
+.btn-danger:hover {
+    background: #fff;
+    color: #d32f2f;
+}
+
+/* ==================== BOTÓN PANEL ADMIN ====================*/
+.btn-admin-panel {
+    padding: 8px 16px;
+    border: 1px solid #1B1B1B;
+    background: #1B1B1B;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.btn-admin-panel:hover {
+    background: #fff;
+    color: #1B1B1B;
+}
+
+/* ==================== SECCIONES EN BARBEROS ====================*/
+.cortes-section,
+.barbas-section {
+    margin-bottom: 10px;
+}
+
+.cortes-section h3,
+.barbas-section h3 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 8px 0 6px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.cortes-container,
+.barbas-container,
+.horarios-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.cortes-container label,
+.barbas-container label,
+.horarios-container label {
+    font-size: 0.75rem;
+    margin-bottom: 2px;
+}
+
+.cortes-container select,
+.barbas-container select,
+.horarios-container input {
+    margin-bottom: 0;
+    padding: 6px 8px;
+    font-size: 0.8rem;
+}
+
+/* ==================== GESTIÓN.HTML - RELACIONES ====================*/
+.principal-cut-container {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.principal-cut-container:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.principal-cut-container h4 {
+    margin: 0 0 8px 0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.principal-cut-container img {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.selectors-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.selectors-container select {
+    margin-bottom: 0;
+    font-size: 0.78rem;
+    padding: 6px 8px;
+}
+
+.relations-form button[type="submit"] {
+    width: 100%;
+    margin-top: 4px;
+}
+
+/* ==================== UTILIDADES ====================*/
+.hidden {
+    display: none !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.p-20 {
+    padding: 20px;
+}
+
+/* ==================== RESPONSIVE ====================*/
+@media (max-width: 900px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .form-container {
+        flex: 1;
+    }
+
+    .productos-main {
+        flex-direction: column;
+    }
+
+    .form-card {
+        flex: 1;
+    }
+
+    .nav-buttons {
+        flex-wrap: wrap;
+    }
+
+    .nav-buttons a {
+        flex: 1 1 auto;
+        min-width: 100px;
+        border-bottom: 1px solid #1B1B1B;
+    }
+
+    .cortes-container,
+    .barbas-container,
+    .horarios-container {
+        grid-template-columns: 1fr;
+    }
+
+    .selectors-container {
+        grid-template-columns: 1fr;
+    }
+
+    table {
+        font-size: 0.8rem;
+    }
+
+    th, td {
+        padding: 6px 8px;
+    }
+
+    .modal-content {
+        padding: 16px;
+    }
+}

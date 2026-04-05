@@ -325,3 +325,112 @@ main {
     color: #1b1b1b;
     padding: 20px 50px;
 }
+
+/* =====================================================
+   HAMBURGUESA
+   ===================================================== */
+.hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1100;
+    padding: 4px;
+}
+.hamburger-btn span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.hamburger-btn.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-btn.is-active span:nth-child(2) { opacity: 0; }
+.hamburger-btn.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* =====================================================
+   RESPONSIVE COMPRA - MÓVIL (≤ 600px)
+   ===================================================== */
+@media (max-width: 600px) {
+
+    /* Header hamburguesa */
+    .hamburger-btn { display: flex; }
+    .head-logo-cont { padding: 12px 16px; }
+    .head-logo-cont h1 { font-size: 1rem; padding: 0 50px; text-align: center; width: 100%; }
+    .head-icons-cont { right: 14px; gap: 8px; }
+    .head-icons-cont .icon-link { width: 20px; height: 20px; }
+    .head-lkn-cont {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 0;
+        border-bottom: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        z-index: 1050;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        border-top: 4px solid #1b1b1b;
+    }
+    .head-lkn-cont.nav-open { display: flex; }
+    .head-lkn-cont .search-container { display: none !important; }
+    .head-lkn-cont a {
+        width: 100%;
+        padding: 16px 24px;
+        border-bottom: 1px solid #e8e8e8;
+        font-size: 1rem;
+    }
+
+    /* Layout compra: columna única */
+    .compra-cont {
+        flex-direction: column;
+    }
+
+    .img-prod-cont {
+        position: static;
+        width: 100%;
+        height: 70vw;
+        max-height: 340px;
+        padding: 20px;
+        background: #f8f8f8;
+        border-bottom: 3px solid #1b1b1b;
+    }
+
+    .info-prod-cont {
+        width: 100%;
+        margin-left: 0;
+        padding: 24px 20px;
+        min-height: unset;
+    }
+
+    .info-prod-cont h2 {
+        font-size: 2rem;
+    }
+
+    .lkns-compra-cont a:nth-child(1),
+    .lkns-compra-cont a:nth-child(2) {
+        width: 100%;
+        text-align: center;
+        padding: 16px 20px;
+        font-size: 1em;
+    }
+
+    .lkns-compra-cont a:nth-child(3) {
+        padding: 14px 20px;
+        font-size: 0.9em;
+    }
+}

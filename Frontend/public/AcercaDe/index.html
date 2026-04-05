@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acerca De - Prestige Barbers</title>
+    <link rel="stylesheet" href="AD-Styles/styles.css">
     <link rel="stylesheet" href="../I-style/auth-modal.css">
     <link rel="stylesheet" href="../I-style/custom-modal.css">
     <link rel="stylesheet" href="../I-style/carrito-global.css">
@@ -12,366 +13,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: "Montserrat", sans-serif;
-            background: #fff;
-            color: #1b1b1b;
-        }
-
-        /* ===== HEADER (igual al resto del sitio) ===== */
-        header {
-            background: #333;
-            color: #fff;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .head-logo-cont {
-            display: flex;
-            text-transform: uppercase;
-            align-items: center;
-            justify-content: center;
-            padding: 5px 0;
-            background: #1b1b1b;
-            position: relative;
-        }
-
-        .head-logo-cont h1 {
-            font-weight: 550;
-            font-size: 1.3rem;
-        }
-
-        .head-logo-cont a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .head-icons-cont {
-            position: absolute;
-            right: 20px;
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .icon-link img {
-            width: 22px;
-            height: 22px;
-            filter: invert(1);
-        }
-
-        .head-lkn-cont {
-            padding: 15px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #fff;
-            gap: 40px;
-            border-bottom: 10px solid #1b1b1b;
-        }
-
-        .head-lkn-cont a {
-            text-decoration: none;
-            color: #1b1b1b;
-            font-weight: 500;
-            font-size: 0.95rem;
-            text-transform: capitalize;
-            transition: opacity 0.2s;
-        }
-
-        .head-lkn-cont a:hover,
-        .head-lkn-cont a.active {
-            font-weight: 700;
-            border-bottom: 2px solid #1b1b1b;
-        }
-
-        /* ===== HERO ===== */
-        .about-hero {
-            background: #1b1b1b;
-            color: #fff;
-            padding: 80px 40px;
-            text-align: center;
-            border-bottom: 6px solid #fff;
-        }
-
-        .about-hero h2 {
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-bottom: 16px;
-            color: #aaa;
-        }
-
-        .about-hero h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            line-height: 1.1;
-        }
-
-        .about-hero p {
-            margin-top: 20px;
-            font-size: 1.05rem;
-            color: #ccc;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.7;
-        }
-
-        /* ===== SECCIÓN HISTORIA ===== */
-        .about-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            max-width: 1200px;
-            margin: 60px auto;
-            padding: 0 40px;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .about-section.reverse {
-            direction: rtl;
-        }
-
-        .about-section.reverse > * {
-            direction: ltr;
-        }
-
-        .about-text h3 {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #888;
-            margin-bottom: 12px;
-        }
-
-        .about-text h2 {
-            font-size: 2rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            line-height: 1.2;
-            margin-bottom: 20px;
-        }
-
-        .about-text p {
-            font-size: 0.95rem;
-            line-height: 1.8;
-            color: #444;
-            margin-bottom: 14px;
-        }
-
-        .about-img {
-            width: 100%;
-            aspect-ratio: 4/3;
-            object-fit: cover;
-            filter: grayscale(20%);
-            border: 6px solid #1b1b1b;
-        }
-
-        /* ===== VALORES ===== */
-        .values-section {
-            background: #1b1b1b;
-            color: #fff;
-            padding: 70px 40px;
-            text-align: center;
-        }
-
-        .values-section h2 {
-            font-size: 0.8rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: #aaa;
-            margin-bottom: 10px;
-        }
-
-        .values-section h3 {
-            font-size: 2rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 50px;
-        }
-
-        .values-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .value-item {
-            border: 1px solid #444;
-            padding: 30px 20px;
-            text-align: center;
-        }
-
-        .value-item .value-icon {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 16px;
-        }
-
-        .value-item h4 {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-
-        .value-item p {
-            font-size: 0.82rem;
-            color: #bbb;
-            line-height: 1.7;
-        }
-
-        /* ===== EQUIPO ===== */
-        .team-section {
-            max-width: 900px;
-            margin: 70px auto;
-            padding: 0 40px;
-            text-align: center;
-        }
-
-        .team-section h2 {
-            font-size: 0.8rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: #888;
-            margin-bottom: 10px;
-        }
-
-        .team-section h3 {
-            font-size: 2rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 50px;
-        }
-
-        .team-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
-
-        .team-card {
-            border: 2px solid #1b1b1b;
-            padding: 30px 24px;
-            text-align: left;
-        }
-
-        .team-card-role {
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #888;
-            margin-bottom: 8px;
-        }
-
-        .team-card h4 {
-            font-size: 1.2rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 14px;
-            line-height: 1.2;
-        }
-
-        .team-card p {
-            font-size: 0.85rem;
-            line-height: 1.7;
-            color: #555;
-        }
-
-        .team-card-tag {
-            display: inline-block;
-            margin-top: 16px;
-            padding: 4px 10px;
-            background: #1b1b1b;
-            color: #fff;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* ===== DIVIDER ===== */
-        .divider {
-            width: 100%;
-            height: 6px;
-            background: #1b1b1b;
-        }
-
-        /* ===== CTA ===== */
-        .cta-section {
-            text-align: center;
-            padding: 70px 40px;
-            background: #f5f5f5;
-        }
-
-        .cta-section h2 {
-            font-size: 2rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-        }
-
-        .cta-section p {
-            font-size: 0.95rem;
-            color: #555;
-            margin-bottom: 30px;
-        }
-
-        .cta-btn {
-            display: inline-block;
-            padding: 14px 36px;
-            background: #1b1b1b;
-            color: #fff;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: background 0.2s, color 0.2s;
-            border: 2px solid #1b1b1b;
-        }
-
-        .cta-btn:hover {
-            background: #fff;
-            color: #1b1b1b;
-        }
-
-        /* ===== FOOTER ===== */
-        footer {
-            background: #1b1b1b;
-            color: #aaa;
-            text-align: center;
-            padding: 24px;
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .about-hero h1 { font-size: 2rem; }
-            .about-section { grid-template-columns: 1fr; gap: 30px; padding: 0 20px; }
-            .about-section.reverse { direction: ltr; }
-            .values-grid { grid-template-columns: 1fr; max-width: 400px; }
-            .team-grid { grid-template-columns: 1fr; }
-            .head-lkn-cont { gap: 20px; font-size: 0.85rem; }
-        }
-    </style>
 </head>
 
 <body>
@@ -392,17 +33,28 @@
                 </a>
             </div>
         </div>
-        <div class="head-lkn-cont">
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="head-lkn-cont" id="navMenu">
             <a href="../Tienda/index.html">Shop</a>
             <a href="../Cortes/index.html">Servicios</a>
             <a href="../Barberos/index.html">Barberos</a>
-            <a href="../AcercaDe/index.html" class="active">Acerca De</a>
+            <a href="../AcercaDe/index.html">Acerca De</a>
+            <div class="search-container">
+                <input type="search" class="search-input" placeholder="¿Qué buscas?"
+                    autocomplete="new-password" autocorrect="off" autocapitalize="off"
+                    spellcheck="false" name="search-query-prestige" role="searchbox"
+                    aria-label="Búsqueda de productos y servicios" data-form-type="other" disabled>
+                <button class="search-close">&times;</button>
+            </div>
         </div>
+        <div class="search-results"></div>
     </header>
 
     <!-- HERO -->
     <section class="about-hero">
-        <h2>Nuestra historia</h2>
+        <span class="section-tag">Nuestra historia</span>
         <h1>Prestige<br>Barbers</h1>
         <p>Mas que una barberia, somos un espacio donde el estilo, la precision y la confianza se encuentran.</p>
     </section>
@@ -412,33 +64,35 @@
     <!-- HISTORIA -->
     <section class="about-section">
         <div class="about-text">
-            <h3>Quienes somos</h3>
+            <span class="section-tag-inline">Quienes somos</span>
             <h2>Tradicion y precision en cada corte</h2>
             <p>Prestige Barbers nace de la pasion por el arte del barbero. Creemos que un buen corte no es solo estetica, es confianza, identidad y caracter.</p>
             <p>Cada servicio es ejecutado con tecnica profesional, productos de calidad y la atencion que mereces. Nuestros barberos son artesanos del estilo que se actualizan constantemente con las tendencias globales.</p>
         </div>
-        <img class="about-img" src="../I-style/img/placeholder-about.jpg" onerror="this.style.background='#1b1b1b'; this.removeAttribute('src');" alt="Prestige Barbers">
+        <img class="about-img"
+            src="../I-img/Barbero.jpeg"
+            alt="Prestige Barbers">
     </section>
 
     <div class="divider"></div>
 
     <!-- VALORES -->
     <section class="values-section">
-        <h2>Lo que nos define</h2>
-        <h3>Nuestros valores</h3>
+        <span class="section-tag">Lo que nos define</span>
+        <h2>Nuestros valores</h2>
         <div class="values-grid">
             <div class="value-item">
-                <span class="value-icon">&#9998;</span>
+                <span class="value-number">01</span>
                 <h4>Precision</h4>
-                <p>Cada linea, cada fade, cada detalle ejecutado con exactitud y cuidado.</p>
+                <p>Cada linea, cada fade, cada detalle ejecutado con exactitud y cuidado artesanal.</p>
             </div>
             <div class="value-item">
-                <span class="value-icon">&#9733;</span>
+                <span class="value-number">02</span>
                 <h4>Excelencia</h4>
                 <p>Productos premium, tecnicas actualizadas y un ambiente que inspira confianza.</p>
             </div>
             <div class="value-item">
-                <span class="value-icon">&#10003;</span>
+                <span class="value-number">03</span>
                 <h4>Confianza</h4>
                 <p>Salir sintiendote bien es nuestra prioridad. Tu satisfaccion es nuestro compromiso.</p>
             </div>
@@ -447,10 +101,10 @@
 
     <div class="divider"></div>
 
-    <!-- EQUIPO DESARROLLADOR -->
+    <!-- EQUIPO -->
     <section class="team-section">
-        <h2>Detras del proyecto</h2>
-        <h3>Equipo de desarrollo</h3>
+        <span class="section-tag">Detras del proyecto</span>
+        <h2>Equipo de desarrollo</h2>
         <div class="team-grid">
             <div class="team-card">
                 <p class="team-card-role">Desarrollador Full Stack</p>
@@ -469,13 +123,6 @@
 
     <div class="divider"></div>
 
-    <!-- CTA -->
-    <section class="cta-section">
-        <h2>Reserva tu cita hoy</h2>
-        <p>Elige tu barbero, selecciona el servicio y agenda en minutos. Sin filas, sin esperas.</p>
-        <a href="../Reserva/index.html" class="cta-btn">Reservar ahora</a>
-    </section>
-
     <footer>
         <p>&copy; 2025 Prestige Barbers. Todos los derechos reservados.</p>
     </footer>
@@ -484,6 +131,7 @@
     <script src="../js/carrito.js"></script>
     <script src="../js/custom-modal.js"></script>
     <script src="../js/search-modal.js"></script>
+    <script src="../js/hamburger.js"></script>
 
 </body>
 </html>

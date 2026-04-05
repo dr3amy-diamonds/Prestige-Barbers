@@ -293,3 +293,127 @@ main {
     color: #1b1b1b;
     padding: 20px 50px;
 }
+
+/* =====================================================
+   HAMBURGUESA
+   ===================================================== */
+.hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1100;
+    padding: 4px;
+}
+.hamburger-btn span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.hamburger-btn.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-btn.is-active span:nth-child(2) { opacity: 0; }
+.hamburger-btn.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* =====================================================
+   RESPONSIVE RESERVA - MÓVIL (≤ 600px)
+   ===================================================== */
+@media (max-width: 600px) {
+
+    /* Header hamburguesa */
+    .hamburger-btn { display: flex; }
+    .head-logo-cont { padding: 12px 16px; }
+    .head-logo-cont h1 { font-size: 1rem; padding: 0 50px; text-align: center; width: 100%; }
+    .head-icons-cont { right: 14px; gap: 8px; }
+    .head-icons-cont .icon-link { width: 20px; height: 20px; }
+    .head-lkn-cont {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 0;
+        border-bottom: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        z-index: 1050;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        border-top: 4px solid #1b1b1b;
+    }
+    .head-lkn-cont.nav-open { display: flex; }
+    .head-lkn-cont .search-container { display: none !important; }
+    .head-lkn-cont a {
+        width: 100%;
+        padding: 16px 24px;
+        border-bottom: 1px solid #e8e8e8;
+        font-size: 1rem;
+    }
+
+    /* Layout reserva: columna única */
+    .res-cont {
+        flex-direction: column;
+    }
+
+    .img-cut-cont {
+        width: 100%;
+        height: 50vw;
+        min-height: 180px;
+        max-height: 280px;
+        position: static;
+        padding: 0;
+        background: #f5f5f5;
+    }
+
+    .img-cut-cont img {
+        position: static;
+        transform: none;
+        max-width: 60%;
+        max-height: 100%;
+        left: auto;
+        bottom: auto;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .info-cut-cont {
+        width: 100%;
+        padding: 24px 20px;
+        max-height: unset;
+        overflow-y: visible;
+    }
+
+    .info-cut-cont h2 {
+        font-size: 2rem;
+    }
+
+    .barb-btn-cont button {
+        width: 80px;
+        height: 80px;
+    }
+
+    .lkns-res-con a:first-child {
+        padding: 16px 30px;
+        font-size: 1em;
+        width: 100%;
+        text-align: center;
+    }
+
+    .lkns-res-con a:last-child {
+        padding: 14px 30px;
+        font-size: 0.9em;
+    }
+}

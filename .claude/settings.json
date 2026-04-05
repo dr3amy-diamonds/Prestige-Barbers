@@ -6,7 +6,8 @@
       "Bash(docker-compose build:*)",
       "Bash(docker-compose up:*)",
       "Bash(sed -i 's|<a href=\"../index.html\">Acerca De</a>|<a href=\"../AcercaDe/index.html\">Acerca De</a>|g' Compra/index.html Reserva/index.html Tienda/index.html Cortes/index.html)",
-      "Bash(sed -i 's|<a href=\"\">Acerca De</a>|<a href=\"../AcercaDe/index.html\">Acerca De</a>|g' perfil/index.html)"
+      "Bash(sed -i 's|<a href=\"\">Acerca De</a>|<a href=\"../AcercaDe/index.html\">Acerca De</a>|g' perfil/index.html)",
+      "Bash(docker exec:*)"
     ]
   }
 }

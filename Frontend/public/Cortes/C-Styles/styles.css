@@ -502,3 +502,225 @@ header:stuck .head-lkn-cont {
 #btn-barba-4 {
     background-image: url('../C-Imgs/Barba/Fade_Barb/Relacionados/van\ dyke\ beard.png');
 }
+
+/* =====================================================
+   HAMBURGUESA (igual en todos los CSS que tienen header)
+   ===================================================== */
+.hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1100;
+    padding: 4px;
+}
+.hamburger-btn span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.hamburger-btn.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-btn.is-active span:nth-child(2) { opacity: 0; }
+.hamburger-btn.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* =====================================================
+   RESPONSIVE - TABLET (≤ 900px)
+   ===================================================== */
+@media (max-width: 900px) {
+    .cort-cont {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .cort-cont-inf-img-cont {
+        height: 55vw;
+        min-height: 260px;
+        max-height: 420px;
+    }
+
+    .cort-cont-btns {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .cort-cont-btns button {
+        width: calc(50% - 4px);
+        height: 28vw;
+        min-height: 120px;
+    }
+
+    .barb-cont {
+        flex-direction: column;
+        height: auto;
+        padding: 0;
+    }
+
+    .barb-cont-inf-img {
+        width: 100%;
+        height: 55vw;
+        min-height: 260px;
+        max-height: 420px;
+    }
+
+    .barb-cont-img {
+        width: 100%;
+        aspect-ratio: auto;
+        height: 50vw;
+        min-height: 220px;
+    }
+
+    .barb-cont-inf-img h3 {
+        font-size: 2em;
+        width: 70%;
+    }
+
+    .skincare-cont {
+        height: 60vw;
+        min-height: 280px;
+        max-height: 480px;
+    }
+
+    .skincare-cont-img-inf label {
+        font-size: 1.8em;
+        width: 60%;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE - MÓVIL (≤ 600px)
+   ===================================================== */
+@media (max-width: 600px) {
+
+    /* Header hamburguesa */
+    .hamburger-btn { display: flex; }
+
+    .head-logo-cont { padding: 12px 16px; }
+    .head-logo-cont h1 { font-size: 1rem; padding: 0 50px; text-align: center; width: 100%; }
+    .head-icons-cont { right: 14px; gap: 8px; }
+    .head-icons-cont .icon-link { width: 20px; height: 20px; }
+
+    .head-lkn-cont {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        padding: 0;
+        border-bottom: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        z-index: 1050;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        border-top: 4px solid #1b1b1b;
+    }
+    .head-lkn-cont.nav-open { display: flex; }
+    .head-lkn-cont .search-container { display: none !important; }
+    .head-lkn-cont a {
+        width: 100%;
+        padding: 16px 24px;
+        border-bottom: 1px solid #e8e8e8;
+        font-size: 1rem;
+    }
+
+    /* Slider de cortes */
+    .cort-cont {
+        height: auto;
+        min-height: unset;
+    }
+
+    .cort-cont-inf-img-cont {
+        height: 75vw;
+        min-height: 220px;
+        max-height: 380px;
+        padding: 0 16px;
+    }
+
+    .cort-cont-inf label {
+        font-size: 1.6rem;
+    }
+
+    .cort-cont-inf-2 label {
+        font-size: 0.85rem;
+    }
+
+    /* Grid cortes relacionados */
+    .cort-cont-btns {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 6px;
+        gap: 6px;
+    }
+
+    .cort-cont-btns button {
+        width: calc(50% - 3px);
+        height: 44vw;
+        min-height: 140px;
+        max-height: 220px;
+    }
+
+    /* Sección barbas */
+    .barb-cont {
+        flex-direction: column;
+        height: auto;
+        padding: 6px;
+        gap: 6px;
+    }
+
+    .barb-cont-inf-img {
+        width: 100%;
+        height: 70vw;
+        min-height: 240px;
+        max-height: 380px;
+        padding: 20px;
+    }
+
+    .barb-cont-inf-img h3 {
+        font-size: 1.8em;
+        width: 90%;
+    }
+
+    .barb-cont-img {
+        width: 100%;
+        aspect-ratio: auto;
+        height: 90vw;
+        min-height: 300px;
+    }
+
+    .barb-cont-img button {
+        width: calc(50% - 5px);
+        height: calc(50% - 5px);
+    }
+
+    /* Skincare */
+    .skincare-cont {
+        height: 70vw;
+        min-height: 240px;
+        max-height: 400px;
+    }
+
+    .skincare-cont-img-inf {
+        padding: 24px;
+    }
+
+    .skincare-cont-img-inf label {
+        font-size: 1.5em;
+        width: 90%;
+    }
+}

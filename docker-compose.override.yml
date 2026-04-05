@@ -1,0 +1,27 @@
+version: '3.8'
+
+# Este archivo sobrescribe configuraciones para ambiente de DESARROLLO local
+# Docker Compose automáticamente lo carga si existe
+
+services:
+  backend:
+    # En desarrollo, reconstruir imagen automáticamente en cambios
+    build:
+      context: .
+      dockerfile: Dockerfile
+      cache_from:
+        - node:18-alpine
+    # Montar código fuente para hot reload
+    volumes:
+      - ./Backend:/app
+      - /app/node_modules
+      - ./Backend/uploads:/app/uploads
+      - ./Backend/logs:/app/logs
+    environment:
+      NODE_ENV: development
+      # Habilitar nodemon para hot reload
+      
+  mariadb:
+    # En desarrollo, puede usar más recursos
+    environment:
+      MARIADB_AUTO_UPGRADE: 1

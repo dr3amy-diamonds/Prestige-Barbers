@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # Servicio de MariaDB
+  mariadb:
+    image: mariadb:11.4-alpine
+    container_name: prestige-barbers-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword123}
+      MYSQL_DATABASE: ${DB_NAME:-barberia}
+      MYSQL_USER: ${DB_USER:-prestige_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-prestige_password123}
+      MARIADB_CHARACTER_SET: utf8mb4
+      MARIADB_COLLATION: utf8mb4_general_ci
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      # Volumen para datos persistentes
+      - mariadb_data:/var/lib/mysql
+      # Montar el dump SQL para inicialización automática
+      - ./barberia.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - prestige-network
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
+      timeout: 3s
+      retries: 5
+      interval: 10s
+
+  # Servicio de Node.js Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: prestige-barbers-backend
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3000
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-prestige_user}
+      DB_PASSWORD: ${DB_PASSWORD:-prestige_password123}
+      DB_NAME: ${DB_NAME:-barberia}
+      JWT_SECRET: ${JWT_SECRET:-your_super_secret_jwt_key_change_in_production}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000,http://192.168.1.36:3000}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      # Volumen para uploads
+      - ./Backend/uploads:/app/uploads
+      # Volumen para logs
+      - ./Backend/logs:/app/logs
+      # Volumen para node_modules
+      - /app/node_modules
+    networks:
+      - prestige-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/auth/me', (r) => {if (r.statusCode !== 401) throw new Error(r.statusCode)})"]
+      timeout: 5s
+      retries: 5
+      interval: 30s
+
+  # Adminer - Herramienta web para administrar BD (opcional)
+  adminer:
+    image: adminer:latest
+    container_name: prestige-barbers-adminer
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    networks:
+      - prestige-network
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+
+networks:
+  prestige-network:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+    driver: local

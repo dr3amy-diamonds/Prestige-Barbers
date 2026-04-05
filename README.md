@@ -2,6 +2,8 @@
 
 Plataforma digital integral para barbería que revoluciona la experiencia del cliente mediante portafolios dinámicos, sistema de reservas personalizado y comercio electrónico de productos capilares.
 
+**Inicio Rápido:** Lee [QUICK-START.md](docs/QUICK-START.md) para poner la aplicación en funcionamiento en 3 minutos con Docker.
+
 ## Descripción General
 
 **Prestige Barbers** es una solución completa diseñada para optimizar la gestión operativa de barberías modernas. El sistema permite a los clientes explorar portafolios profesionales de barberos, reservar turnos con profesionales específicos y adquirir productos capilares exclusivos, eliminando tiempos de espera innecesarios y mejorando significativamente la experiencia del usuario.
@@ -51,6 +53,54 @@ El proyecto ha sido sometido a auditorías exhaustivas de seguridad utilizando h
 | Auditorías | Completadas | Nessus y Nikto |
 
 **Puntuación General de Seguridad: 9/10**
+
+---
+
+## Docker - Containerización
+
+El proyecto está completamente containerizado con Docker, permitiendo despliegue consistente sin dependencias externas (no requiere XAMPP).
+
+### Servicios Docker
+
+| Servicio | Tecnología | Puerto | Propósito |
+|----------|-----------|--------|-----------|
+| Backend | Node.js 18 Alpine | 3000 | API REST de la aplicación |
+| MariaDB | MariaDB 11.4 Alpine | 3306 | Base de datos relacional |
+| Adminer | Adminer Latest | 8080 | Interfaz web para administrar BD |
+
+### Inicio Rápido con Docker
+
+**Windows:**
+```bash
+docker.bat up
+```
+
+**macOS/Linux:**
+```bash
+chmod +x docker.sh
+./docker.sh up
+```
+
+**O directamente:**
+```bash
+docker-compose up -d
+```
+
+### Acceso a Servicios
+
+- Backend API: http://localhost:3000
+- Adminer (Gestor BD): http://localhost:8080
+- Servidor BD: mariadb:3306
+
+### Credenciales BD (Docker)
+
+```
+Usuario: prestige_user
+Contraseña: prestige_password123
+Base de datos: barberia
+```
+
+Para más detalles, ver [Guía Docker](docs/DOCKER-SETUP.md)
 
 
 ---
@@ -198,46 +248,268 @@ Prestige-Barbers/
 
 ## Requisitos del Sistema
 
-### Hardware Mínimo
-- Procesador: 1 GHz o superior
-- Memoria RAM: 512 MB
-- Almacenamiento: 500 MB disponibles
+Dependiendo de tu método de instalación:
 
-### Software Requerido
+### Con Docker (Recomendado)
+- Docker Desktop
+- RAM: 2GB mínimo (4GB recomendado)
+
+### Local (sin Docker)
 - Node.js 14.0 o superior
 - MySQL 5.7 o superior
-- Navegador moderno compatible con ES6
+- RAM: 1GB mínimo
 
 ---
 
-## Instalación
+## Instalación y Ejecución del Sistema
 
-### Backend
+Este proyecto está completamente containerizado con Docker. Los siguientes pasos permiten ejecutar la aplicación en cualquier plataforma sin instalar dependencias adicionales.
 
-1. Navegar a la carpeta Backend
+---
+
+### Requisitos Previos
+
+**Opción 1: Docker (Recomendado - Sin XAMPP)**
+- Docker Desktop instalado
+- Docker Compose (incluido en Docker Desktop)
+- RAM: 2GB mínimo (4GB recomendado)
+
+Descargar Docker Desktop: https://www.docker.com/products/docker-desktop
+
+**Opción 2: Local (Sin Docker - Requiere instalar todo manualmente)**
+- Node.js 14.0 o superior
+- MySQL 5.7 o superior
+- XAMPP (opcional) o LAMP stack
+
+---
+
+### Guía Rápida: Inicio en 3 Minutos
+
+#### Paso 1: Verificar Requisitos Docker
+
+```bash
+docker --version
+docker-compose --version
+```
+
+Si no están instalados, descargar Docker Desktop desde: https://www.docker.com/products/docker-desktop
+
+#### Paso 2: Navegar a la Carpeta del Proyecto
+
+```bash
+cd Prestige-Barbers-Clonado
+```
+
+#### Paso 3: Iniciar los Servicios
+
+**En Windows:**
+```bash
+docker.bat up
+```
+
+**En macOS/Linux:**
+```bash
+chmod +x docker.sh
+./docker.sh up
+```
+
+**O en cualquier sistema (alternativa):**
+```bash
+docker-compose up -d
+```
+
+#### Paso 4: Esperar a que Todo Esté Listo
+
+```
+Esperar 30-60 segundos a que veas:
+
+✓ prestige-barbers-db       (HEALTHY)
+✓ prestige-barbers-backend  (HEALTHY)  
+✓ prestige-barbers-adminer  (UP)
+```
+
+#### Paso 5: Acceder a la Aplicación
+
+| Servicio | URL | Credenciales |
+|----------|-----|--------------|
+| **Backend API** | http://localhost:3000 | Test: `GET /api/auth/me` |
+| **Gestor BD Web** | http://localhost:8080 | Usuario: `prestige_user` / Pass: `prestige_password123` |
+| **Base de Datos** | localhost:3306 | Usuario: `prestige_user` / Pass: `prestige_password123` |
+
+---
+
+### Verificar que Todo Está Corriendo
+
+```bash
+# Ver estados de contenedores
+docker-compose ps
+
+# Ver logs en tiempo real
+docker-compose logs -f
+
+# Ver solo logs del backend
+docker-compose logs -f backend
+
+# Ver solo logs de la BD
+docker-compose logs -f mariadb
+```
+
+---
+
+### Comandos Útiles para Docker
+
+**Detener la aplicación:**
+```bash
+docker-compose down
+```
+
+**Reiniciar servicios:**
+```bash
+docker-compose restart
+```
+
+**Acceder a MariaDB desde terminal:**
+```bash
+docker-compose exec mariadb mariadb -u prestige_user -pprestige_password123 barberia
+```
+
+**Acceder a línea de comandos del backend:**
+```bash
+docker-compose exec backend sh
+```
+
+**Limpiar TODO (⚠️ elimina datos):**
+```bash
+docker-compose down -v
+```
+
+**Reconstruir después de cambios en dependencias:**
+```bash
+docker-compose build
+docker-compose restart backend
+```
+
+---
+
+### Solución de Problemas Comunes
+
+#### Error: "Port 3000 already in use"
+```bash
+# Editar .env y cambiar:
+APP_PORT=3001
+
+# Luego reiniciar:
+docker-compose down
+docker-compose up -d
+```
+
+#### Error: "Cannot connect to Docker daemon"
+- Asegurate que Docker Desktop está abierto
+- En Linux: `sudo systemctl start docker`
+
+#### MariaDB no inicia (unhealthy)
+```bash
+docker-compose down -v
+docker-compose up -d
+```
+
+#### Los cambios en código no se reflejan
+```bash
+docker-compose build --no-cache
+docker-compose restart backend
+```
+
+---
+
+### Instalación Alternativa: Local (Sin Docker)
+
+Si prefieres no usar Docker, sigue estos pasos:
+
+#### Backend
+
+1. Navegar a Backend:
 ```bash
 cd Backend
 ```
 
-2. Instalar dependencias
+2. Instalar dependencias:
 ```bash
 npm install
 ```
 
-3. Configurar variables de entorno
+3. Crear archivo .env:
 ```bash
 cp .env.example .env
 ```
 
-4. Iniciar servidor
+4. Editar `.env` con tus credenciales locales de MySQL:
+```env
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=tu_password
+DB_NAME=barberia
+```
+
+5. Importar base de datos:
+```bash
+# Con MySQL instalado
+mysql -u root -p < ../barberia.sql
+```
+
+6. Iniciar servidor:
 ```bash
 npm start          # Producción
 npm run dev        # Desarrollo
 ```
 
-### Frontend
+#### Frontend
 
-El frontend se sirve automáticamente desde el servidor Express en la carpeta `Public`.
+El frontend se sirve automáticamente desde Express en `http://localhost:3000` una vez que el backend inicia.
+
+---
+
+### Estructura de Datos y Persistencia
+
+Los datos se almacenan en volúmenes Docker persistentes:
+
+| Ubicación | Contenido |
+|-----------|----------|
+| `mariadb_data/` | Base de datos completa |
+| `Backend/uploads/` | Imágenes de barberos y productos |
+| `Backend/logs/` | Logs de la aplicación |
+
+**Nota:** Al hacer `docker-compose down` SIN `-v`, los datos se mantienen.
+
+---
+
+### Restaurar Base de Datos
+
+El archivo `barberia.sql` se restaura automáticamente al iniciar MariaDB.
+
+**Si necesitas restaurar manualmente:**
+```bash
+docker-compose exec mariadb mariadb -u prestige_user -pprestige_password123 barberia < barberia.sql
+```
+
+**O vía Adminer (http://localhost:8080):**
+1. Ir a "Importar"
+2. Seleccionar `barberia.sql`
+3. Ejecutar
+
+---
+
+### Documentación Completa
+
+Para información más detallada, consulta:
+
+| Documento | Contenido |
+|-----------|-----------|
+| [QUICK-START.md](docs/QUICK-START.md) | Inicio rápido (resumen) |
+| [DOCKER-SETUP.md](docs/DOCKER-SETUP.md) | Guía Docker completa (50+ secciones) |
+| [ARQUITECTURA-DOCKER.md](docs/ARQUITECTURA-DOCKER.md) | Diagramas y diseño |
+| [NGINX-PRODUCCION.md](docs/NGINX-PRODUCCION.md) | Configuración para producción |
+
+---
 
 ---
 

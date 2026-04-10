@@ -105,9 +105,8 @@
     gap: clamp(15px, 2.5vw, 30px);
     width: 100%;
     flex: 1;
-    overflow: visible;
+    overflow: hidden;
     min-height: 0;
-    max-height: 100%;
 }
 
 /* Columna izquierda - Información del servicio */
@@ -541,6 +540,63 @@
     .modal-slc-barb-cont img {
         width: clamp(55px, 9vw, 75px);
         height: clamp(55px, 9vw, 75px);
+    }
+}
+
+/* Laptops con altura reducida (≤ 800px de alto) */
+@media (max-height: 800px) and (min-width: 769px) {
+    .reserva-modal-content {
+        padding: 16px 24px;
+        max-height: 95vh;
+    }
+
+    .modal-res-cont {
+        gap: 16px;
+    }
+
+    .modal-inf-cont h2 {
+        font-size: 1.6rem;
+        margin: 4px 0;
+    }
+
+    .modal-add-svc-cont {
+        margin: 6px 0;
+    }
+
+    .modal-slc-barb-cont {
+        margin-top: 6px;
+        gap: 5px;
+    }
+
+    .modal-slc-barb-cont img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .modal-inf-cont p {
+        font-size: 0.8rem;
+        margin-top: 4px;
+    }
+
+    .modal-bar-ca-pri {
+        margin-top: 6px;
+        gap: 4px;
+    }
+
+    .modal-cale-cont {
+        gap: 6px;
+    }
+
+    .modal-hours-cont {
+        gap: 6px;
+    }
+
+    .modal-reg-inps {
+        gap: 6px;
+    }
+
+    .modal-day-btn {
+        height: 58px;
     }
 }
 

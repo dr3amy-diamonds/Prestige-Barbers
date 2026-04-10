@@ -469,6 +469,9 @@ footer p {
 .fecha-icon,
 .hora-icon {
     margin-right: 5px;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
 }
 
 .reserva-footer {

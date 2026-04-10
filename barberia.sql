@@ -247,9 +247,9 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre_completo`, `email`, `rol`, `password_hash`, `fecha_registro`, `ultimo_acceso`, `activo`) VALUES
-(1, 'Juan Diego Arrieta Herrera', 'juandiegoarrietaherrera@hotmail.com', 'usuario', '$2b$10$K6tWuh7mvVepCrr7vXhW0OcN/yiJ6c.IBJbR6yVogZJ7jm9f7pZzy', '2025-10-21 21:35:49', '2025-10-31 22:59:13', 1),
-(2, 'Valentina Ojeda Pascasio', 'Valeoje@gmail.com', 'usuario', '$2b$10$UdIhLKPqpz7gmKBwhb0l3OLqrBYCxli1lW0kVSVFBIB82wKMyhFBS', '2025-10-21 22:55:41', '2025-11-19 14:55:56', 1),
-(5, 'Administrador', 'admin', 'admin', '$2b$10$qosJpoxN/OljMLmEF8YFrOKWJrlMWbDXPl.FJuOiXmV/DZPX63SeG', '2025-11-03 21:53:16', '2025-11-07 23:02:46', 1);
+(1, 'Usuario Demo', 'usuario@demo.com', 'usuario', '$2b$10$Vkps7EuQvLelNfWHzwSwTuRQVM2Jfo2FQH8qauzJKOjaTjxwLPl6K', '2025-10-21 21:35:49', '2025-10-31 22:59:13', 1),
+(2, 'Usuario Prueba', 'prueba@demo.com', 'usuario', '$2b$10$Vkps7EuQvLelNfWHzwSwTuRQVM2Jfo2FQH8qauzJKOjaTjxwLPl6K', '2025-10-21 22:55:41', '2025-11-19 14:55:56', 1),
+(5, 'Administrador', 'admin@demo.com', 'admin', '$2b$10$A5u.4ku2jTzUyOO6uhgDpu3G/Xqj4OEOKwkTq7rxewUQ6YO8DVnNy', '2025-11-03 21:53:16', '2025-11-07 23:02:46', 1);
 
 --
 -- Índices para tablas volcadas

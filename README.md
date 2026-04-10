@@ -105,16 +105,26 @@ Contraseña: prestige_password123
 Base de datos: barberia
 ```
 
+### Usuarios de Prueba
+
+La base de datos incluye los siguientes usuarios de demostración listos para usar:
+
+| Rol | Email | Contraseña |
+|-----|-------|------------|
+| Usuario | `usuario@demo.com` | `usuario123` |
+| Usuario | `prueba@demo.com` | `usuario123` |
+| Administrador | `admin@demo.com` | `admin123` |
+
 ### Panel de Administración
 
 **URL:** http://localhost:3000/Admin/
 
 ```
-Email: admin
-Contraseña: admin
+Email: admin@demo.com
+Contraseña: admin123
 ```
 
-> 🔒 Acceso completo a gestión de barberos, productos, reservas y más.
+> Acceso completo a gestión de barberos, productos, reservas y más.
 
 Para más detalles, ver [Guía Docker](docs/DOCKER-SETUP.md)
 
